@@ -1,0 +1,1 @@
+﻿SELECT MAX(accountNumber) FROM Client WHERE accountNumber like 'LA%'
