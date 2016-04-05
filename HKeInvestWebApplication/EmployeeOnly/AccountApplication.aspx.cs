@@ -13,6 +13,8 @@ namespace HKeInvestWebApplication
     public partial class AccountApplication : System.Web.UI.Page
     {
 
+        //Ignore just for git upload
+
         HKeInvestData myHKeInvestData = new HKeInvestData();
         protected void Page_Load(object sender, EventArgs e)
         {
