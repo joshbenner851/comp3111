@@ -108,7 +108,7 @@ namespace HKeInvestWebApplication.Code_File
             }
             else
             {
-                return Math.Round(Convert.ToDecimal(fromCurrencyRate) / Convert.ToDecimal(toCurrencyRate) * value - (decimal).005, 2);
+                return Math.Round(Convert.ToDecimal(fromCurrencyRate) / Convert.ToDecimal(toCurrencyRate) * value, 2);
             }
         }
     }
