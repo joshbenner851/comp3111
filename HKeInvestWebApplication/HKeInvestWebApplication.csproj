@@ -244,6 +244,7 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\Site.css" />
     <Content Include="Fees.aspx" />
+    <Content Include="SearchSecurities.aspx" />
     <Content Include="SecurityTransaction.aspx" />
     <Content Include="ExternalSystems\BondOrder.aspx" />
     <Content Include="ExternalSystems\ControlCenter.aspx" />
@@ -471,6 +472,13 @@
     </Compile>
     <Compile Include="Fees.aspx.designer.cs">
       <DependentUpon>Fees.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="SearchSecurities.aspx.cs">
+      <DependentUpon>SearchSecurities.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="SearchSecurities.aspx.designer.cs">
+      <DependentUpon>SearchSecurities.aspx</DependentUpon>
     </Compile>
     <Compile Include="SecurityTransaction.aspx.cs">
       <DependentUpon>SecurityTransaction.aspx</DependentUpon>
