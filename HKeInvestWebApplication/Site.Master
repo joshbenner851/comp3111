@@ -78,7 +78,7 @@
             </asp:ContentPlaceHolder>
             <hr />
             <footer>
-                <p>&copy; <%: DateTime.Now.Year %> - Robert Olsthoorn (20363070)</p>
+                <p>&copy; <%: DateTime.Now.Year %> - Team USA(106)</p>
             </footer>
         </div>
     </form>
