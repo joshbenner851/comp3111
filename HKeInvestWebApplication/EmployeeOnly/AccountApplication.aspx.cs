@@ -13,8 +13,6 @@ namespace HKeInvestWebApplication
     public partial class AccountApplication : System.Web.UI.Page
     {
 
-        //Ignore just for git upload
-
         HKeInvestData myHKeInvestData = new HKeInvestData();
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -31,6 +29,7 @@ namespace HKeInvestWebApplication
             return year + "-" + month + "-" + day;
         }
 
+        //BROKEN CODE since SELECT statement returns one row null. Will fix monday
         private string GenerateNextKey(string lastname)
         {
             string lastletters = "";
