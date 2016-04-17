@@ -13,6 +13,15 @@ namespace HKeInvestWebApplication.EmployeeOnly {
     public partial class SecurityTransaction {
         
         /// <summary>
+        /// RequiredFieldValidator1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator RequiredFieldValidator1;
+        
+        /// <summary>
         /// SecurityType control.
         /// </summary>
         /// <remarks>
@@ -20,6 +29,15 @@ namespace HKeInvestWebApplication.EmployeeOnly {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RadioButtonList SecurityType;
+        
+        /// <summary>
+        /// RequiredFieldValidator2 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator RequiredFieldValidator2;
         
         /// <summary>
         /// TransactionType control.
@@ -130,6 +148,15 @@ namespace HKeInvestWebApplication.EmployeeOnly {
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl limit;
         
         /// <summary>
+        /// LimitPrice control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox LimitPrice;
+        
+        /// <summary>
         /// stop control.
         /// </summary>
         /// <remarks>
@@ -139,13 +166,22 @@ namespace HKeInvestWebApplication.EmployeeOnly {
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl stop;
         
         /// <summary>
-        /// stoporder control.
+        /// StopPrice control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl stoporder;
+        protected global::System.Web.UI.WebControls.TextBox StopPrice;
+        
+        /// <summary>
+        /// stoplimit control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl stoplimit;
         
         /// <summary>
         /// SharesQuantity control.
@@ -157,21 +193,39 @@ namespace HKeInvestWebApplication.EmployeeOnly {
         protected global::System.Web.UI.WebControls.TextBox SharesQuantity;
         
         /// <summary>
-        /// DropDownList1 control.
+        /// CustomValidator1 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList DropDownList1;
+        protected global::System.Web.UI.WebControls.CustomValidator CustomValidator1;
         
         /// <summary>
-        /// RadioButton1 control.
+        /// Label1 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RadioButton RadioButton1;
+        protected global::System.Web.UI.WebControls.Label Label1;
+        
+        /// <summary>
+        /// DaysUntilExpiration control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList DaysUntilExpiration;
+        
+        /// <summary>
+        /// AllOrNone control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RadioButton AllOrNone;
     }
 }
