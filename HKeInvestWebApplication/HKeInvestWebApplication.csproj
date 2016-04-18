@@ -243,17 +243,17 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\Site.css" />
-    <Content Include="Fees.aspx" />
-    <Content Include="SearchSecurities.aspx" />
-    <Content Include="SecurityTransaction.aspx" />
     <Content Include="ExternalSystems\BondOrder.aspx" />
     <Content Include="ExternalSystems\ControlCenter.aspx" />
     <Content Include="ExternalSystems\ManageBond.aspx" />
-    <Content Include="ExternalSystems\ManageCurrencyConversion.aspx" />
+    <Content Include="ExternalSystems\ManageCurrencies.aspx" />
     <Content Include="ExternalSystems\ManageStock.aspx" />
     <Content Include="ExternalSystems\ManageUnitTrust.aspx" />
     <Content Include="ExternalSystems\StockOrder.aspx" />
     <Content Include="ExternalSystems\UnitTrustOrder.aspx" />
+    <Content Include="Fees.aspx" />
+    <Content Include="SearchSecurities.aspx" />
+    <Content Include="SecurityTransaction.aspx" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
@@ -262,9 +262,9 @@
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="ExternalSystems\ExternalSite.Master" />
     <Content Include="EmployeeOnly\Web.config" />
     <Content Include="ClientOnly\Web.config" />
+    <Content Include="ExternalSystems\ExternalSite.Master" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="HKeInvestDB.mdf" />
     <Content Include="HKeInvestDB_log.ldf" />
@@ -467,27 +467,6 @@
     <Compile Include="Default.aspx.designer.cs">
       <DependentUpon>Default.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Fees.aspx.cs">
-      <DependentUpon>Fees.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Fees.aspx.designer.cs">
-      <DependentUpon>Fees.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="SearchSecurities.aspx.cs">
-      <DependentUpon>SearchSecurities.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="SearchSecurities.aspx.designer.cs">
-      <DependentUpon>SearchSecurities.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="SecurityTransaction.aspx.cs">
-      <DependentUpon>SecurityTransaction.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="SecurityTransaction.aspx.designer.cs">
-      <DependentUpon>SecurityTransaction.aspx</DependentUpon>
-    </Compile>
     <Compile Include="ExternalSystems\BondOrder.aspx.cs">
       <DependentUpon>BondOrder.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -518,12 +497,12 @@
     <Compile Include="ExternalSystems\ManageBond.aspx.designer.cs">
       <DependentUpon>ManageBond.aspx</DependentUpon>
     </Compile>
-    <Compile Include="ExternalSystems\ManageCurrencyConversion.aspx.cs">
-      <DependentUpon>ManageCurrencyConversion.aspx</DependentUpon>
+    <Compile Include="ExternalSystems\ManageCurrencies.aspx.cs">
+      <DependentUpon>ManageCurrencies.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="ExternalSystems\ManageCurrencyConversion.aspx.designer.cs">
-      <DependentUpon>ManageCurrencyConversion.aspx</DependentUpon>
+    <Compile Include="ExternalSystems\ManageCurrencies.aspx.designer.cs">
+      <DependentUpon>ManageCurrencies.aspx</DependentUpon>
     </Compile>
     <Compile Include="ExternalSystems\ManageStock.aspx.cs">
       <DependentUpon>ManageStock.aspx</DependentUpon>
@@ -552,6 +531,27 @@
     </Compile>
     <Compile Include="ExternalSystems\UnitTrustOrder.aspx.designer.cs">
       <DependentUpon>UnitTrustOrder.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Fees.aspx.cs">
+      <DependentUpon>Fees.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Fees.aspx.designer.cs">
+      <DependentUpon>Fees.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="SearchSecurities.aspx.cs">
+      <DependentUpon>SearchSecurities.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="SearchSecurities.aspx.designer.cs">
+      <DependentUpon>SearchSecurities.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="SecurityTransaction.aspx.cs">
+      <DependentUpon>SecurityTransaction.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="SecurityTransaction.aspx.designer.cs">
+      <DependentUpon>SecurityTransaction.aspx</DependentUpon>
     </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
