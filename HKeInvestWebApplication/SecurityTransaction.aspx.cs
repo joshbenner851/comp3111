@@ -95,6 +95,9 @@ namespace HKeInvestWebApplication.EmployeeOnly
                     Label1.Text = "Not a multiple of 100";
                     //Not sure why this errormessage isn't working
                     //CustomValidator1.ErrorMessage = "Not a multiple of 100";
+
+                    //Do you want it to be realtime or just run at the server?
+                    //maybe that's part of the problem
                 }
             }
         }

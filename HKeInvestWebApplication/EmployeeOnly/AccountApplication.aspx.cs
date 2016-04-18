@@ -46,14 +46,14 @@ namespace HKeInvestWebApplication
             string accountNumber = "";
             if (dtClient == null || dtClient.Rows.Count == 0)
             {
-                accountNumber = lastletters + "00000000";
+                accountNumber = lastletters + "00000001";
             }
             else
             {
                 string prevAccountNumber = dtClient.Rows[0]["max"].ToString();
                 if (prevAccountNumber.Length != 10)
                 {
-                    accountNumber = lastletters + "00000000";
+                    accountNumber = lastletters + "00000001";
                 }
                 else
                 {
