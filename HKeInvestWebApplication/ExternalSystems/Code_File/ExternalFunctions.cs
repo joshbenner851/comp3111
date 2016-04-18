@@ -226,7 +226,6 @@ namespace HKeInvestWebApplication.ExternalSystems.Code_File
             if (!securityCodeIsValid("unit trust", code)) { return null; }
             if (!sharesIsValid("unit trust", shares)) { return null; }
             string dateNow = DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss tt");
-
             // Submit the order.
             return submitOrder("insert into [Order] values ('sell', 'unit trust', '" + code + "', '" + dateNow 
                 + "', 'pending', " + shares.Trim() + ", NULL, NULL, NULL, NULL, NULL, NULL)");
@@ -273,7 +272,7 @@ namespace HKeInvestWebApplication.ExternalSystems.Code_File
             return referenceNumber;
         }
 
-        private bool securityCodeIsValid( string securityType, string securityCode)
+        private bool securityCodeIsValid(string securityType, string securityCode)
         {
             TextInfo textInfo = new CultureInfo("en-US", false).TextInfo;
             string dbTableName = textInfo.ToTitleCase(securityType).Replace(" ", string.Empty);
