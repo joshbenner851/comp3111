@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HKeInvestWebApplication.ExternalSystems.Code_File;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -102,11 +103,74 @@ namespace HKeInvestWebApplication.EmployeeOnly
             }
         }
 
+        ExternalFunctions extFunction = new ExternalFunctions();
+
         protected void ExecuteTransactionClick(object sender, EventArgs e)
         {
             if (Page.IsValid)
             {
-                //do work
+                
+
+                if (SecurityType.SelectedValue.Equals("Stock"))
+                {
+                    //declare all relevant variables for placing a stock order
+                    //Sorry for bad naming convention
+                    string varCode = StockCode.Text.ToString();
+                    string varShares = SharesQuantity.Text.ToString();
+                    string varOrderType = "";
+                    string varExpiryDate = DaysUntilExpiration.SelectedValue;
+                    string varAllOrNone = "N";
+                    string varStopPrice = StopPrice.Text.ToString();
+                    
+                    //allOrNone
+                    if (AllOrNone.Checked)
+                    {
+                        varAllOrNone = "Y";
+                    }
+
+                    //typeorder
+                    if (OrderType.SelectedValue.Equals("Market Order"))
+                    {
+                        varOrderType = "market";
+                    }
+                    else if (OrderType.SelectedValue.Equals("Limit Order"))
+                    {
+                        varOrderType = "limit";
+                    }
+                    else if (OrderType.SelectedValue.Equals("Stop Order"))
+                    {
+                        varOrderType = "stop";
+                    }
+                    else if (OrderType.SelectedValue.Equals("Stop Limit Order"))
+                    {
+                        varOrderType = "stop limit";
+                    }
+
+
+                    if (TransactionType.SelectedValue.Equals("Buy"))
+                    {
+                        string highPrice = "";
+                        string result = extFunction.submitStockBuyOrder(varCode, varShares, varOrderType, varExpiryDate, varAllOrNone, highPrice, varStopPrice);
+                    }
+                    else if (TransactionType.SelectedValue.Equals("Sell"))
+                    {
+                        string lowPrice = "";
+                        string result = extFunction.submitStockSellOrder(varCode, varShares, varOrderType, varExpiryDate, varAllOrNone, lowPrice, varStopPrice);
+                    }
+                }
+                else
+                {
+
+                    if (TransactionType.SelectedValue.Equals("Buy"))
+                    {
+
+                    }
+                    else if (TransactionType.SelectedValue.Equals("Sell"))
+                    {
+
+                    }
+                }
+               
             }
         }
     }
