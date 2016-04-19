@@ -19,7 +19,7 @@ namespace HKeInvestWebApplication.EmployeeOnly
 
         protected void SecurityType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (SecurityType.SelectedValue == "Bond/Unit Trust")
+            if (SecurityType.SelectedValue == "Bond" || SecurityType.SelectedValue == "Unit Trust")
             {
                 stock.Style.Add("display", "none");
                 bondtrust.Style.Add("display", "");
@@ -91,14 +91,31 @@ namespace HKeInvestWebApplication.EmployeeOnly
             {
                 int shares;
                 Int32.TryParse(SharesQuantity.Text,out shares);
-                if (shares % 100 != 0)
+                if(shares <= 0)
                 {
-                    Label1.Text = "Not a multiple of 100";
+                    InvalidSharesQuantity.Text = "Please a enter a postivie number of shares to buy";
+                }
+                else if (shares % 100 != 0)
+                {
+                    InvalidSharesQuantity.Text = "Not a multiple of 100";
                     //Not sure why this errormessage isn't working
                     //CustomValidator1.ErrorMessage = "Not a multiple of 100";
 
                     //Do you want it to be realtime or just run at the server?
                     //maybe that's part of the problem
+                }
+            }
+        }
+
+        protected void CustomValidator2_ServerValidate(object source, ServerValidateEventArgs args)
+        {
+            if ( (SecurityType.SelectedValue == "Bond" || SecurityType.SelectedValue == "Bond") && TransactionType.SelectedValue == "Sell")
+            {
+                int shares;
+                Int32.TryParse(SharesSelling.Text, out shares);
+                if (shares <= 0)
+                {
+                    InvalidSharesSelling = "Please a enter a postivie number of shares to buy";
                 }
             }
         }

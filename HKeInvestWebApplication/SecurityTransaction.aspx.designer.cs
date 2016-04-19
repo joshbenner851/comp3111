@@ -103,6 +103,24 @@ namespace HKeInvestWebApplication.EmployeeOnly {
         protected global::System.Web.UI.WebControls.TextBox SharesSelling;
         
         /// <summary>
+        /// CustomValidator2 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CustomValidator CustomValidator2;
+        
+        /// <summary>
+        /// InvalidSharesSelling control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label InvalidSharesSelling;
+        
+        /// <summary>
         /// stock control.
         /// </summary>
         /// <remarks>
@@ -202,13 +220,13 @@ namespace HKeInvestWebApplication.EmployeeOnly {
         protected global::System.Web.UI.WebControls.CustomValidator CustomValidator1;
         
         /// <summary>
-        /// Label1 control.
+        /// InvalidSharesQuantity control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label1;
+        protected global::System.Web.UI.WebControls.Label InvalidSharesQuantity;
         
         /// <summary>
         /// DaysUntilExpiration control.
