@@ -7,7 +7,8 @@
                 <asp:Label CssClass="control-label" runat="server" Text="Type of Security" AssociatedControlID="SecurityType"></asp:Label>
                 <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ControlToValidate="SecurityType" CssClass="text-danger" EnableClientScript="False" ErrorMessage="Type of Security is required">*</asp:RequiredFieldValidator>
                 <asp:RadioButtonList ID="SecurityType" runat="server" AutoPostBack="True" OnSelectedIndexChanged="SecurityType_SelectedIndexChanged">
-                    <asp:ListItem>Bond/Unit Trust</asp:ListItem>
+                    <asp:ListItem>Bond</asp:ListItem>
+                    <asp:ListItem>Unit Trust</asp:ListItem>
                     <asp:ListItem>Stock</asp:ListItem>
                 </asp:RadioButtonList>
                 
@@ -33,24 +34,27 @@
                  <div class="form-group">
                      <asp:Label AssociatedControlID="BondTrustCode" runat="server" Text="Bond/Trust Code:"></asp:Label>
                     <asp:TextBox ID="BondTrustCode" runat="server" TextMode="Month"></asp:TextBox>
-                    <asp:RegularExpressionValidator runat="server" ValidationExpression="^[\d]+$" ControlToValidate="BondTrustCode" Display="Dynamic" EnableClientScript="false" ErrorMessage="Must contain only digits"></asp:RegularExpressionValidator>
-
+                    <asp:RegularExpressionValidator runat="server" ValidationExpression="^[\d]+$" ControlToValidate="BondTrustCode" Display="Dynamic" EnableClientScript="false" ErrorMessage="Must contain only digits" CssClass="text-danger"></asp:RegularExpressionValidator>
+                    <asp:Label ID="InvalidBondTrustCode" runat="server" CssClass="text-danger"></asp:Label>
                  </div>
                 
                <div class="form-group" >
                    <div id="buyBondTrust" runat="server" style="display:none;">
-                        <asp:Label AssociatedControlID="SharesBuying" runat="server" Text="Amount to be bought:"></asp:Label>
-                        <asp:TextBox ID="SharesBuying" runat="server" TextMode="Number"></asp:TextBox>
-                         <asp:RegularExpressionValidator runat="server" ValidationExpression="^[\d]+$" ControlToValidate="SharesBuying" Display="Dynamic" EnableClientScript="false" ErrorMessage="Must contain only digits"></asp:RegularExpressionValidator>
-                        </div>
+                        <asp:Label AssociatedControlID="BondTrustSharesQuantity" runat="server" Text="Dollar amount to be bought(HKD):"></asp:Label>
+                        <asp:TextBox ID="BondTrustSharesQuantity" runat="server" TextMode="Number"></asp:TextBox>
+                        <asp:RegularExpressionValidator runat="server" ValidationExpression="^[\d]+$" ControlToValidate="BondTrustSharesQuantity" Display="Dynamic" EnableClientScript="false" ErrorMessage="Must contain only digits" CssClass="text-danger"></asp:RegularExpressionValidator>
+                         <asp:CustomValidator ID="CustomValidator3" runat="server" ControlToValidate="BondTrustSharesQuantity" CssClass="text-danger" EnableClientScript="False" ErrorMessage="Must be a positive number" OnServerValidate="CustomValidator3_ServerValidate" ValidateEmptyText="True">*</asp:CustomValidator>
+                        <asp:Label ID="InvalidBondTrustSharesQuantity" runat="server" CssClass="text-danger"></asp:Label>
+                   </div>
                </div>
                 
                 <div class="form-group">
                     <div id="sellBondTrust" runat="server" style="display:none;">
-                        <asp:Label AssociatedControlID="SharesSelling" runat="server" Text="Quantity of shares to sell:"></asp:Label>
-                     <asp:TextBox ID="SharesSelling" runat="server" TextMode="Number"></asp:TextBox>
-                         <asp:RegularExpressionValidator runat="server" ValidationExpression="^[\d]+$" ControlToValidate="SharesSelling" Display="Dynamic" EnableClientScript="false" ErrorMessage="Must contain only digits"></asp:RegularExpressionValidator>
-                    
+                        <asp:Label AssociatedControlID="BondTrustSharesSelling" runat="server" Text="Quantity of shares to sell:"></asp:Label>
+                     <asp:TextBox ID="BondTrustSharesSelling" runat="server" TextMode="Number"></asp:TextBox>
+                         <asp:RegularExpressionValidator runat="server" ValidationExpression="^[\d]+$" ControlToValidate="BondTrustSharesSelling" Display="Dynamic" EnableClientScript="false" ErrorMessage="Must contain only digits" CssClass="text-danger"></asp:RegularExpressionValidator>
+                         <asp:CustomValidator ID="CustomValidator2" runat="server" ControlToValidate="BondTrustSharesSelling" CssClass="text-danger" EnableClientScript="False" ErrorMessage="Must be a positive number" OnServerValidate="CustomValidator2_ServerValidate" ValidateEmptyText="True">*</asp:CustomValidator>
+                        <asp:Label ID="InvalidBondTrustSharesSelling" runat="server" CssClass="text-danger"></asp:Label>
                     </div>
                 </div>
                 
@@ -61,7 +65,7 @@
                 <div class="form-group">
                     <asp:Label AssociatedControlID="StockCode" runat="server" Text="Stock Code:"></asp:Label>
                     <asp:TextBox ID="StockCode" runat="server" TextMode="Number"></asp:TextBox>
-                     <asp:RegularExpressionValidator runat="server" ValidationExpression="^[\d]+$" ControlToValidate="StockCode" Display="Dynamic" EnableClientScript="false" ErrorMessage="Must contain only digits"></asp:RegularExpressionValidator>
+                     <asp:RegularExpressionValidator runat="server" ValidationExpression="^[\d]+$" ControlToValidate="StockCode" Display="Dynamic" EnableClientScript="false" ErrorMessage="Must contain only digits" CssClass="text-danger"></asp:RegularExpressionValidator>
                     
                 </div>
                
@@ -102,11 +106,11 @@
         
                 </div>
                 <div class="form-group">
-                     <asp:Label AssociatedControlID="SharesQuantity" runat="server" Text="Shares Quantity:"></asp:Label>
-                     <asp:TextBox ID="SharesQuantity" runat="server" TextMode="Number"></asp:TextBox>
-                    <asp:CustomValidator ID="CustomValidator1" runat="server" ControlToValidate="SharesQuantity" CssClass="text-danger" EnableClientScript="False" ErrorMessage="Must be in multiples of 100" OnServerValidate="CustomValidator1_ServerValidate" ValidateEmptyText="True">*</asp:CustomValidator>
-                     <asp:RegularExpressionValidator runat="server" ValidationExpression="^[\d]+$" ControlToValidate="SharesQuantity" Display="Dynamic" EnableClientScript="false" ErrorMessage="Must contain only digits"></asp:RegularExpressionValidator>
-                    <asp:Label ID="Label1" runat="server" CssClass="text-danger"></asp:Label>
+                     <asp:Label AssociatedControlID="StockSharesQuantity" runat="server" Text="Shares Quantity:"></asp:Label>
+                     <asp:TextBox ID="StockSharesQuantity" runat="server" TextMode="Number"></asp:TextBox>
+                    <asp:CustomValidator ID="CustomValidator1" runat="server" ControlToValidate="StockSharesQuantity" CssClass="text-danger" EnableClientScript="False" ErrorMessage="Must be in multiples of 100" OnServerValidate="CustomValidator1_ServerValidate" ValidateEmptyText="True">*</asp:CustomValidator>
+                     <asp:RegularExpressionValidator runat="server" ValidationExpression="^[\d]+$" ControlToValidate="StockSharesQuantity" Display="Dynamic" EnableClientScript="false" ErrorMessage="Must contain only digits"></asp:RegularExpressionValidator>
+                    <asp:Label ID="InvalidStockSharesQuantity" runat="server" CssClass="text-danger"></asp:Label>
                 </div>
                
 
