@@ -19,7 +19,7 @@ namespace HKeInvestWebApplication.EmployeeOnly
 
         protected void SecurityType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (SecurityType.SelectedValue == "Bond/Unit Trust")
+            if (SecurityType.SelectedValue == "Bond" || SecurityType.SelectedValue == "Unit Trust")
             {
                 stock.Style.Add("display", "none");
                 bondtrust.Style.Add("display", "");
@@ -90,15 +90,46 @@ namespace HKeInvestWebApplication.EmployeeOnly
             if(SecurityType.SelectedValue == "Stock" && TransactionType.SelectedValue == "Buy")
             {
                 int shares;
-                Int32.TryParse(SharesQuantity.Text,out shares);
-                if (shares % 100 != 0)
+                Int32.TryParse(StockSharesQuantity.Text,out shares);
+                if (shares <= 0)
                 {
-                    Label1.Text = "Not a multiple of 100";
+
+                    InvalidStockSharesQuantity.Text = "Please a enter a postivie number of shares to buy";
+                }
+                else if (shares % 100 != 0)
+                {
+                    InvalidStockSharesQuantity.Text = "Not a multiple of 100";
                     //Not sure why this errormessage isn't working
                     //CustomValidator1.ErrorMessage = "Not a multiple of 100";
 
                     //Do you want it to be realtime or just run at the server?
                     //maybe that's part of the problem
+                }
+            }
+        }
+
+        protected void CustomValidator2_ServerValidate(object source, ServerValidateEventArgs args)
+        {
+            if ((SecurityType.SelectedValue == "Bond" || SecurityType.SelectedValue == "Unit Trust") && TransactionType.SelectedValue == "Sell")
+            {
+                int shares;
+                Int32.TryParse(BondTrustSharesSelling.Text, out shares);
+                if (shares <= 0)
+                {
+                    InvalidBondTrustSharesSelling.Text = "Please a enter a postivie number of shares to sell";
+                }
+            }
+        }
+
+        protected void CustomValidator3_ServerValidate(object source, ServerValidateEventArgs args)
+        {
+            if ((SecurityType.SelectedValue == "Bond" || SecurityType.SelectedValue == "Unit Trust") && TransactionType.SelectedValue == "Buy")
+            {
+                int shares;
+                Int32.TryParse(BondTrustSharesQuantity.Text, out shares);
+                if (shares <= 0)
+                {
+                    InvalidBondTrustSharesQuantity.Text = "Please a enter a positive dollar amount";
                 }
             }
         }
@@ -116,10 +147,10 @@ namespace HKeInvestWebApplication.EmployeeOnly
                     //declare all relevant variables for placing a stock order
                     //Sorry for bad naming convention
                     string varCode = StockCode.Text.ToString();
-                    string varShares = SharesQuantity.Text.ToString();
+                    string varShares = StockSharesQuantity.Text.ToString();
                     string varOrderType = "";
                     string varExpiryDate = DaysUntilExpiration.SelectedValue;
-                    string varAllOrNone = "N";
+                    string varAllOrNone = AllOrNone.Checked == true ? "Y" : "N";
                     string varStopPrice = StopPrice.Text.ToString();
                     
                     //allOrNone
@@ -160,14 +191,52 @@ namespace HKeInvestWebApplication.EmployeeOnly
                 }
                 else
                 {
-
+                    string varBondTrustCode = BondTrustCode.Text.ToString();
                     if (TransactionType.SelectedValue.Equals("Buy"))
                     {
+                       
+                        string varBondTrustSharesAmount = BondTrustSharesQuantity.Text.ToString();
+                        if (SecurityType.SelectedValue.Equals("Bond"))
+                        {
+                            
+                            if (extFunction.submitBondBuyOrder(varBondTrustCode, varBondTrustSharesAmount) == null)
+                            {
+                                //Buy order was not succesfully submitted
+                                InvalidBondTrustCode.Text = "The code given does not exist";
+                            }
+                        }
+                        else if(SecurityType.SelectedValue.Equals("Unit Trust"))
+                        {
+                            string success = extFunction.submitUnitTrustBuyOrder(varBondTrustCode, varBondTrustSharesAmount);
+                            if (success.Equals("null"))
+                            {
+                                //Buy order was not succesfully submitted
+                                InvalidBondTrustCode.Text = "The code given does not exist";
+                            }
+                        }
 
                     }
                     else if (TransactionType.SelectedValue.Equals("Sell"))
                     {
+                        string varBondTrustShares = BondTrustSharesSelling.Text.ToString();
+                        if (SecurityType.SelectedValue.Equals("Bond"))
+                        {
 
+                            if (extFunction.submitBondSellOrder(varBondTrustCode, varBondTrustShares) == null)
+                            {
+                                //Buy order was not succesfully submitted
+                                InvalidBondTrustCode.Text = "The code given does not exist";
+                            }
+                        }
+                        else if (SecurityType.SelectedValue.Equals("Unit Trust"))
+                        {
+                            string success = extFunction.submitUnitTrustSellOrder(varBondTrustCode, varBondTrustShares);
+                            if (success.Equals("null"))
+                            {
+                                //Buy order was not succesfully submitted
+                                InvalidBondTrustCode.Text = "The code given does not exist";
+                            }
+                        }
                     }
                 }
                
