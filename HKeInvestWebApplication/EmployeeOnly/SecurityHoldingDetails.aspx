@@ -21,7 +21,7 @@
             
         </div>
         <div>
-            <asp:GridView ID="gvSecurityHolding" Visible="False" runat="server" AutoGenerateColumns="False" OnSorting="gvSecurityHolding_Sorting" Width="815px">
+            <asp:GridView ID="gvSecurityHolding" Visible="False" runat="server" AutoGenerateColumns="False" OnSorting="gvSecurityHolding_Sorting" Width="815px" OnSelectedIndexChanged="gvSecurityHolding_SelectedIndexChanged">
                 <Columns>
                     <asp:BoundField DataField="code" HeaderText="Code" ReadOnly="True" SortExpression="code" />
                     <asp:BoundField DataField="name" HeaderText="Name" ReadOnly="True" SortExpression="name" />

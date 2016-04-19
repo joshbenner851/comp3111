@@ -235,5 +235,10 @@ namespace HKeInvestWebApplication
         {
 
         }
+
+        protected void gvSecurityHolding_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }
