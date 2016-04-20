@@ -1,7 +1,6 @@
 # COMP3111 Team USA (106)
 
 TODO:
-* Securities Search Sorting
 * Buy/Sell(only checking the clients account if enough shares/funds left)
 * Profit/Loss
 * Alerts
@@ -14,7 +13,7 @@ be able to change any of the account and client information except for account t
 HKID, which should never be changed. A client’s name, country of citizenship, country of legal
 residence passport number and passport country of issue should be able to be changed by an
 HKeInvest employee, but only if the client has made a request in writing with supporting
-documentation. A securities account number and a user name should never be changed. 
+documentation. A securities account number and a user name should never be changed.
 
 
 
