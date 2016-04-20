@@ -198,20 +198,29 @@ namespace HKeInvestWebApplication.EmployeeOnly
                         string varBondTrustSharesAmount = BondTrustSharesQuantity.Text.ToString();
                         if (SecurityType.SelectedValue.Equals("Bond"))
                         {
-                            
-                            if (extFunction.submitBondBuyOrder(varBondTrustCode, varBondTrustSharesAmount) == null)
+                            var validSecurity = extFunction.getSecuritiesByCode("bond", varBondTrustCode);
+                            if (validSecurity == null)
                             {
                                 //Buy order was not succesfully submitted
                                 InvalidBondTrustCode.Text = "The code given does not exist";
                             }
+                            else
+                            {
+                                extFunction.submitBondBuyOrder(varBondTrustCode, varBondTrustSharesAmount);
+                            }
                         }
                         else if(SecurityType.SelectedValue.Equals("Unit Trust"))
                         {
-                            string success = extFunction.submitUnitTrustBuyOrder(varBondTrustCode, varBondTrustSharesAmount);
-                            if (success.Equals("null"))
+                            
+                            var validSecurity = extFunction.getSecuritiesByCode("unit trust", varBondTrustCode);
+                            if (validSecurity == null)
                             {
                                 //Buy order was not succesfully submitted
                                 InvalidBondTrustCode.Text = "The code given does not exist";
+                            }
+                            else
+                            {
+                                extFunction.submitUnitTrustBuyOrder(varBondTrustCode, varBondTrustSharesAmount);
                             }
                         }
 
@@ -221,26 +230,141 @@ namespace HKeInvestWebApplication.EmployeeOnly
                         string varBondTrustShares = BondTrustSharesSelling.Text.ToString();
                         if (SecurityType.SelectedValue.Equals("Bond"))
                         {
-
-                            if (extFunction.submitBondSellOrder(varBondTrustCode, varBondTrustShares) == null)
+                            if (SecurityType.SelectedValue.Equals("Bond"))
                             {
-                                //Buy order was not succesfully submitted
-                                InvalidBondTrustCode.Text = "The code given does not exist";
+                                var validSecurity = extFunction.getSecuritiesByCode("bond", varBondTrustCode);
+                                if (validSecurity == null)
+                                {
+                                    //Buy order was not succesfully submitted
+                                    InvalidBondTrustCode.Text = "The code given does not exist";
+                                }
+                                else
+                                {
+                                    extFunction.submitBondSellOrder(varBondTrustCode, varBondTrustShares);
+                                }
                             }
                         }
                         else if (SecurityType.SelectedValue.Equals("Unit Trust"))
                         {
-                            string success = extFunction.submitUnitTrustSellOrder(varBondTrustCode, varBondTrustShares);
-                            if (success.Equals("null"))
+                            var validSecurity = extFunction.getSecuritiesByCode("unit trust", varBondTrustCode);
+                            if (validSecurity == null)
                             {
                                 //Buy order was not succesfully submitted
                                 InvalidBondTrustCode.Text = "The code given does not exist";
+                            }
+                            else
+                            {
+                                extFunction.submitUnitTrustSellOrder(varBondTrustCode, varBondTrustShares);
                             }
                         }
                     }
                 }
                
             }
+        }
+
+        private string amountIsValid(string securityType, string amount)
+        {
+            decimal number;
+            if (!decimal.TryParse(amount, out number) || number <= 0)
+            {
+                return("Invalid or missing dollar amount of " + securityType + " to buy.\nValue is '" + amount + "'.");
+               
+            }
+            return "";
+        }
+
+        private string sharesIsValid(string securityType, string shares)
+        {
+            decimal number;
+            if (!decimal.TryParse(shares, out number) || number <= 0)
+            {
+                return("Invalid or missing number of " + securityType + " shares to sell.\nValue is '" + shares + "'.");
+               
+            }
+            return "";
+        }
+
+        private string sharesAmountIsValid(string shares)
+        {
+            decimal number = Convert.ToDecimal(shares);
+            if ((number % 100) != 0)
+            {
+                return("Shares to buy is not a multiple of 100.\nValue is '" + shares + "'.");
+            }
+            return "";
+            
+        }
+
+        private string orderTypeIsValid(string buyOrSell, string orderType, string expiryDay, string allOrNone, string limitPrice, string stopPrice)
+        {
+            int intNumber;
+            decimal decLimitPrice = 0;
+            decimal decStopPrice = 0;
+
+            // Check if order type is valid.
+            if (!(orderType == "market" || orderType == "limit" || orderType == "stop" || orderType == "stop limit"))
+            {
+                return "Invalid or missing stock order type.\nValue is '" + orderType + "'.";
+                
+            }
+
+            // Check if expiry day is valid.
+            if (!int.TryParse(expiryDay, out intNumber) || intNumber < 1 || intNumber > 7)
+            {
+                return("Invalid or missing expiry day.\nValue is '" + expiryDay + "'.");
+               
+            }
+
+            // Check if all or none is valid.
+            if (!(allOrNone.ToUpper() == "Y" || allOrNone.ToUpper() == "N"))
+            {
+                return("Invalid or missing all or none.\nValue is '" + allOrNone + "'.");
+               
+            }
+
+            // Check if limit price is valid.
+            if (orderType == "limit" || orderType == "stop limit")
+            {
+                if (!decimal.TryParse(limitPrice, out decLimitPrice) || decLimitPrice <= 0)
+                {
+                    return("Invalid or missing limit price.\nValue is '" + limitPrice + "'.");
+                    
+                }
+            }
+
+            // Check if stop price is valid.
+            if (orderType == "stop" || orderType == "stop limit")
+            {
+                if (!decimal.TryParse(stopPrice, out decStopPrice) || decStopPrice <= 0)
+                {
+                    return("Invalid or missing stop price.\nValue is '" + stopPrice + "'.");
+                   
+                }
+
+            }
+
+            // Check if stop and limit prices are in correct relationship to each other.
+            if (orderType == "stop limit")
+            {
+                if (buyOrSell == "buy")
+                {
+                    if (decStopPrice > decLimitPrice)
+                    {
+                        return("Stock buy order:\nstop price must be <= limit price.");
+                        
+                    }
+                }
+                else // Sell order.
+                {
+                    if (decStopPrice < decLimitPrice)
+                    {
+                        return("Stock sell order:\n stop price must be >= limit price.");
+                        
+                    }
+                }
+            }
+            return "";
         }
     }
 }
