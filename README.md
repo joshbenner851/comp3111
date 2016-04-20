@@ -20,4 +20,5 @@ documentation. A securities account number and a user name should never be chang
 
 
 Random things to do:
+* Add the required testing data before Tuesday's lab so we don't get disqualified
 * Move Buy/Sell to Client_Only folder so only clients can access it
