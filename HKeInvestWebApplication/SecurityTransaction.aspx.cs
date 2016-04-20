@@ -89,48 +89,42 @@ namespace HKeInvestWebApplication.EmployeeOnly
         {
             if(SecurityType.SelectedValue == "Stock" && TransactionType.SelectedValue == "Buy")
             {
-                int shares;
-                Int32.TryParse(StockSharesQuantity.Text,out shares);
-                if (shares <= 0)
-                {
-
-                    InvalidStockSharesQuantity.Text = "Please a enter a postivie number of shares to buy";
-                }
-                else if (shares % 100 != 0)
-                {
-                    InvalidStockSharesQuantity.Text = "Not a multiple of 100";
-                    //Not sure why this errormessage isn't working
-                    //CustomValidator1.ErrorMessage = "Not a multiple of 100";
-
-                    //Do you want it to be realtime or just run at the server?
-                    //maybe that's part of the problem
-                }
+                
+                InvalidStockSharesQuantity.Text = sharesAmountIsValid(StockSharesQuantity.Text,TransactionType.Text);
+            }
+            else if(SecurityType.SelectedValue == "Stock" && TransactionType.SelectedValue == "Sell")
+            {
+                InvalidStockSharesQuantity.Text = sharesAmountIsValid(StockSharesQuantity.Text, TransactionType.Text);
             }
         }
 
         protected void CustomValidator2_ServerValidate(object source, ServerValidateEventArgs args)
         {
-            if ((SecurityType.SelectedValue == "Bond" || SecurityType.SelectedValue == "Unit Trust") && TransactionType.SelectedValue == "Sell")
+            if (TransactionType.SelectedValue == "Sell")
             {
-                int shares;
-                Int32.TryParse(BondTrustSharesSelling.Text, out shares);
-                if (shares <= 0)
-                {
-                    InvalidBondTrustSharesSelling.Text = "Please a enter a postivie number of shares to sell";
-                }
+                //int shares;
+                //Int32.TryParse(BondTrustSharesSelling.Text, out shares);
+                //if (shares <= 0)
+                //{
+                //    InvalidBondTrustSharesSelling.Text = "Please a enter a postivie number of shares to sell";
+                //}
+                var type = SecurityType.SelectedValue == "Bond" ? "bond" : "unit trust"; 
+                InvalidBondTrustSharesSelling.Text = sharesIsValid(type,BondTrustSharesSelling.Text);
             }
         }
 
         protected void CustomValidator3_ServerValidate(object source, ServerValidateEventArgs args)
         {
-            if ((SecurityType.SelectedValue == "Bond" || SecurityType.SelectedValue == "Unit Trust") && TransactionType.SelectedValue == "Buy")
+            if (TransactionType.SelectedValue == "Buy")
             {
-                int shares;
-                Int32.TryParse(BondTrustSharesQuantity.Text, out shares);
-                if (shares <= 0)
-                {
-                    InvalidBondTrustSharesQuantity.Text = "Please a enter a positive dollar amount";
-                }
+                //int shares;
+                //Int32.TryParse(BondTrustSharesQuantity.Text, out shares);
+                //if (shares <= 0)
+                //{
+                //    InvalidBondTrustSharesQuantity.Text = "Please a enter a positive dollar amount";
+                //}
+                var type = SecurityType.SelectedValue == "Bond" ? "bond" : "unit trust";
+                InvalidBondTrustSharesQuantity.Text = amountIsValid(type, BondTrustSharesQuantity.Text);
             }
         }
 
@@ -146,18 +140,18 @@ namespace HKeInvestWebApplication.EmployeeOnly
                 {
                     //declare all relevant variables for placing a stock order
                     //Sorry for bad naming convention
-                    string varCode = StockCode.Text.ToString();
+                    string varStockCode = StockCode.Text.ToString();
                     string varShares = StockSharesQuantity.Text.ToString();
                     string varOrderType = "";
                     string varExpiryDate = DaysUntilExpiration.SelectedValue;
                     string varAllOrNone = AllOrNone.Checked == true ? "Y" : "N";
                     string varStopPrice = StopPrice.Text.ToString();
                     
-                    //allOrNone
-                    if (AllOrNone.Checked)
-                    {
-                        varAllOrNone = "Y";
-                    }
+                    ////allOrNone
+                    //if (AllOrNone.Checked)
+                    //{
+                    //    varAllOrNone = "Y";
+                    //}
 
                     //typeorder
                     if (OrderType.SelectedValue.Equals("Market Order"))
@@ -177,16 +171,21 @@ namespace HKeInvestWebApplication.EmployeeOnly
                         varOrderType = "stop limit";
                     }
 
-
-                    if (TransactionType.SelectedValue.Equals("Buy"))
+                    var validSecurity = extFunction.getSecuritiesByCode("stock", varStockCode);
+                    if (validSecurity == null)
+                    {
+                        //Sell order was not succesfully submitted
+                        InvalidStockCode.Text = "The code given does not exist";
+                    }
+                    else if (TransactionType.SelectedValue.Equals("Buy"))
                     {
                         string highPrice = "";
-                        string result = extFunction.submitStockBuyOrder(varCode, varShares, varOrderType, varExpiryDate, varAllOrNone, highPrice, varStopPrice);
+                        extFunction.submitStockBuyOrder(varStockCode, varShares, varOrderType, varExpiryDate, varAllOrNone, highPrice, varStopPrice);
                     }
                     else if (TransactionType.SelectedValue.Equals("Sell"))
                     {
                         string lowPrice = "";
-                        string result = extFunction.submitStockSellOrder(varCode, varShares, varOrderType, varExpiryDate, varAllOrNone, lowPrice, varStopPrice);
+                        extFunction.submitStockSellOrder(varStockCode, varShares, varOrderType, varExpiryDate, varAllOrNone, lowPrice, varStopPrice);
                     }
                 }
                 else
@@ -274,6 +273,9 @@ namespace HKeInvestWebApplication.EmployeeOnly
             return "";
         }
 
+        /**
+        For Checking selling of bonds
+        */
         private string sharesIsValid(string securityType, string shares)
         {
             decimal number;
@@ -285,12 +287,24 @@ namespace HKeInvestWebApplication.EmployeeOnly
             return "";
         }
 
-        private string sharesAmountIsValid(string shares)
+        /**
+        For checking multiple of 100 for buying stock
+        */
+        private string sharesAmountIsValid(string shares, string typeOfTransaction)
         {
-            decimal number = Convert.ToDecimal(shares);
-            if ((number % 100) != 0)
+            float number;
+            float.TryParse(shares,out number);
+            if (number == 0)
             {
-                return("Shares to buy is not a multiple of 100.\nValue is '" + shares + "'.");
+                return "Shares is an invalid number";
+            }
+            if(typeOfTransaction == "Sell" && number <= 0)
+            {
+                return("Shares to Sell is not a positive number.\nValue is '" + shares + "'.");
+            }
+            else if ((number % 100) != 0)
+            {
+                return("Shares to buy is not a multiple of 100 or is not a positive number.\nValue is '" + shares + "'.");
             }
             return "";
             

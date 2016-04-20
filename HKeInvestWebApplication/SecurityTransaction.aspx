@@ -66,7 +66,7 @@
                     <asp:Label AssociatedControlID="StockCode" runat="server" Text="Stock Code:"></asp:Label>
                     <asp:TextBox ID="StockCode" runat="server" TextMode="Number"></asp:TextBox>
                      <asp:RegularExpressionValidator runat="server" ValidationExpression="^[\d]+$" ControlToValidate="StockCode" Display="Dynamic" EnableClientScript="false" ErrorMessage="Must contain only digits" CssClass="text-danger"></asp:RegularExpressionValidator>
-                    
+                    <asp:Label ID="InvalidStockCode" runat="server" Text="" CssClass="text-danger"></asp:Label>
                 </div>
                
                 <div class="form-group">

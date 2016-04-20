@@ -166,6 +166,15 @@ namespace HKeInvestWebApplication.EmployeeOnly {
         protected global::System.Web.UI.WebControls.TextBox StockCode;
         
         /// <summary>
+        /// InvalidStockCode control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label InvalidStockCode;
+        
+        /// <summary>
         /// OrderType control.
         /// </summary>
         /// <remarks>
