@@ -134,8 +134,6 @@ namespace HKeInvestWebApplication.EmployeeOnly
         {
             if (Page.IsValid)
             {
-                
-
                 if (SecurityType.SelectedValue.Equals("Stock"))
                 {
                     //declare all relevant variables for placing a stock order
@@ -146,13 +144,7 @@ namespace HKeInvestWebApplication.EmployeeOnly
                     string varExpiryDate = DaysUntilExpiration.SelectedValue;
                     string varAllOrNone = AllOrNone.Checked == true ? "Y" : "N";
                     string varStopPrice = StopPrice.Text.ToString();
-                    
-                    ////allOrNone
-                    //if (AllOrNone.Checked)
-                    //{
-                    //    varAllOrNone = "Y";
-                    //}
-
+                    string varLimitPrice = "";
                     //typeorder
                     if (OrderType.SelectedValue.Equals("Market Order"))
                     {
@@ -161,6 +153,7 @@ namespace HKeInvestWebApplication.EmployeeOnly
                     else if (OrderType.SelectedValue.Equals("Limit Order"))
                     {
                         varOrderType = "limit";
+                        varLimitPrice = LimitPrice.Text;
                     }
                     else if (OrderType.SelectedValue.Equals("Stop Order"))
                     {
@@ -169,6 +162,7 @@ namespace HKeInvestWebApplication.EmployeeOnly
                     else if (OrderType.SelectedValue.Equals("Stop Limit Order"))
                     {
                         varOrderType = "stop limit";
+                        varLimitPrice = LimitPrice.Text;
                     }
 
                     var validSecurity = extFunction.getSecuritiesByCode("stock", varStockCode);
@@ -180,12 +174,20 @@ namespace HKeInvestWebApplication.EmployeeOnly
                     else if (TransactionType.SelectedValue.Equals("Buy"))
                     {
                         string highPrice = "";
-                        extFunction.submitStockBuyOrder(varStockCode, varShares, varOrderType, varExpiryDate, varAllOrNone, highPrice, varStopPrice);
+                        
+                        InvalidStockSharesQuantity.Text = sharesAmountIsValid(varShares, TransactionType.Text);
+                        if(InvalidStockSharesQuantity.Text != "")
+                        {
+                            return;
+                        }
+                        
+                        //Limit price = low price here
+                        extFunction.submitStockBuyOrder(varStockCode, varShares, varOrderType, varExpiryDate, varAllOrNone, varLimitPrice, varStopPrice);
                     }
                     else if (TransactionType.SelectedValue.Equals("Sell"))
                     {
                         string lowPrice = "";
-                        extFunction.submitStockSellOrder(varStockCode, varShares, varOrderType, varExpiryDate, varAllOrNone, lowPrice, varStopPrice);
+                        extFunction.submitStockSellOrder(varStockCode, varShares, varOrderType, varExpiryDate, varAllOrNone, varLimitPrice, varStopPrice);
                     }
                 }
                 else
