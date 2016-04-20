@@ -1,6 +1,7 @@
 ﻿using HKeInvestWebApplication.ExternalSystems.Code_File;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
@@ -164,7 +165,7 @@ namespace HKeInvestWebApplication.EmployeeOnly
                         varOrderType = "stop limit";
                         varLimitPrice = LimitPrice.Text;
                     }
-
+                    //Check to see if you own the amount of the codes
                     var validSecurity = extFunction.getSecuritiesByCode("stock", varStockCode);
                     if (validSecurity == null)
                     {
@@ -173,8 +174,6 @@ namespace HKeInvestWebApplication.EmployeeOnly
                     }
                     else if (TransactionType.SelectedValue.Equals("Buy"))
                     {
-
-                        string highPrice = "";
                         
                         InvalidStockSharesQuantity.Text = sharesAmountIsValid(varShares, TransactionType.Text);
                         if(InvalidStockSharesQuantity.Text != "")
@@ -182,13 +181,23 @@ namespace HKeInvestWebApplication.EmployeeOnly
                             return;
                         }
                         
-                        //Limit price = low price here
+                        //Limit price = high price here
                         extFunction.submitStockBuyOrder(varStockCode, varShares, varOrderType, varExpiryDate, varAllOrNone, varLimitPrice, varStopPrice);
                     }
                     else if (TransactionType.SelectedValue.Equals("Sell"))
                     {
-                        string lowPrice = "";
-                        extFunction.submitStockSellOrder(varStockCode, varShares, varOrderType, varExpiryDate, varAllOrNone, varLimitPrice, varStopPrice);
+              
+                        InvalidStockSharesQuantity.Text = sharesAmountIsValid(varShares, TransactionType.Text);
+                        if (InvalidStockSharesQuantity.Text != "")
+                        {
+                            return;
+                        }
+                        // varLimitPrice = lowPrice
+                        string result = extFunction.submitStockSellOrder(varStockCode, varShares, varOrderType, varExpiryDate, varAllOrNone, varLimitPrice, varStopPrice);
+                        if (result != null)
+                        {
+                            //Return URL
+                        }
                     }
                 }
                 else
@@ -208,7 +217,7 @@ namespace HKeInvestWebApplication.EmployeeOnly
                             }
                             else
                             {
-                                extFunction.submitBondBuyOrder(varBondTrustCode, varBondTrustSharesAmount);
+                                string result = extFunction.submitBondBuyOrder(varBondTrustCode, varBondTrustSharesAmount);
                             }
                         }
                         else if(SecurityType.SelectedValue.Equals("Unit Trust"))
@@ -222,7 +231,7 @@ namespace HKeInvestWebApplication.EmployeeOnly
                             }
                             else
                             {
-                                extFunction.submitUnitTrustBuyOrder(varBondTrustCode, varBondTrustSharesAmount);
+                                string result = extFunction.submitUnitTrustBuyOrder(varBondTrustCode, varBondTrustSharesAmount);
                             }
                         }
 
@@ -279,9 +288,14 @@ namespace HKeInvestWebApplication.EmployeeOnly
         /**
         For Checking selling of bonds
         */
-        private string sharesIsValid(string securityType, string shares)
+        private string sharesIsValid(string securityType, string code, string shares)
         {
             decimal number;
+            //SQL to check number of shares owned.
+
+            DataTable data = extFunction.getSecuritiesByCode(securityType, code);
+
+
             if (!decimal.TryParse(shares, out number) || number <= 0)
             {
                 return("Invalid or missing number of " + securityType + " shares to sell.\nValue is '" + shares + "'.");
