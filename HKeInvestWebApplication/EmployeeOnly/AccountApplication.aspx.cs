@@ -78,9 +78,7 @@ namespace HKeInvestWebApplication
                 try
                 {
                     string accountNumber = GenerateNextKey(LastName.Text.Trim());
-                    decimal balance1 = Convert.ToDecimal(ChequeAmount.Text);
-                    decimal balance2 = Convert.ToDecimal(TransferForm.Text);
-                    decimal balance = balance1 + balance2;
+                    decimal balance = Convert.ToDecimal(DepositAmount.Text.Trim());
 
                     string updateAccount = "INSERT INTO Account VALUES (" + "'" + accountNumber + "','" +
                     RadioButtonList1.SelectedValue + "','" +
@@ -164,10 +162,10 @@ namespace HKeInvestWebApplication
                         SqlTransaction trans3 = myHKeInvestData.beginTransaction();
                         myHKeInvestData.setData(updateCOClient, trans3);
                         myHKeInvestData.commitTransaction(trans3);
-
-                        Console.WriteLine("Updated Scuessfully");
-                        IdentityHelper.RedirectToReturnUrl(Request.QueryString["ReturnUrl"], Response);
+                        
                     }
+                    Console.WriteLine("Updated Successfully");
+                    IdentityHelper.RedirectToReturnUrl(Request.QueryString["ReturnUrl"], Response);
                 }
                 catch (Exception f)
                 {

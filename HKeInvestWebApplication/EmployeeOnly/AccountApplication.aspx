@@ -86,28 +86,24 @@
                     <div class="col-md-4">
                         <asp:TextBox CssClass="form-control"  ID="HomePhone" runat="server" MaxLength="8" TextMode="Phone"></asp:TextBox>
                         <asp:RegularExpressionValidator runat="server" ValidationExpression="^[\d]{8}$" ControlToValidate="HomePhone" Display="Dynamic" EnableClientScript="false" ErrorMessage="Home phone must contain only digits"></asp:RegularExpressionValidator>
-                        <asp:RequiredFieldValidator ControlToValidate="HomePhone" runat="server" ErrorMessage="Please enter home phone" Text="*" Display="Dynamic" CssClass="text-danger" EnableClientScript="false"></asp:RequiredFieldValidator>
-                    </div>
+                         </div>
                     <asp:Label CssClass="col-md-2 control-label" runat="server" Text="Home Fax" AssociatedControlID="HomeFax"></asp:Label>
                     <div class="col-md-4">
                         <asp:TextBox CssClass="form-control"  ID="HomeFax" runat="server" MaxLength="8" TextMode="Phone"></asp:TextBox>
                         <asp:RegularExpressionValidator runat="server" ValidationExpression="^[\d]{8}$" ControlToValidate="HomeFax" Display="Dynamic" EnableClientScript="false" ErrorMessage="Home fax must contain only digits"></asp:RegularExpressionValidator>
-                        <asp:RequiredFieldValidator ControlToValidate="HomeFax" runat="server" ErrorMessage="Please enter HomeFax" Text="*" Display="Dynamic" CssClass="text-danger" EnableClientScript="false"></asp:RequiredFieldValidator>
-                    </div>
+                        </div>
                 </div>
                 <div class="form-group">
                     <asp:Label CssClass="col-md-2 control-label" runat="server" Text="Business Phone" AssociatedControlID="BusinessPhone"></asp:Label>
                     <div class="col-md-4">
                         <asp:TextBox CssClass="form-control"  ID="BusinessPhone" runat="server" MaxLength="8" TextMode="Phone"></asp:TextBox>
                         <asp:RegularExpressionValidator runat="server" ValidationExpression="^[\d]{8}$" ControlToValidate="BusinessPhone" Display="Dynamic" EnableClientScript="false" ErrorMessage="Business phone must contain only digits"></asp:RegularExpressionValidator>
-                        <asp:RequiredFieldValidator ControlToValidate="BusinessPhone" runat="server" ErrorMessage="Please enter business phone" Text="*" Display="Dynamic" CssClass="text-danger" EnableClientScript="false"></asp:RequiredFieldValidator>
-                    </div>
+                       </div>
                     <asp:Label CssClass="col-md-2 control-label" runat="server" Text="Mobile Phone" AssociatedControlID="MobilePhone"></asp:Label>
                     <div class="col-md-4">
                         <asp:TextBox CssClass="form-control"  ID="MobilePhone" runat="server" MaxLength="8" TextMode="Phone"></asp:TextBox>
                         <asp:RegularExpressionValidator runat="server" ValidationExpression="^[\d]{8}$" ControlToValidate="MobilePhone" Display="Dynamic" EnableClientScript="false" ErrorMessage="Mobile phone must contain only digits"></asp:RegularExpressionValidator>
-                        <asp:RequiredFieldValidator ControlToValidate="MobilePhone" runat="server" ErrorMessage="Please enter mobile phone" Text="*" Display="Dynamic" CssClass="text-danger" EnableClientScript="false"></asp:RequiredFieldValidator>
-                    </div>
+                        </div>
                 </div>
                 <div class="form-group">
                     <asp:Label CssClass="col-md-2 control-label" runat="server" Text="Country of Citizenship" AssociatedControlID="CitizenshipCountry"></asp:Label>
@@ -521,17 +517,12 @@
             <div class="row">
                 <h4>Part 7:</h4>
                 <div class="form-group">
-                    <asp:Label CssClass="col-md-2 control-label" runat="server" AssociatedControlID="ChequeAmount" Text="Initial Cheque Amount"></asp:Label>
+                    <asp:Label CssClass="col-md-2 control-label" runat="server" AssociatedControlID="DepositAmount" Text="Initial Cheque Amount"></asp:Label>
                     <div class="col-md-4">
-                        <asp:TextBox  CssClass="form-control" runat="server" ID="ChequeAmount"></asp:TextBox>
-                        <asp:RegularExpressionValidator runat="server" ValidationExpression="^[\d]{0,12}$" ControlToValidate="ChequeAmount" Display="Dynamic" EnableClientScript="false" ErrorMessage="Cheque amount must contain only digits"></asp:RegularExpressionValidator>
+                        <asp:TextBox  CssClass="form-control" runat="server" ID="DepositAmount"></asp:TextBox>
+                        <asp:RegularExpressionValidator runat="server" ValidationExpression="^[\d]{0,12}$" ControlToValidate="DepositAmount" Display="Dynamic" EnableClientScript="false" ErrorMessage="Cheque amount must contain only digits"></asp:RegularExpressionValidator>
                     </div>
-                    <asp:Label CssClass="col-md-2 control-label" runat="server" AssociatedControlID="TransferForm" Text="Initial Transfer Form Amount"></asp:Label>
-                    <div class="col-md-4">
-                        <asp:TextBox  CssClass="form-control" runat="server" ID="TransferForm"></asp:TextBox>
-                        <asp:RegularExpressionValidator runat="server" ValidationExpression="^[\d]{0,12}$" ControlToValidate="TransferForm" Display="Dynamic" EnableClientScript="false" ErrorMessage="Transfer amount must contain only digits"></asp:RegularExpressionValidator>
-                    </div>
-
+                    
                 </div>
                 <hr />
             </div>

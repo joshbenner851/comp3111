@@ -526,22 +526,13 @@ namespace HKeInvestWebApplication {
         protected global::System.Web.UI.WebControls.RadioButtonList FreeCreditSwee;
         
         /// <summary>
-        /// ChequeAmount control.
+        /// DepositAmount control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox ChequeAmount;
-        
-        /// <summary>
-        /// TransferForm control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox TransferForm;
+        protected global::System.Web.UI.WebControls.TextBox DepositAmount;
         
         /// <summary>
         /// SignedOn control.

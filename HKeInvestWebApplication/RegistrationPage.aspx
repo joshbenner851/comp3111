@@ -54,7 +54,7 @@
                 <asp:TextBox CssClass="form-control" ID="UserName" runat="server" MaxLength="10"></asp:TextBox>
                 <asp:RequiredFieldValidator Display="Dynamic" Text="*" ControlToValidate="UserName" CssClass="text-danger" runat="server" ErrorMessage="UserName is required." EnableClientScript="false"></asp:RequiredFieldValidator>
 
-                <asp:RegularExpressionValidator EnableClientScript="false" Display="Dynamic" Text="*" CssClass="text-danger" ID="RegularExpressionValidator2" runat="server" ControlToValidate="UserName" ErrorMessage="Username is not valid" ValidationExpression="/^([a-zA-Z0-9]){6,10}$/"></asp:RegularExpressionValidator>
+                <asp:RegularExpressionValidator EnableClientScript="false" Display="Dynamic" Text="*" CssClass="text-danger" ID="RegularExpressionValidator2" runat="server" ControlToValidate="UserName" ErrorMessage="Username is not valid" ValidationExpression="^([a-zA-Z0-9]){6,10}$"></asp:RegularExpressionValidator>
 
             </div>
         </div>

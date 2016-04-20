@@ -94,7 +94,7 @@ namespace HKeInvestWebApplication.EmployeeOnly
                 if (shares <= 0)
                 {
 
-                    InvalidStockSharesQuantity.Text = "Please a enter a postivie number of shares to buy";
+                    InvalidStockSharesQuantity.Text = "Please a enter a postive number of shares to buy";
                 }
                 else if (shares % 100 != 0)
                 {
@@ -140,8 +140,6 @@ namespace HKeInvestWebApplication.EmployeeOnly
         {
             if (Page.IsValid)
             {
-                
-
                 if (SecurityType.SelectedValue.Equals("Stock"))
                 {
                     //declare all relevant variables for placing a stock order
@@ -152,12 +150,6 @@ namespace HKeInvestWebApplication.EmployeeOnly
                     string varExpiryDate = DaysUntilExpiration.SelectedValue;
                     string varAllOrNone = AllOrNone.Checked == true ? "Y" : "N";
                     string varStopPrice = StopPrice.Text.ToString();
-                    
-                    //allOrNone
-                    if (AllOrNone.Checked)
-                    {
-                        varAllOrNone = "Y";
-                    }
 
                     //typeorder
                     if (OrderType.SelectedValue.Equals("Market Order"))
@@ -180,12 +172,12 @@ namespace HKeInvestWebApplication.EmployeeOnly
 
                     if (TransactionType.SelectedValue.Equals("Buy"))
                     {
-                        string highPrice = "";
+                        string highPrice = LimitPrice.Text.ToString();
                         string result = extFunction.submitStockBuyOrder(varCode, varShares, varOrderType, varExpiryDate, varAllOrNone, highPrice, varStopPrice);
                     }
                     else if (TransactionType.SelectedValue.Equals("Sell"))
                     {
-                        string lowPrice = "";
+                        string lowPrice = LimitPrice.Text.ToString();
                         string result = extFunction.submitStockSellOrder(varCode, varShares, varOrderType, varExpiryDate, varAllOrNone, lowPrice, varStopPrice);
                     }
                 }
