@@ -1,8 +1,8 @@
 # COMP3111 Team USA (106)
 
 TODO:
-Securities Searching(kevin)
-Buy/Sell(only checking the clients account if enough shares/funds left)
+* Securities Searching(kevin)
+* Buy/Sell(only checking the clients account if enough shares/funds left)
 Profit/Loss
 Alerts
 Currency Conversion(I think this was done in the previous labs, can anybody confirm it's not need anywhere else?)
