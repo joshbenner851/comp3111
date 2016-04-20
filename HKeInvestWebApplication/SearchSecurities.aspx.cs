@@ -8,6 +8,7 @@ using System.Web.UI.WebControls;
 
 using HKeInvestWebApplication.Code_File;
 using HKeInvestWebApplication.ExternalSystems.Code_File;
+using System.Text.RegularExpressions;
 
 namespace HKeInvestWebApplication
 {
@@ -24,10 +25,9 @@ namespace HKeInvestWebApplication
 
         protected void ddlSecurityType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            string sql = "";
-            string name = SecurityName.Text.Trim();
-            string code = SecurityCode.Text.Trim();
-            DataTable data;
+            string input = SecurityInput.Text.Trim();
+
+            DataTable data = new DataTable();
 
             //Reset all charts
             gvSearchBond.Visible = false;
@@ -35,13 +35,26 @@ namespace HKeInvestWebApplication
             gvSearchUnitTrust.Visible = false;
             ErrorLabel.Visible = false;
 
-            //Do stuff here
             if (ddlSecurityType.SelectedValue.Equals("stock"))
             {
-                sql += "select * from Stock where code = '" + code + "' or name like '" + name + "%'";
-                data = myHKeInvestData.getData(sql);
-                if (data == null) { return; } // If the DataSet is null, a SQL error occurred.
-                // If no result is returned, then display a message that the account does not hold this type of security.
+                if (Regex.IsMatch(input, @"^\d+$"))
+                {
+                    if (input.Length > 4)
+                    {
+                        ErrorLabel.Text = "Please enter a valid code.";
+                        ErrorLabel.Visible = true;
+                        return;
+                    }
+                    data = myExternalFunctions.getSecuritiesByCode("stock", input);
+                } else
+                {
+                    data = myExternalFunctions.getSecuritiesByName("stock", input);
+                }
+
+                if (data == null)
+                {
+                    return;
+                }
                 if (data.Rows.Count == 0)
                 {
                     ErrorLabel.Text = "No matches found.";
@@ -55,10 +68,25 @@ namespace HKeInvestWebApplication
                 gvSearchStock.Visible = true;
             } else if (ddlSecurityType.SelectedValue.Equals("bond"))
             {
-                sql += "select * from Bond where code = '" + code + "' or name like '" + name + "%'";
-                data = myHKeInvestData.getData(sql);
-                if (data == null) { return; } // If the DataSet is null, a SQL error occurred.
-                // If no result is returned, then display a message that the account does not hold this type of security.
+                if (Regex.IsMatch(input, @"^\d+$"))
+                {
+                    if (input.Length > 4)
+                    {
+                        ErrorLabel.Text = "Please enter a valid code.";
+                        ErrorLabel.Visible = true;
+                        return;
+                    }
+                    data = myExternalFunctions.getSecuritiesByCode("bond", input);
+                }
+                else
+                {
+                    data = myExternalFunctions.getSecuritiesByName("bond", input);
+                }
+
+                if (data == null)
+                {
+                    return;
+                }
                 if (data.Rows.Count == 0)
                 {
                     ErrorLabel.Text = "No matches found.";
@@ -72,10 +100,25 @@ namespace HKeInvestWebApplication
                 gvSearchBond.Visible = true;
             } else if (ddlSecurityType.SelectedValue.Equals("unit trust"))
             {
-                sql += "select * from UnitTrust where code = '" + code + "' or name like '" + name + "%'";
-                data = myHKeInvestData.getData(sql);
-                if (data == null) { return; } // If the DataSet is null, a SQL error occurred.
-                // If no result is returned, then display a message that the account does not hold this type of security.
+                if (Regex.IsMatch(input, @"^\d+$"))
+                {
+                    if (input.Length > 4)
+                    {
+                        ErrorLabel.Text = "Please enter a valid code.";
+                        ErrorLabel.Visible = true;
+                        return;
+                    }
+                    data = myExternalFunctions.getSecuritiesByCode("unit trust", input);
+                }
+                else
+                {
+                    data = myExternalFunctions.getSecuritiesByName("unit trust", input);
+                }
+
+                if (data == null)
+                {
+                    return;
+                }
                 if (data.Rows.Count == 0)
                 {
                     ErrorLabel.Text = "No matches found.";
@@ -89,5 +132,11 @@ namespace HKeInvestWebApplication
                 gvSearchUnitTrust.Visible = true;
             }
         }
+
+        protected void SecurityInput_TextChanged(object sender, EventArgs e)
+        {
+            ddlSecurityType_SelectedIndexChanged(sender, e);
+        }
+
     }
 }

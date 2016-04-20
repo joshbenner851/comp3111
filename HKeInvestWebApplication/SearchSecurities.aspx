@@ -11,17 +11,15 @@
                 <asp:ListItem Value="stock">Stock</asp:ListItem>
                 <asp:ListItem Value="unit trust">Unit Trust</asp:ListItem>
             </asp:DropDownList>
-            <asp:Label runat="server" AssociatedControlID="SecurityName" Text="Security Name"></asp:Label>
-            <asp:TextBox ID="SecurityName" runat="server"></asp:TextBox>
-            <asp:Label runat="server" AssociatedControlID="SecurityCode" Text="Security Code"></asp:Label>
-            <asp:TextBox ID="SecurityCode" runat="server" MaxLength="4" TextMode="Number"></asp:TextBox>
+            <asp:Label runat="server" AssociatedControlID="SecurityInput" Text="Security Name/Code"></asp:Label>
+            <asp:TextBox ID="SecurityInput" runat="server" AutoPostBack="True" OnTextChanged="SecurityInput_TextChanged"></asp:TextBox>
             <br />
         </div>
         <div>
-            <asp:GridView ID="gvSearchStock" runat="server" Visible="False">
+            <asp:GridView ID="gvSearchStock" runat="server" Visible="False" AutoGenerateColumns="False">
                 <Columns>
-                    <asp:BoundField DataField="code" HeaderText="Code" ReadOnly="True" />
-                    <asp:BoundField DataField="name" HeaderText="Name" ReadOnly="True" />
+                    <asp:BoundField DataField="code" HeaderText="Code" ReadOnly="True" SortExpression="code"/>
+                    <asp:BoundField DataField="name" HeaderText="Name" ReadOnly="True" SortExpression="name" />
                     <asp:BoundField DataField="close" HeaderText="Close(HKD)" ReadOnly="True" />
                     <asp:BoundField DataField="changeDollar" HeaderText="Change(HKD)" ReadOnly="True" />
                     <asp:BoundField DataField="changePercent" HeaderText="Change(%)" ReadOnly="True" />
@@ -34,8 +32,8 @@
             </asp:GridView>
             <asp:GridView ID="gvSearchBond" runat="server" Visible="False" AutoGenerateColumns="False">
                 <Columns>
-                    <asp:BoundField DataField="code" HeaderText="Code" ReadOnly="True" />
-                    <asp:BoundField DataField="name" HeaderText="Name" ReadOnly="True" />
+                    <asp:BoundField DataField="code" HeaderText="Code" ReadOnly="True" SortExpression="code" />
+                    <asp:BoundField DataField="name" HeaderText="Name" ReadOnly="True" SortExpression="name" />
                     <asp:BoundField DataField="launchDate" HeaderText="Launch Date" ReadOnly="True" />
                     <asp:BoundField DataField="base" HeaderText="Base Currency" ReadOnly="True" />
                     <asp:BoundField DataField="price" HeaderText="Value(Base)" ReadOnly="True" />
@@ -44,10 +42,10 @@
                     <asp:BoundField DataField="threeYears" HeaderText="3 Years" ReadOnly="True" />
                 </Columns>
             </asp:GridView>
-            <asp:GridView ID="gvSearchUnitTrust" runat="server" Visible="False" AutoGenerateColumns="False">
+            <asp:GridView ID="gvSearchUnitTrust" runat="server" Visible="False" AutoGenerateColumns="False" OnSelectedIndexChanged="gvSearchUnitTrust_SelectedIndexChanged">
                 <Columns>
-                    <asp:BoundField DataField="code" HeaderText="Code" ReadOnly="True" />
-                    <asp:BoundField DataField="name" HeaderText="Name" ReadOnly="True" />
+                    <asp:BoundField DataField="code" HeaderText="Code" ReadOnly="True" SortExpression="code" />
+                    <asp:BoundField DataField="name" HeaderText="Name" ReadOnly="True" SortExpression="name" />
                     <asp:BoundField DataField="launchDate" HeaderText="Launch Date" ReadOnly="True" />
                     <asp:BoundField DataField="base" HeaderText="Base Currency" ReadOnly="True" />
                     <asp:BoundField DataField="size" HeaderText="Size" ReadOnly="True" />
@@ -58,7 +56,7 @@
                     <asp:BoundField DataField="threeYears" HeaderText="3 Years" ReadOnly="True" />
                 </Columns>
             </asp:GridView>
-            <asp:Label ID="ErrorLabel" runat="server" Visible="False"></asp:Label>
+            <asp:Label ID="ErrorLabel" runat="server" Visible="False" CssClass="text-danger"></asp:Label>
         </div>
     </div>
 </asp:Content>

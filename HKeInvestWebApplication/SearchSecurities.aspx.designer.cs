@@ -22,22 +22,13 @@ namespace HKeInvestWebApplication {
         protected global::System.Web.UI.WebControls.DropDownList ddlSecurityType;
         
         /// <summary>
-        /// SecurityName control.
+        /// SecurityInput control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox SecurityName;
-        
-        /// <summary>
-        /// SecurityCode control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox SecurityCode;
+        protected global::System.Web.UI.WebControls.TextBox SecurityInput;
         
         /// <summary>
         /// gvSearchStock control.
