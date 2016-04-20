@@ -64,6 +64,7 @@ namespace HKeInvestWebApplication
                 ViewState["SortExpression"] = "name";
                 ViewState["SortDirection"] = "ASC";
                 gvSearchStock.DataSource = data;
+                Session["TaskTable"] = data;
                 gvSearchStock.DataBind();
                 gvSearchStock.Visible = true;
             } else if (ddlSecurityType.SelectedValue.Equals("bond"))
@@ -96,6 +97,7 @@ namespace HKeInvestWebApplication
                 ViewState["SortExpression"] = "name";
                 ViewState["SortDirection"] = "ASC";
                 gvSearchBond.DataSource = data;
+                Session["TaskTable"] = data;
                 gvSearchBond.DataBind();
                 gvSearchBond.Visible = true;
             } else if (ddlSecurityType.SelectedValue.Equals("unit trust"))
@@ -128,6 +130,7 @@ namespace HKeInvestWebApplication
                 ViewState["SortExpression"] = "name";
                 ViewState["SortDirection"] = "ASC";
                 gvSearchUnitTrust.DataSource = data;
+                Session["TaskTable"] = data;
                 gvSearchUnitTrust.DataBind();
                 gvSearchUnitTrust.Visible = true;
             }
@@ -138,5 +141,71 @@ namespace HKeInvestWebApplication
             ddlSecurityType_SelectedIndexChanged(sender, e);
         }
 
+        private string GetSortDirection(string column)
+        {
+
+            // By default, set the sort direction to ascending.
+            string sortDirection = "ASC";
+
+            // Retrieve the last column that was sorted.
+            string sortExpression = ViewState["SortExpression"] as string;
+
+            if (sortExpression != null)
+            {
+                // Check if the same column is being sorted.
+                // Otherwise, the default value can be returned.
+                if (sortExpression == column)
+                {
+                    string lastDirection = ViewState["SortDirection"] as string;
+                    if ((lastDirection != null) && (lastDirection == "ASC"))
+                    {
+                        sortDirection = "DESC";
+                    }
+                }
+            }
+
+            // Save new values in ViewState.
+            ViewState["SortDirection"] = sortDirection;
+            ViewState["SortExpression"] = column;
+
+            return sortDirection;
+        }
+
+        protected void gvSearchStock_Sorting(object sender, GridViewSortEventArgs e)
+        {
+            DataTable dt = Session["TaskTable"] as DataTable;
+
+            if (dt != null)
+            {
+                //Sort the data.
+                dt.DefaultView.Sort = e.SortExpression + " " + GetSortDirection(e.SortExpression);
+                gvSearchStock.DataSource = Session["TaskTable"];
+                gvSearchStock.DataBind();
+            }
+        }
+
+        protected void gvSearchBond_Sorting(object sender, GridViewSortEventArgs e)
+        {
+            DataTable dt = Session["TaskTable"] as DataTable;
+
+            if (dt != null)
+            {
+                dt.DefaultView.Sort = e.SortExpression + " " + GetSortDirection(e.SortExpression);
+                gvSearchBond.DataSource = Session["TaskTable"];
+                gvSearchBond.DataBind();
+            }
+        }
+
+        protected void gvSearchUnitTrust_Sorting(object sender, GridViewSortEventArgs e)
+        {
+            DataTable dt = Session["TaskTable"] as DataTable;
+
+            if (dt != null)
+            {
+                dt.DefaultView.Sort = e.SortExpression + " " + GetSortDirection(e.SortExpression);
+                gvSearchUnitTrust.DataSource = Session["TaskTable"];
+                gvSearchUnitTrust.DataBind();
+            }
+        }
     }
 }

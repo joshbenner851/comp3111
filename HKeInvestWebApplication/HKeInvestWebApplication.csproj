@@ -213,6 +213,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="About.aspx" />
+    <Content Include="ClientOnly\ClientGenerateReport.aspx" />
     <Content Include="EmployeeOnly\AccountApplication.aspx" />
     <Content Include="Account\AddPhoneNumber.aspx" />
     <Content Include="Account\Confirm.aspx" />
@@ -243,6 +244,7 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\Site.css" />
+    <Content Include="EmployeeOnly\GenerateReport.aspx" />
     <Content Include="ExternalSystems\BondOrder.aspx" />
     <Content Include="ExternalSystems\ControlCenter.aspx" />
     <Content Include="ExternalSystems\ManageBond.aspx" />
@@ -321,6 +323,13 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClientOnly\ClientGenerateReport.aspx.cs">
+      <DependentUpon>ClientGenerateReport.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ClientOnly\ClientGenerateReport.aspx.designer.cs">
+      <DependentUpon>ClientGenerateReport.aspx</DependentUpon>
+    </Compile>
     <Compile Include="EmployeeOnly\AccountApplication.aspx.cs">
       <DependentUpon>AccountApplication.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -466,6 +475,13 @@
     </Compile>
     <Compile Include="Default.aspx.designer.cs">
       <DependentUpon>Default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="EmployeeOnly\GenerateReport.aspx.cs">
+      <DependentUpon>GenerateReport.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="EmployeeOnly\GenerateReport.aspx.designer.cs">
+      <DependentUpon>GenerateReport.aspx</DependentUpon>
     </Compile>
     <Compile Include="ExternalSystems\BondOrder.aspx.cs">
       <DependentUpon>BondOrder.aspx</DependentUpon>

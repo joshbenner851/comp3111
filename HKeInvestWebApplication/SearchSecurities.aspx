@@ -16,7 +16,7 @@
             <br />
         </div>
         <div>
-            <asp:GridView ID="gvSearchStock" runat="server" Visible="False" AutoGenerateColumns="False">
+            <asp:GridView ID="gvSearchStock" runat="server" Visible="False" AllowSorting="True" AutoGenerateColumns="False" OnSorting="gvSearchStock_Sorting">
                 <Columns>
                     <asp:BoundField DataField="code" HeaderText="Code" ReadOnly="True" SortExpression="code"/>
                     <asp:BoundField DataField="name" HeaderText="Name" ReadOnly="True" SortExpression="name" />
@@ -30,7 +30,7 @@
                     <asp:BoundField DataField="yield" HeaderText="Yield" ReadOnly="True" />
                 </Columns>
             </asp:GridView>
-            <asp:GridView ID="gvSearchBond" runat="server" Visible="False" AutoGenerateColumns="False">
+            <asp:GridView ID="gvSearchBond" runat="server" Visible="False" AllowSorting="true" AutoGenerateColumns="False" OnSorting="gvSearchBond_Sorting">
                 <Columns>
                     <asp:BoundField DataField="code" HeaderText="Code" ReadOnly="True" SortExpression="code" />
                     <asp:BoundField DataField="name" HeaderText="Name" ReadOnly="True" SortExpression="name" />
@@ -42,7 +42,7 @@
                     <asp:BoundField DataField="threeYears" HeaderText="3 Years" ReadOnly="True" />
                 </Columns>
             </asp:GridView>
-            <asp:GridView ID="gvSearchUnitTrust" runat="server" Visible="False" AutoGenerateColumns="False" OnSelectedIndexChanged="gvSearchUnitTrust_SelectedIndexChanged">
+            <asp:GridView ID="gvSearchUnitTrust" runat="server" Visible="False" AutoGenerateColumns="False" AllowSorting="True" OnSorting="gvSearchUnitTrust_Sorting">
                 <Columns>
                     <asp:BoundField DataField="code" HeaderText="Code" ReadOnly="True" SortExpression="code" />
                     <asp:BoundField DataField="name" HeaderText="Name" ReadOnly="True" SortExpression="name" />
