@@ -254,6 +254,7 @@
     <Content Include="ExternalSystems\StockOrder.aspx" />
     <Content Include="ExternalSystems\UnitTrustOrder.aspx" />
     <Content Include="Fees.aspx" />
+    <Content Include="ProfitLossTracking.aspx" />
     <Content Include="SearchSecurities.aspx" />
     <Content Include="SecurityTransaction.aspx" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
@@ -554,6 +555,14 @@
     </Compile>
     <Compile Include="Fees.aspx.designer.cs">
       <DependentUpon>Fees.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="HKFeesEnum.cs" />
+    <Compile Include="ProfitLossTracking.aspx.cs">
+      <DependentUpon>ProfitLossTracking.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ProfitLossTracking.aspx.designer.cs">
+      <DependentUpon>ProfitLossTracking.aspx</DependentUpon>
     </Compile>
     <Compile Include="SearchSecurities.aspx.cs">
       <DependentUpon>SearchSecurities.aspx</DependentUpon>
