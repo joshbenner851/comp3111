@@ -1,7 +1,9 @@
 ﻿using HKeInvestWebApplication.ExternalSystems.Code_File;
+using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
@@ -110,7 +112,7 @@ namespace HKeInvestWebApplication.EmployeeOnly
                 //    InvalidBondTrustSharesSelling.Text = "Please a enter a postivie number of shares to sell";
                 //}
                 var type = SecurityType.SelectedValue == "Bond" ? "bond" : "unit trust"; 
-                InvalidBondTrustSharesSelling.Text = sharesIsValid(type,BondTrustSharesSelling.Text);
+                InvalidBondTrustSharesSelling.Text = sharesIsValid(type,BondTrustCode.Text.Trim(), BondTrustSharesSelling.Text);
             }
         }
 
@@ -130,6 +132,71 @@ namespace HKeInvestWebApplication.EmployeeOnly
         }
 
         ExternalFunctions extFunction = new ExternalFunctions();
+        ExternalData extData = new ExternalData();
+
+        //Calculate number of shares owned/pending for validation UNTESTED
+        private int numOfSharesOwned(string type, string code)
+        {
+            string sql = "SELECT accountNumber FROM Account WHERE userName = '" +
+                Context.User.Identity.GetUserName() + "'";
+
+            DataTable temp = extData.getData(sql); // Set the account number from a web form control!
+            string accountNumber = "";
+            // If no result is returned by the SQL statement, then display a message.
+            if (temp == null || temp.Rows.Count == 0)
+            {
+                //lblResultMessage.Text = "No values for this option";
+                //lblResultMessage.Visible = true;
+                return -1;
+            }
+            accountNumber = temp.Rows[0].ToString();
+
+
+            sql = "SELECT shares FROM SecurityHolding WHERE accountNumber = '" +
+                accountNumber + "' AND type = '" +
+                type + "' AND code = '" +
+                code + "'";
+
+            temp = extData.getData(sql);
+
+            if(temp ==null || temp.Rows.Count == 0)
+            {
+                return -1;
+            }
+
+           
+            int sharesHeld = Int32.Parse(temp.Rows[0].ToString());
+
+            //References order history to check if there are pending orders
+            if (type.Equals("stock"))
+                {
+                //Get all current processed sell statements for Stocks
+                sql = "SELECT orderReference FROM OrderHistory WHERE accountNumber = '" +
+                    accountNumber + "'";
+
+                temp = extData.getData(sql);
+
+                if (temp == null || temp.Rows.Count == 0)
+                {
+                    return sharesHeld;
+                }
+                else
+                {
+                    foreach (DataRow row in temp.Rows)
+                    {
+                        //Some functionality to get order status 
+                        if (row["buyOrSell"].ToString().Equals("sell") && extFunction.getOrderStatus(row["orderReference"].ToString()).Equals("pending"))
+                        {
+                            //Subtract number of pending shares for the stock. When a stock is processed, the order number and qty is stored in the DB
+                            sharesHeld -= Int32.Parse(row["shares"].ToString());
+                        }
+                    }
+                }
+            }
+
+            return sharesHeld;
+
+        }
 
         protected void ExecuteTransactionClick(object sender, EventArgs e)
         {
@@ -165,7 +232,7 @@ namespace HKeInvestWebApplication.EmployeeOnly
                         varOrderType = "stop limit";
                         varLimitPrice = LimitPrice.Text;
                     }
-                    //Check to see if you own the amount of the codes
+                    //Check to see if the code exists
                     var validSecurity = extFunction.getSecuritiesByCode("stock", varStockCode);
                     if (validSecurity == null)
                     {
