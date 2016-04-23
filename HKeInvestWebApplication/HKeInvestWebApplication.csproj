@@ -324,6 +324,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Code_File\InternalFunctions.cs" />
     <Compile Include="ClientOnly\ClientGenerateReport.aspx.cs">
       <DependentUpon>ClientGenerateReport.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
