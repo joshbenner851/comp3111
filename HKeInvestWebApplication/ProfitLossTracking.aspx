@@ -25,9 +25,9 @@
                 
             <div class="form-group">
                 <asp:Label ID="SecurityType" runat="server" Text="Security Type"></asp:Label>
-                <asp:RequiredFieldValidator ID="RequiredFieldValidator3" runat="server" CssClass="text-danger" EnableClientScript="False" ErrorMessage="Value is required" ControlToValidate="DropDownList1">*</asp:RequiredFieldValidator>
+                <asp:RequiredFieldValidator ID="RequiredFieldValidator3" runat="server" CssClass="text-danger" EnableClientScript="False" ErrorMessage="Value is required" ControlToValidate="SearchTypeList">*</asp:RequiredFieldValidator>
                 <br />
-                <asp:DropDownList ID="DropDownList1" runat="server">
+                <asp:DropDownList ID="SecurityTypeList" runat="server">
                   <asp:ListItem Value="stock">Stock</asp:ListItem>
                   <asp:ListItem Value="bond">Bond</asp:ListItem>
                   <asp:ListItem Value="unit trust">Unit Trust</asp:ListItem>
@@ -36,9 +36,12 @@
             </div>
             
             <div class="form-group">
-                <asp:Label ID="SecurityCode" runat="server" Text="Security Code"></asp:Label>
-                <asp:TextBox ID="TextBox1" runat="server"></asp:TextBox>
-                <asp:RegularExpressionValidator ID="RegularExpressionValidator1" runat="server" CssClass="text-danger" EnableClientScript="False" ErrorMessage="Please enter digits only" ControlToValidate="TextBox1"></asp:RegularExpressionValidator>
+                <asp:Label ID="SecurityCodeLbl" runat="server" Text="Security Code"></asp:Label>
+                <asp:TextBox ID="SecurityCode" runat="server"></asp:TextBox>
+                <asp:RegularExpressionValidator ID="RegularExpressionValidator1" runat="server" CssClass="text-danger" EnableClientScript="False" ErrorMessage="Please enter digits only" ControlToValidate="SecurityCode">*</asp:RegularExpressionValidator>
+                
+                <asp:CustomValidator ID="CustomValidator1" runat="server" CssClass="text-danger" EnableClientScript="False" ErrorMessage="*" OnServerValidate="CustomValidator1_ServerValidate"></asp:CustomValidator>
+                <asp:Label ID="InvalidCode" runat="server" CssClass="text-danger"></asp:Label>
                 
             </div>
 
@@ -79,6 +82,11 @@
                         <asp:BoundField DataFormatString="{0:n2}" HeaderText="Profit/Loss" ReadOnly="True" />
                     </Columns>
                 </asp:GridView>
+
+                <div>
+                    <asp:Button ID="ShowProfitLoss" CssClass="btn btn-default" runat="server" OnClick="ShowProfitLoss_Click" Text="Show Profit/Loss" />
+                </div>
+                
             </div>
             
             
