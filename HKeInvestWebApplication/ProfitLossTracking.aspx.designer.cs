@@ -13,13 +13,13 @@ namespace HKeInvestWebApplication {
     public partial class ProfitLossTracking {
         
         /// <summary>
-        /// Label1 control.
+        /// ValueProfitLoss control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label1;
+        protected global::System.Web.UI.WebControls.Label ValueProfitLoss;
         
         /// <summary>
         /// RequiredFieldValidator2 control.
@@ -31,22 +31,22 @@ namespace HKeInvestWebApplication {
         protected global::System.Web.UI.WebControls.RequiredFieldValidator RequiredFieldValidator2;
         
         /// <summary>
-        /// RadioButtonList1 control.
+        /// ValueListType control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RadioButtonList RadioButtonList1;
+        protected global::System.Web.UI.WebControls.RadioButtonList ValueListType;
         
         /// <summary>
-        /// Label2 control.
+        /// SearchType control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label2;
+        protected global::System.Web.UI.WebControls.Label SearchType;
         
         /// <summary>
         /// RequiredFieldValidator1 control.
@@ -58,22 +58,22 @@ namespace HKeInvestWebApplication {
         protected global::System.Web.UI.WebControls.RequiredFieldValidator RequiredFieldValidator1;
         
         /// <summary>
-        /// RadioButtonList2 control.
+        /// SearchTypeList control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RadioButtonList RadioButtonList2;
+        protected global::System.Web.UI.WebControls.RadioButtonList SearchTypeList;
         
         /// <summary>
-        /// Label3 control.
+        /// SecurityType control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label3;
+        protected global::System.Web.UI.WebControls.Label SecurityType;
         
         /// <summary>
         /// RequiredFieldValidator3 control.
@@ -94,13 +94,13 @@ namespace HKeInvestWebApplication {
         protected global::System.Web.UI.WebControls.DropDownList DropDownList1;
         
         /// <summary>
-        /// Label4 control.
+        /// SecurityCode control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label4;
+        protected global::System.Web.UI.WebControls.Label SecurityCode;
         
         /// <summary>
         /// TextBox1 control.
@@ -121,30 +121,30 @@ namespace HKeInvestWebApplication {
         protected global::System.Web.UI.WebControls.RegularExpressionValidator RegularExpressionValidator1;
         
         /// <summary>
-        /// GridView1 control.
+        /// SingleSecurity control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView GridView1;
+        protected global::System.Web.UI.WebControls.GridView SingleSecurity;
         
         /// <summary>
-        /// GridView2 control.
+        /// SecuritiesGivenType control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView GridView2;
+        protected global::System.Web.UI.WebControls.GridView SecuritiesGivenType;
         
         /// <summary>
-        /// GridView3 control.
+        /// SecuritiesAll control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView GridView3;
+        protected global::System.Web.UI.WebControls.GridView SecuritiesAll;
     }
 }
