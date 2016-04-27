@@ -2,13 +2,14 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <h2>Generate Report</h2>
+
     <div id="Report">
         <div id="ClientInfo">
 
             <h3>Account Summary</h3>
             <hr />
             <asp:Label runat="server" AssociatedControlID="AccountNumber" Text="Account Number: "></asp:Label>
-            <asp:Label ID="AccountNumber" runat="server"></asp:Label>
+            <asp:Label ID="Label1" runat="server"></asp:Label>
             <br />
             <asp:Label runat="server" AssociatedControlID="ClientName" Text="Client Name(s): "></asp:Label>
             <asp:Label ID="ClientName" runat="server"></asp:Label>
@@ -44,9 +45,9 @@
                 <Columns>
                     <asp:BoundField DataField="code" HeaderText="Code" ReadOnly="True" SortExpression="code" />
                     <asp:BoundField DataField="name" HeaderText="Name" ReadOnly="True" SortExpression="name" />
-                    <asp:BoundField DataField="shares" ReadOnly="True" HeaderText="Shares Held" />
+                    <asp:BoundField DataField="shares" ReadOnly="True" HeaderText="Shares Held" SortExpression="sharesHeld" />
                     <asp:BoundField DataField="price" HeaderText="Price Per Share" ReadOnly="True" />
-                    <asp:BoundField DataField="totalValue" ReadOnly="True" HeaderText="Total Value" />
+                    <asp:BoundField DataField="totalValue" ReadOnly="True" HeaderText="Total Value" SortExpression="totalValue" />
                 </Columns>
             </asp:GridView>
         </div>
@@ -63,6 +64,10 @@
                     <asp:BoundField DataField="name" ReadOnly="True" HeaderText="Name" />
                     <asp:BoundField DataField="submitted" ReadOnly="True" HeaderText="Date Submitted" />
                     <asp:BoundField DataField="status" ReadOnly="True" HeaderText="Status" />
+                    <asp:BoundField DataField="sharesRequested" ReadOnly="True" HeaderText="Shares Requested" />
+                    <asp:BoundField DataField="limitPrice" ReadOnly="True" HeaderText="Limit Price" />
+                    <asp:BoundField DataField="stopPrice" ReadOnly="True" HeaderText="Stop Price" />
+                    <asp:BoundField DataField="Expiry Date" ReadOnly="True" HeaderText="Expiry Date" />
                 </Columns>
             </asp:GridView>
         </div>
