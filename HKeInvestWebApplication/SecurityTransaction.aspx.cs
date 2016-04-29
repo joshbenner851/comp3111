@@ -198,6 +198,65 @@ namespace HKeInvestWebApplication.EmployeeOnly
 
         }
 
+        //Calculate the fees for the 
+
+        //Calculate current account assets
+        private decimal accountAssets()
+        {
+
+            string accountNumber = accountNumber();
+
+            //Getting value of the current account assets
+            string sql = "SELECT balance FROM Account WHERE userName = '" +
+                Context.User.Identity.GetUserName() + "'";
+            DataTable temp = extData.getData(sql);
+            //ERROR: Throw in try catch statement
+            decimal balance = Decimal.Parse(temp.Rows[0].ToString());
+
+
+            //Getting current value of the stocks
+            sql = "SELECT type, code, shares, base FROM SecurityHolding WHERE accountNumber = '" +
+                accountNumber + "'";
+            DataTable securities = extData.getData(sql);
+
+            decimal securitySum = 0;
+
+            foreach(DataRow Row in securities.Rows)
+            {
+                //Iterate and get the value of the currency based on the type and code
+                decimal currentPrice = extFunction.getSecuritiesPrice(Row["type"].ToString(), Row["code"].ToString());
+                if(currentPrice == -1)
+                {
+                    //Throw some error;
+                    break;
+                }
+                else
+                {
+                    //ASK: Is the current price always reflected in HKD
+                    decimal priceTemp = currentPrice * Decimal.Parse(Row["shares"].ToString());
+                    string bases = Row["base"].ToString();
+                    //Check this convert currency function
+                    securitySum += priceTemp * extFunction.getCurrencyRate(bases);
+                }
+            }
+            //Should return net balance of the accounts
+            return balance + securitySum;
+        }
+
+        //TODO set variable as a glbal variable, so sql not reexecuted every time
+        private string accountNumber()
+        {
+            string sql = "SELECT accountNumber FROM Account WHERE userName = '" +
+               Context.User.Identity.GetUserName() + "'";
+
+            DataTable temp = extData.getData(sql);
+
+            //ERROR: no error catching for not having the account number
+
+            return temp.Rows[0].ToString();
+
+        }
+
         protected void ExecuteTransactionClick(object sender, EventArgs e)
         {
             if (Page.IsValid)
