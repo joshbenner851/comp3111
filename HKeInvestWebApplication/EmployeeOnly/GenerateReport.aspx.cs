@@ -27,6 +27,9 @@ namespace HKeInvestWebApplication
             lblClientName.Visible = false;
             string sql = "";
             string accountNumber = AccountNumber.Text.Trim(); // Set the account number from a web form control!
+            DataTable data;
+
+            AccountNum.Text = accountNumber;
 
             if (accountNumber == "")
             {
@@ -38,28 +41,35 @@ namespace HKeInvestWebApplication
             sql = "SELECT firstName, lastName FROM Client " +
                 "WHERE Client.accountNumber = '" + accountNumber + "'";
 
-            DataTable dtClient = myHKeInvestData.getData(sql);
-            if (dtClient == null) { return; }
-            if (dtClient.Rows.Count == 0)
+            data = myHKeInvestData.getData(sql);
+            if (data == null) { return; }
+            if (data.Rows.Count == 0)
             {
                 lblClientName.Text = "No such account number.";
                 return;
             }
 
             // Show the client name(s) on the web page.
-            string clientName = "Client(s): ";
+            string clientName = "";
             int i = 1;
-            foreach (DataRow row in dtClient.Rows)
+            foreach (DataRow row in data.Rows)
             {
                 clientName = clientName + row["lastName"] + ", " + row["firstName"];
-                if (dtClient.Rows.Count != i)
+                if (data.Rows.Count != i)
                 {
                     clientName = clientName + "and ";
                 }
-                i = i + 1;
+                i++;
             }
-            lblClientName.Text = clientName;
-            lblClientName.Visible = true;
+
+            ClientName.Text = clientName;
+
+            sql = "select shares from SecurityHolding where accountNumber='" + accountNumber + "'";
+            //Multiply shares by stock price
+
+            sql = "select balance from Account where accountNumber='" + accountNumber + "'";
+            data = myHKeInvestData.getData(sql);
+            FreeBalance.Text = data.Rows[0][0].ToString();
         }
 
     }

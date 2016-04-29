@@ -15,7 +15,7 @@
             <h3>Account Summary</h3>
             <hr />
             <asp:Label runat="server" AssociatedControlID="AccountNumber" Text="Account Number: "></asp:Label>
-            <asp:Label ID="Label1" runat="server"></asp:Label>
+            <asp:Label ID="AccountNum" runat="server"></asp:Label>
             <br />
             <asp:Label runat="server" AssociatedControlID="ClientName" Text="Client Name(s): "></asp:Label>
             <asp:Label ID="ClientName" runat="server"></asp:Label>
