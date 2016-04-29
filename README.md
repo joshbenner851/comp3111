@@ -29,3 +29,6 @@ TODO:
  * Move Buy/Sell to Client_Only folder so only clients can access it
  * Linking pages together so they can actually be accessible
  * Email about parentheses in data
+ 
+-Database Additions
+*Something keeping track of transactions
