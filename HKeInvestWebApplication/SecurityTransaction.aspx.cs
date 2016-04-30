@@ -1,4 +1,5 @@
-﻿using HKeInvestWebApplication.ExternalSystems.Code_File;
+﻿using HKeInvestWebApplication.Code_File;
+using HKeInvestWebApplication.ExternalSystems.Code_File;
 using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
@@ -17,9 +18,6 @@ namespace HKeInvestWebApplication.EmployeeOnly
         {
 
         }
-
-
-
         protected void SecurityType_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (SecurityType.SelectedValue == "Bond" || SecurityType.SelectedValue == "Unit Trust")
@@ -90,15 +88,18 @@ namespace HKeInvestWebApplication.EmployeeOnly
 
         protected void CustomValidator1_ServerValidate(object source, ServerValidateEventArgs args)
         {
-            if(SecurityType.SelectedValue == "Stock" && TransactionType.SelectedValue == "Buy")
-            {
+            //SCHEDULED FOR DELETION 
+            //Should be something to handle validation before finally passing the variable
+
+            //if(SecurityType.SelectedValue == "Stock" && TransactionType.SelectedValue == "Buy")
+            //{
                 
-                InvalidStockSharesQuantity.Text = sharesAmountIsValid(StockSharesQuantity.Text,TransactionType.Text);
-            }
-            else if(SecurityType.SelectedValue == "Stock" && TransactionType.SelectedValue == "Sell")
-            {
-                InvalidStockSharesQuantity.Text = sharesAmountIsValid(StockSharesQuantity.Text, TransactionType.Text);
-            }
+            //    InvalidStockSharesQuantity.Text = sharesAmountIsValid(StockSharesQuantity.Text,TransactionType.Text, StockCode.Text.Trim());
+            //}
+            //else if(SecurityType.SelectedValue == "Stock" && TransactionType.SelectedValue == "Sell")
+            //{
+            //    InvalidStockSharesQuantity.Text = sharesAmountIsValid(StockSharesQuantity.Text, TransactionType.Text);
+            //}
         }
 
         protected void CustomValidator2_ServerValidate(object source, ServerValidateEventArgs args)
@@ -112,7 +113,7 @@ namespace HKeInvestWebApplication.EmployeeOnly
                 //    InvalidBondTrustSharesSelling.Text = "Please a enter a postivie number of shares to sell";
                 //}
                 var type = SecurityType.SelectedValue == "Bond" ? "bond" : "unit trust"; 
-                InvalidBondTrustSharesSelling.Text = sharesIsValid(type,BondTrustCode.Text.Trim(), BondTrustSharesSelling.Text);
+                InvalidBondTrustSharesSelling.Text = stockSharesAmountIsValid(BondTrustCode.Text.Trim(), BondTrustSharesSelling.Text, "");
             }
         }
 
@@ -132,32 +133,19 @@ namespace HKeInvestWebApplication.EmployeeOnly
         }
 
         ExternalFunctions extFunction = new ExternalFunctions();
-        ExternalData extData = new ExternalData();
+        HKeInvestData extData = new HKeInvestData();
 
-        //Calculate number of shares owned/pending for validation UNTESTED
-        private int numOfSharesOwned(string type, string code)
+        //Calculate number of shares that can be sold
+        private int numOfSharesAbleToSell(string type, string code)
         {
-            string sql = "SELECT accountNumber FROM Account WHERE userName = '" +
-                Context.User.Identity.GetUserName() + "'";
+            string accountNumber = getAccountNumber();
 
-            DataTable temp = extData.getData(sql); // Set the account number from a web form control!
-            string accountNumber = "";
-            // If no result is returned by the SQL statement, then display a message.
-            if (temp == null || temp.Rows.Count == 0)
-            {
-                //lblResultMessage.Text = "No values for this option";
-                //lblResultMessage.Visible = true;
-                return -1;
-            }
-            accountNumber = temp.Rows[0].ToString();
-
-
-            sql = "SELECT shares FROM SecurityHolding WHERE accountNumber = '" +
+            string sql = "SELECT shares FROM SecurityHolding WHERE accountNumber = '" +
                 accountNumber + "' AND type = '" +
                 type + "' AND code = '" +
                 code + "'";
 
-            temp = extData.getData(sql);
+            DataTable temp = extData.getData(sql);
 
             if(temp ==null || temp.Rows.Count == 0)
             {
@@ -198,19 +186,20 @@ namespace HKeInvestWebApplication.EmployeeOnly
 
         }
 
-        //Calculate the fees for the transaction
-        
+        //Calculate the fees for the order (will calculate for the set of transactions)     
         public decimal calculateFees(string referenceNumber)
         {
-            //If order is completed else apply fees incrementally
-
-            //Add fees calculated to some part of the database
 
             decimal fee = -1m;
-
+            //ONLY QUERYING LOCAL DATABASE
             //Query to get order type
             //Query to get order buyOrSell status
-            string type;
+            string sql = "SELECT * FROM OrderHistory WHERE referenceNumber = '" +
+                referenceNumber + "'";
+            DataTable orderH = extData.getData(sql);
+            string type = orderH.Rows[0]["securityType"].ToString();
+            string buyOrSell = orderH.Rows[0]["buyOrSell"].ToString();
+
 
             //Query to get completed transactions 
             //TODO: throw error if query not connected to external database
@@ -221,7 +210,7 @@ namespace HKeInvestWebApplication.EmployeeOnly
             if (type.Equals("stock"))
             {
                 //Query to get the order type (from local history maybe)
-                string orderType = "";
+                string orderType = orderH.Rows[0]["stockOrderType"].ToString();
 
                 //variable for checking if the assessed fee is greater than the minimmum fee
                 decimal minFeeCheck = 0m;
@@ -290,6 +279,7 @@ namespace HKeInvestWebApplication.EmployeeOnly
             return fee;
         }
 
+        //Helper fucntion to calculate fees (HARDCODED FEES)
         private decimal calculateFeesAtRate(DataTable transactions, decimal percentage)
         {
             decimal feeSum = 0;
@@ -356,15 +346,20 @@ namespace HKeInvestWebApplication.EmployeeOnly
 
             //ERROR: no error catching for not having the account number
 
-            return temp.Rows[0].ToString();
+            return temp.Rows[0]["accountNumber"].ToString();
 
         }
 
-        protected void ExecuteTransactionClick(object sender, EventArgs e)
+        protected void ExecuteOrderClick(object sender, EventArgs e)
         {
             if (Page.IsValid)
             {
-                if (SecurityType.SelectedValue.Equals("Stock"))
+
+                string varSecurityType = SecurityType.SelectedValue.ToString().Trim();
+                string varTransactionType = TransactionType.SelectedValue.ToString().Trim();
+                string accountNumber = getAccountNumber();
+
+                if (varSecurityType.Equals("Stock"))
                 {
                     //declare all relevant variables for placing a stock order
                     //Sorry for bad naming convention
@@ -401,22 +396,48 @@ namespace HKeInvestWebApplication.EmployeeOnly
                         //Sell order was not succesfully submitted
                         InvalidStockCode.Text = "The code given does not exist";
                     }
-                    else if (TransactionType.SelectedValue.Equals("Buy"))
+                    else if (varTransactionType.Equals("Buy"))
                     {
                         
-                        InvalidStockSharesQuantity.Text = sharesAmountIsValid(varShares, TransactionType.Text);
+                        InvalidStockSharesQuantity.Text = stockSharesAmountIsValid(varShares, TransactionType.Text, varStockCode);
                         if(InvalidStockSharesQuantity.Text != "")
                         {
                             return;
                         }
                         
                         //Limit price = high price here
-                        extFunction.submitStockBuyOrder(varStockCode, varShares, varOrderType, varExpiryDate, varAllOrNone, varLimitPrice, varStopPrice);
+                        string result = extFunction.submitStockBuyOrder(varStockCode, varShares, varOrderType, varExpiryDate, varAllOrNone, varLimitPrice, varStopPrice);
+
+                        if (result != null)
+                        {
+
+                            //Figure out how to query with a value that should be zero
+                            string sql = "INSERT INTO OrderHistory ([referenceNumber], [buyOrSell], [securityType], [securityCode], [dateSubmitted], [shares], [stockOrderType], [expiryDay], [allOrNone], [limitPrice], [stopPrice], [accountNumber]) VALUES ('" +
+                                result + "', '" +
+                                varTransactionType + "', '" +
+                                varSecurityType + "', '" +
+                                varStockCode + "', '" +
+                                DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss tt") + "', '" +
+                                varShares + "', '" +
+                                varOrderType + "', '" +
+                                varExpiryDate + "', '" +
+                                varAllOrNone + "', '" +
+                                varLimitPrice + "', '" +
+                                varStopPrice + "', '" +
+                                accountNumber + "')";
+
+                            SqlTransaction trans = extData.beginTransaction();
+                            extData.setData(sql, trans);
+                            extData.commitTransaction(trans);
+                        }
                     }
                     else if (TransactionType.SelectedValue.Equals("Sell"))
                     {
               
-                        InvalidStockSharesQuantity.Text = sharesAmountIsValid(varShares, TransactionType.Text);
+                        //Check sell price to see if stock is avlid
+
+                        InvalidStockSharesQuantity.Text = stockSharesAmountIsValid(varShares, TransactionType.Text, varStockCode);
+                        //Basically what the stock shares amount is validatesd as (recipe for bad code)
                         if (InvalidStockSharesQuantity.Text != "")
                         {
                             return;
@@ -425,6 +446,28 @@ namespace HKeInvestWebApplication.EmployeeOnly
                         string result = extFunction.submitStockSellOrder(varStockCode, varShares, varOrderType, varExpiryDate, varAllOrNone, varLimitPrice, varStopPrice);
                         if (result != null)
                         {
+                            //Code to write result into order history table
+
+
+                            //Tested and properly replicates in the bonds
+                            //Testing sql for Sell stock
+                            string sql = "INSERT INTO OrderHistory ([referenceNumber], [buyOrSell], [securityType], [securityCode], [dateSubmitted], [shares], [stockOrderType], [expiryDay], [allOrNone], [limitPrice], [stopPrice], [accountNumber]) VALUES ('" +
+                                 result + "', '" +
+                                 varTransactionType + "', '" +
+                                 varSecurityType + "', '" +
+                                 varStockCode + "', '" +
+                                 DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss tt") + "', '" +
+                                 varShares + "', '" +
+                                 varOrderType + "', '" +
+                                 varExpiryDate + "', '" +
+                                 varAllOrNone + "', '" +
+                                 varLimitPrice + "', '" +
+                                 varStopPrice + "', '" +
+                                 accountNumber + "')";
+
+                            SqlTransaction trans = extData.beginTransaction();
+                            extData.setData(sql, trans);
+                            extData.commitTransaction(trans);
                             //Return URL
                         }
                     }
@@ -447,6 +490,24 @@ namespace HKeInvestWebApplication.EmployeeOnly
                             else
                             {
                                 string result = extFunction.submitBondBuyOrder(varBondTrustCode, varBondTrustSharesAmount);
+
+                                if(result != null)
+                                {
+                                    string sql = "INSERT INTO OrderHistory ([referenceNumber], [buyOrSell], [securityType], [securityCode], [dateSubmitted], [amount], [accountNumber]) VALUES ('" +
+                               result + "', '" +
+                               varTransactionType + "', '" +
+                               varSecurityType + "', '" +
+                               varBondTrustCode + "', '" +
+                               DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss tt") + "', '" +
+                               varBondTrustSharesAmount + "', '" +
+
+                               accountNumber + "')";
+
+                                    SqlTransaction trans = extData.beginTransaction();
+                                    extData.setData(sql, trans);
+                                    extData.commitTransaction(trans);
+                                }
+                               
                             }
                         }
                         else if(SecurityType.SelectedValue.Equals("Unit Trust"))
@@ -461,6 +522,23 @@ namespace HKeInvestWebApplication.EmployeeOnly
                             else
                             {
                                 string result = extFunction.submitUnitTrustBuyOrder(varBondTrustCode, varBondTrustSharesAmount);
+
+                                if(result !=null )
+                                {
+                                    string sql = "INSERT INTO OrderHistory ([referenceNumber], [buyOrSell], [securityType], [securityCode], [dateSubmitted], [amount], [accountNumber]) VALUES ('" +
+                              result + "', '" +
+                              varTransactionType + "', '" +
+                              varSecurityType + "', '" +
+                              varBondTrustCode + "', '" +
+                              DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss tt") + "', '" +
+                              varBondTrustSharesAmount + "', '" +
+
+                              accountNumber + "')";
+
+                                    SqlTransaction trans = extData.beginTransaction();
+                                    extData.setData(sql, trans);
+                                    extData.commitTransaction(trans);
+                                }
                             }
                         }
 
@@ -480,7 +558,24 @@ namespace HKeInvestWebApplication.EmployeeOnly
                                 }
                                 else
                                 {
-                                    extFunction.submitBondSellOrder(varBondTrustCode, varBondTrustShares);
+                                    string result = extFunction.submitBondSellOrder(varBondTrustCode, varBondTrustShares);
+
+                                    if(result != null)
+                                    {
+                                        string sql = "INSERT INTO OrderHistory ([referenceNumber], [buyOrSell], [securityType], [securityCode], [dateSubmitted], [shares], [accountNumber]) VALUES ('" +
+result + "', '" +
+varTransactionType + "', '" +
+varSecurityType + "', '" +
+varBondTrustCode + "', '" +
+DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss tt") + "', '" +
+varBondTrustShares + "', '" +
+
+accountNumber + "')";
+
+                                        SqlTransaction trans = extData.beginTransaction();
+                                        extData.setData(sql, trans);
+                                        extData.commitTransaction(trans);
+                                    }
                                 }
                             }
                         }
@@ -494,7 +589,24 @@ namespace HKeInvestWebApplication.EmployeeOnly
                             }
                             else
                             {
-                                extFunction.submitUnitTrustSellOrder(varBondTrustCode, varBondTrustShares);
+                                string result = extFunction.submitUnitTrustSellOrder(varBondTrustCode, varBondTrustShares);
+
+                                if(result != null)
+                                {
+                                    string sql = "INSERT INTO OrderHistory ([referenceNumber], [buyOrSell], [securityType], [securityCode], [dateSubmitted], [shares], [accountNumber]) VALUES ('" +
+result + "', '" +
+varTransactionType + "', '" +
+varSecurityType + "', '" +
+varBondTrustCode + "', '" +
+DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss tt") + "', '" +
+varBondTrustShares + "', '" +
+
+accountNumber + "')";
+
+                                    SqlTransaction trans = extData.beginTransaction();
+                                    extData.setData(sql, trans);
+                                    extData.commitTransaction(trans);
+                                }
                             }
                         }
                     }
@@ -536,21 +648,34 @@ namespace HKeInvestWebApplication.EmployeeOnly
         /**
         For checking multiple of 100 for buying stock
         */
-        private string sharesAmountIsValid(string shares, string typeOfTransaction)
+        private string stockSharesAmountIsValid(string shares, string typeOfTransaction, string stockCode)
         {
-            float number;
-            float.TryParse(shares,out number);
-            if (number == 0)
+            decimal numShares;
+            decimal.TryParse(shares,out numShares);
+            if (numShares <= 0)
             {
-                return "Shares is an invalid number";
+                return "Shares is not a positive number number";
             }
-            if(typeOfTransaction == "Sell" && number <= 0)
-            {
-                return("Shares to Sell is not a positive number.\nValue is '" + shares + "'.");
-            }
-            else if ((number % 100) != 0)
-            {
-                return("Shares to buy is not a multiple of 100 or is not a positive number.\nValue is '" + shares + "'.");
+            else {
+                if (typeOfTransaction == "Sell")
+                {
+                    //Passing in empty stock code
+                    if (stockCode != "")
+                    { 
+                    decimal availShares = numOfSharesAbleToSell("stock", stockCode);
+                        if (numShares > availShares)
+                        {
+                            return ("Shares to Sell is not valid. There are not that many shares to sell.\nValue is '" + shares + "'.");
+                        }
+                    }
+                }
+                else
+                {
+                    if ((numShares % 100) != 0)
+                    {
+                        return ("Shares to buy is not a multiple of 100. \nValue is '" + shares + "'.");
+                    }
+                }
             }
             return "";
             

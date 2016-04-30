@@ -132,7 +132,7 @@
             <div class="form-group">
                     <div class="col-md-offset-2 col-md-10">
                         
-                        <asp:Button runat="server"  Text="Execute Transaction" CssClass="btn btn-default" OnClick="ExecuteTransactionClick" />
+                        <asp:Button runat="server"  Text="Execute Transaction" CssClass="btn btn-default" OnClick="ExecuteOrderClick" />
                     </div>
             </div>
         </div>
