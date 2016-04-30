@@ -198,13 +198,114 @@ namespace HKeInvestWebApplication.EmployeeOnly
 
         }
 
-        //Calculate the fees for the 
+        //Calculate the fees for the transaction
+        
+        public decimal calculateFees(string referenceNumber)
+        {
+            //If order is completed else apply fees incrementally
 
-        //Calculate current account assets
-        private decimal accountAssets()
+            //Add fees calculated to some part of the database
+
+            decimal fee = -1m;
+
+            //Query to get order type
+            //Query to get order buyOrSell status
+            string type;
+
+            //Query to get completed transactions 
+            //TODO: throw error if query not connected to external database
+            DataTable extTransaction = extFunction.getOrderTransaction(referenceNumber);
+
+            decimal assets = accountAssets();
+
+            if (type.Equals("stock"))
+            {
+                //Query to get the order type (from local history maybe)
+                string orderType = "";
+
+                //variable for checking if the assessed fee is greater than the minimmum fee
+                decimal minFeeCheck = 0m;
+
+                if(assets < 1000000m)
+                {
+                    if (orderType.Equals("market"))
+                    {
+                        minFeeCheck = calculateFeesAtRate(extTransaction, .004m);
+                    }
+                    else if (orderType.Equals("stop") || orderType.Equals("limit"))
+                    {
+                        minFeeCheck = calculateFeesAtRate(extTransaction, .006m);
+                    }
+                    else
+                    {
+                        minFeeCheck = calculateFeesAtRate(extTransaction, .008m);
+                    }
+
+                    fee = minFeeCheck > 150m ? minFeeCheck : 150m;
+                }
+                else
+                {
+                    if (orderType.Equals("market"))
+                    {
+                        minFeeCheck = calculateFeesAtRate(extTransaction, .002m);
+                    }
+                    else if (orderType.Equals("stop") || orderType.Equals("limit"))
+                    {
+                        minFeeCheck = calculateFeesAtRate(extTransaction, .004m);
+                    }
+                    else
+                    {
+                        minFeeCheck = calculateFeesAtRate(extTransaction, .006m);
+                    }
+
+                }
+            }
+            else
+            {
+                if(assets < 500000m)
+                {
+                    if (buyOrSell.Equals("buy"))
+                    {
+                        //Query execute shares and execute price from transactions
+                        fee = calculateFeesAtRate(extTransaction, .05m);
+                    }
+                    else
+                    {
+                        fee = 100m;
+                    }
+                }
+                else
+                {
+                    if (buyOrSell.Equals("buy"))
+                    {
+                        fee = calculateFeesAtRate(extTransaction, .03m);
+                    }
+                    else
+                    {
+                        fee = 500m;
+                    }
+                }
+            }
+
+            return fee;
+        }
+
+        private decimal calculateFeesAtRate(DataTable transactions, decimal percentage)
+        {
+            decimal feeSum = 0;
+            foreach(DataRow row in transactions.Rows)
+            {
+                feeSum += Decimal.Parse(row["executeShares"].ToString()) * Decimal.Parse(row["executePrice"].ToString()); 
+            }
+
+            return percentage * feeSum;
+        }
+
+        //Calculate current account assets UNTESTED
+        public decimal accountAssets()
         {
 
-            string accountNumber = accountNumber();
+            string accountNumber = getAccountNumber();
 
             //Getting value of the current account assets
             string sql = "SELECT balance FROM Account WHERE userName = '" +
@@ -223,6 +324,8 @@ namespace HKeInvestWebApplication.EmployeeOnly
 
             foreach(DataRow Row in securities.Rows)
             {
+                //Assuming that the securities stored in the external database are returned in HKD
+
                 //Iterate and get the value of the currency based on the type and code
                 decimal currentPrice = extFunction.getSecuritiesPrice(Row["type"].ToString(), Row["code"].ToString());
                 if(currentPrice == -1)
@@ -243,8 +346,8 @@ namespace HKeInvestWebApplication.EmployeeOnly
             return balance + securitySum;
         }
 
-        //TODO set variable as a glbal variable, so sql not reexecuted every time
-        private string accountNumber()
+        //TODO set variable as a global variable, so sql not reexecuted every time
+        private string getAccountNumber()
         {
             string sql = "SELECT accountNumber FROM Account WHERE userName = '" +
                Context.User.Identity.GetUserName() + "'";
