@@ -331,7 +331,6 @@
     <Compile Include="ClientOnly\ClientGenerateReport.aspx.designer.cs">
       <DependentUpon>ClientGenerateReport.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Code_File\InternalFunctions.cs" />
     <Compile Include="EmployeeOnly\AccountApplication.aspx.cs">
       <DependentUpon>AccountApplication.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
