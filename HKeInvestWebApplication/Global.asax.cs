@@ -22,6 +22,32 @@ namespace HKeInvestWebApplication
             Thread mythread = new Thread(PeriodicTask);
             mythread.IsBackground = true;
             mythread.Start();
+
+            Thread updateLocalTransaction = new Thread(updateLocalTransactionTask);
+            updateLocalTransaction.IsBackground = true;
+            updateLocalTransaction.Start();
+
+            Thread updateLocalOrderHistory = new Thread(updateLocalOrderHistoryTask);
+            updateLocalOrderHistory.IsBackground = true;
+            updateLocalOrderHistory.Start();
+        }
+
+        private void updateLocalTransactionTask()
+        {
+            do
+            {
+               // updateLocalTransaction();
+                Thread.Sleep(10000);
+            } while (true);
+        }
+
+        private void updateLocalOrderHistoryTask()
+        {
+            do
+            {
+               // updateLocalOrderHistory();
+                Thread.Sleep(10000);
+            } while (true);
         }
 
         //Thread template

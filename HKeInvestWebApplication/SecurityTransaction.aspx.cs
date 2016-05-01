@@ -351,11 +351,14 @@ namespace HKeInvestWebApplication.EmployeeOnly
 
         }
 
+
         //UNTESTED
-        //To be threaded
+        //Also updates balance in function
+        //To be called through threading
         public void updateLocalOrderStatus()
         {
             string sql = "SELECT referenceNumber FROM OrderHistory WHERE status = 'pending'";
+            string accountNumber = getAccountNumber();
             DataTable orderNums = extData.getData(sql);
             SqlTransaction trans = extData.beginTransaction();
             foreach (DataRow row in orderNums.Rows)
@@ -364,8 +367,38 @@ namespace HKeInvestWebApplication.EmployeeOnly
                 string orderStatus = extFunction.getOrderStatus(referenceNumber);
                 if(orderStatus != "pending")
                 {
-                    sql = "UPDATE OrderHistory SET status ='" + orderStatus +"' WHERE referenceNumber = '" + referenceNumber + "'";
+
+                    //Including calculate fees function
+
+                    decimal fees = calculateFees(referenceNumber);
+
+                    sql = "UPDATE OrderHistory SET status ='" + orderStatus +"', feesPaid = '" + fees.ToString() +"' WHERE referenceNumber = '" + referenceNumber + "'";
                     extData.setData(sql, trans);
+
+                    //Now that the order has been completed fees can be calculated and applied to the balance in account and the feespaid in orderhistory
+
+                    //Depends on whether function was buy or sell for determining 
+
+                    string buyOrSell = row["buyOrSell"].ToString();
+
+                    sql = "SELECT balance FROM Account WHERE accountNumber = '" + accountNumber + "'";
+
+                    decimal balance = Decimal.Parse(extData.getData(sql).Rows[0]["balance"].ToString());
+                    decimal costOfOrder = decimal.Parse(row["executeShares"].ToString()) * decimal.Parse(row["executePrice"].ToString());
+
+                    if (buyOrSell.Equals("buy"))
+                    {
+                        balance -= fees;
+                        balance -= costOfOrder;
+                    }
+                    else
+                    {
+                        balance -= fees;
+                        balance += costOfOrder;
+                    }
+                    sql = "UPDATE Account SET balance = '"+balance+"' WHERE accountNumber = '" + accountNumber + "'";
+
+
                 }
                
             }
@@ -374,6 +407,7 @@ namespace HKeInvestWebApplication.EmployeeOnly
 
         //Inefficent as hell
         //UNTESTED
+        //Running on thread for backups
         public void updateLocalTransaction()
         {
             string sql = "SELECT referenceNumber FROM OrderHistory";
@@ -695,12 +729,21 @@ namespace HKeInvestWebApplication.EmployeeOnly
             DataTable qty = extData.getData(sql);
 
             //Bonds or Unit trusts only
-            int availSecurities = Convert.ToInt32(qty.Rows[0]["shares"]);
 
-            if (availSecurities > number)
+            if (qty.Rows == null || qty.Rows.Count == 0)
             {
-                return "Not enough securites to sell";
+
             }
+            else
+            {
+                int availSecurities = Convert.ToInt32(qty.Rows[0]["shares"]);
+
+                if (availSecurities > number)
+                {
+                    return "Not enough securites to sell";
+                }
+            }
+           
 
             return "";
         }
