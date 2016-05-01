@@ -29,6 +29,7 @@ namespace HKeInvestWebApplication
             string accountNumber = AccountNumber.Text.Trim(); // Set the account number from a web form control!
             DataTable data;
             decimal price = 0;
+            decimal total = 0;
 
             //PART A
             AccountNum.Text = accountNumber;
@@ -66,12 +67,10 @@ namespace HKeInvestWebApplication
 
             ClientName.Text = clientName;
 
-            sql = "select shares from SecurityHolding where accountNumber='" + accountNumber + "'";
-            data = myHKeInvestData.getData(sql);
-
             sql = "select balance from Account where accountNumber='" + accountNumber + "'";
             data = myHKeInvestData.getData(sql);
             FreeBalance.Text = data.Rows[0][0].ToString();
+            total += (decimal)data.Rows[0][0];
 
             sql = "select code, shares from SecurityHolding where accountNumber='" + accountNumber + "' and type='stock'";
             data = myHKeInvestData.getData(sql);
@@ -80,7 +79,7 @@ namespace HKeInvestWebApplication
                 price += myExternalFunctions.getSecuritiesPrice("stock", row[0].ToString()) * (decimal)row[1];
             }
             StockValue.Text = price.ToString();
-
+            total += price;
             price = 0;
 
             sql = "select code, shares from SecurityHolding where accountNumber='" + accountNumber + "' and type='bond'";
@@ -90,7 +89,7 @@ namespace HKeInvestWebApplication
                 price += myExternalFunctions.getSecuritiesPrice("bond", row[0].ToString()) * (decimal)row[1];
             }
             BondValue.Text = price.ToString();
-
+            total += price;
             price = 0;
 
             sql = "select code, shares from SecurityHolding where accountNumber='" + accountNumber + "' and type='unit trust'";
@@ -100,8 +99,12 @@ namespace HKeInvestWebApplication
                 price += myExternalFunctions.getSecuritiesPrice("unit trust", row[0].ToString()) * (decimal)row[1];
             }
             UnitTrustValue.Text = price.ToString();
+            total += price;
+            price = 0;
 
-            sql = "select dateSubmitted, amount from OrderHistory where accountNumber='" + accountNumber + "' order by dateSubmitted asc";
+            TotalValue.Text = total.ToString();
+
+            sql = "select dateSubmitted, amount from OrderHistory where accountNumber='" + accountNumber + "' and status='completed' order by dateSubmitted asc";
             data = myHKeInvestData.getData(sql);
             if (data.Rows.Count == 0)
             {
@@ -118,10 +121,16 @@ namespace HKeInvestWebApplication
             data = myHKeInvestData.getData(sql);
 
             //PART C
-
+            sql = "select referenceNumber, buyOrSell, securityType, securityCode";
             //PART D
         }
 
+        /*
+        Usage:
+        var test = JoinDataTables(transactionInfo, transactionItems,
+               (row1, row2) =>
+               row1.Field<int>("TransactionID") == row2.Field<int>("TransactionID"));
+        */
         private DataTable JoinDataTables(DataTable t1, DataTable t2, params Func<DataRow, DataRow, bool>[] joinOn)
         {
             DataTable result = new DataTable();

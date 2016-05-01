@@ -10,8 +10,8 @@
     </div>
 
     <div id="Report">
+        <!--Part A-->
         <div id="ClientInfo">
-
             <h3>Account Summary</h3>
             <hr />
             <asp:Label runat="server" AssociatedControlID="AccountNumber" Text="Account Number: "></asp:Label>
@@ -44,6 +44,7 @@
 
         </div>
 
+        <!--Part B-->
         <div id="SecuritySummary">
             <h3>Securities Summary</h3>
             <hr />
@@ -58,6 +59,7 @@
             </asp:GridView>
         </div>
 
+        <!--Part C-->
         <div id="ActiveOrders">
             <h3>Active Orders</h3>
             <hr />
@@ -78,6 +80,7 @@
             </asp:GridView>
         </div>
 
+        <!--Part D-->
         <div id="OrderHistory">
             <h3>Order History</h3>
             <hr />
