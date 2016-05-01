@@ -7,6 +7,8 @@ using System.Web.Routing;
 using System.Web.Security;
 using System.Web.SessionState;
 using System.Threading;
+using Microsoft.AspNet.Identity;
+using HKeInvestWebApplication.Code_File;
 
 namespace HKeInvestWebApplication
 {
@@ -18,46 +20,19 @@ namespace HKeInvestWebApplication
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             
-            //Thread template
-            Thread mythread = new Thread(PeriodicTask);
-            mythread.IsBackground = true;
-            mythread.Start();
-
             Thread updateLocalTransaction = new Thread(updateLocalTransactionTask);
             updateLocalTransaction.IsBackground = true;
             updateLocalTransaction.Start();
-
-            Thread updateLocalOrderHistory = new Thread(updateLocalOrderHistoryTask);
-            updateLocalOrderHistory.IsBackground = true;
-            updateLocalOrderHistory.Start();
         }
+
+        InternalFunctions intFunction = new InternalFunctions();
 
         private void updateLocalTransactionTask()
         {
             do
             {
-               // updateLocalTransaction();
-                Thread.Sleep(10000);
-            } while (true);
-        }
-
-        private void updateLocalOrderHistoryTask()
-        {
-            do
-            {
-               // updateLocalOrderHistory();
-                Thread.Sleep(10000);
-            } while (true);
-        }
-
-        //Thread template
-        private void PeriodicTask()
-        {
-            do
-            {
-                //Method call in here
-
-                //sleep time in ms
+                intFunction.updateLocalTransaction();
+                intFunction.updateLocalOrderStatus();
                 Thread.Sleep(10000);
             } while (true);
         }
