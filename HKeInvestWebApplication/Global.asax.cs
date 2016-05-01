@@ -6,6 +6,7 @@ using System.Web.Optimization;
 using System.Web.Routing;
 using System.Web.Security;
 using System.Web.SessionState;
+using System.Threading;
 
 namespace HKeInvestWebApplication
 {
@@ -16,6 +17,29 @@ namespace HKeInvestWebApplication
             // Code that runs on application startup
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+            
+            //Thread template
+            Thread mythread = new Thread(PeriodicTask);
+            mythread.IsBackground = true;
+            mythread.Start();
         }
+
+        //Thread template
+        private void PeriodicTask()
+        {
+            do
+            {
+                //Method call in here
+
+                //sleep time in ms
+                Thread.Sleep(10000);
+            } while (true);
+        }
+
+
+
+
     }
+
+
 }
