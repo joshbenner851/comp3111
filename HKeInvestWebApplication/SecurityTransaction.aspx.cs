@@ -46,7 +46,7 @@ namespace HKeInvestWebApplication.EmployeeOnly
             {
                 buyBondTrust.Style.Add("display", "none");
                 sellBondTrust.Style.Add("display", "");
-                if(SecurityType.SelectedValue == "Bond/Unit Trust")
+                if (SecurityType.SelectedValue == "Bond/Unit Trust")
                 {
                     sellBondTrust.Style.Add("display", "");
                 }
@@ -93,7 +93,7 @@ namespace HKeInvestWebApplication.EmployeeOnly
 
             //if(SecurityType.SelectedValue == "Stock" && TransactionType.SelectedValue == "Buy")
             //{
-                
+
             //    InvalidStockSharesQuantity.Text = sharesAmountIsValid(StockSharesQuantity.Text,TransactionType.Text, StockCode.Text.Trim());
             //}
             //else if(SecurityType.SelectedValue == "Stock" && TransactionType.SelectedValue == "Sell")
@@ -106,14 +106,14 @@ namespace HKeInvestWebApplication.EmployeeOnly
         {
             if (TransactionType.SelectedValue == "Sell")
             {
-                //int shares;
-                //Int32.TryParse(BondTrustSharesSelling.Text, out shares);
-                //if (shares <= 0)
-                //{
-                //    InvalidBondTrustSharesSelling.Text = "Please a enter a postivie number of shares to sell";
-                //}
-                var type = SecurityType.SelectedValue == "Bond" ? "bond" : "unit trust"; 
-                InvalidBondTrustSharesSelling.Text = stockSharesAmountIsValid(BondTrustCode.Text.Trim(), BondTrustSharesSelling.Text, "");
+                int shares;
+                Int32.TryParse(BondTrustSharesSelling.Text, out shares);
+                if (shares <= 0)
+                {
+                    InvalidBondTrustSharesSelling.Text = "Please a enter a positive number of shares to sell";
+                }
+                var type = SecurityType.SelectedValue == "Bond" ? "bond" : "unit trust";
+                InvalidBondTrustSharesSelling.Text = bondSharesAmountIsValid(type, BondTrustCode.Text.Trim(), BondTrustSharesSelling.Text);
             }
         }
 
@@ -128,7 +128,8 @@ namespace HKeInvestWebApplication.EmployeeOnly
                 //    InvalidBondTrustSharesQuantity.Text = "Please a enter a positive dollar amount";
                 //}
                 var type = SecurityType.SelectedValue == "Bond" ? "bond" : "unit trust";
-                InvalidBondTrustSharesQuantity.Text = amountIsValid(type, BondTrustSharesQuantity.Text);
+                //TODO Check the actual availability
+                InvalidBondTrustSharesQuantity.Text = amountIsValid(type, BondTrustCode.Text.Trim(), BondTrustSharesQuantity.Text);
             }
         }
 
@@ -147,17 +148,17 @@ namespace HKeInvestWebApplication.EmployeeOnly
 
             DataTable temp = extData.getData(sql);
 
-            if(temp ==null || temp.Rows.Count == 0)
+            if (temp == null || temp.Rows.Count == 0)
             {
                 return -1;
             }
 
-           
+
             int sharesHeld = Int32.Parse(temp.Rows[0].ToString());
 
             //References order history to check if there are pending orders
             if (type.Equals("stock"))
-                {
+            {
                 //Get all current processed sell statements for Stocks
                 sql = "SELECT orderReference FROM OrderHistory WHERE accountNumber = '" +
                     accountNumber + "'";
@@ -215,7 +216,7 @@ namespace HKeInvestWebApplication.EmployeeOnly
                 //variable for checking if the assessed fee is greater than the minimmum fee
                 decimal minFeeCheck = 0m;
 
-                if(assets < 1000000m)
+                if (assets < 1000000m)
                 {
                     if (orderType.Equals("market"))
                     {
@@ -251,7 +252,7 @@ namespace HKeInvestWebApplication.EmployeeOnly
             }
             else
             {
-                if(assets < 500000m)
+                if (assets < 500000m)
                 {
                     if (buyOrSell.Equals("buy"))
                     {
@@ -283,9 +284,9 @@ namespace HKeInvestWebApplication.EmployeeOnly
         private decimal calculateFeesAtRate(DataTable transactions, decimal percentage)
         {
             decimal feeSum = 0;
-            foreach(DataRow row in transactions.Rows)
+            foreach (DataRow row in transactions.Rows)
             {
-                feeSum += Decimal.Parse(row["executeShares"].ToString()) * Decimal.Parse(row["executePrice"].ToString()); 
+                feeSum += Decimal.Parse(row["executeShares"].ToString()) * Decimal.Parse(row["executePrice"].ToString());
             }
 
             return percentage * feeSum;
@@ -312,13 +313,13 @@ namespace HKeInvestWebApplication.EmployeeOnly
 
             decimal securitySum = 0;
 
-            foreach(DataRow Row in securities.Rows)
+            foreach (DataRow Row in securities.Rows)
             {
                 //Assuming that the securities stored in the external database are returned in HKD
 
                 //Iterate and get the value of the currency based on the type and code
                 decimal currentPrice = extFunction.getSecuritiesPrice(Row["type"].ToString(), Row["code"].ToString());
-                if(currentPrice == -1)
+                if (currentPrice == -1)
                 {
                     //Throw some error;
                     break;
@@ -348,6 +349,65 @@ namespace HKeInvestWebApplication.EmployeeOnly
 
             return temp.Rows[0]["accountNumber"].ToString();
 
+        }
+
+        //UNTESTED
+        //To be threaded
+        public void updateLocalOrderStatus()
+        {
+            string sql = "SELECT referenceNumber FROM OrderHistory WHERE status = 'pending'";
+            DataTable orderNums = extData.getData(sql);
+            SqlTransaction trans = extData.beginTransaction();
+            foreach (DataRow row in orderNums.Rows)
+            {
+                string referenceNumber = row["referenceNumber"].ToString().Trim();
+                string orderStatus = extFunction.getOrderStatus(referenceNumber);
+                if(orderStatus != "pending")
+                {
+                    sql = "UPDATE OrderHistory SET status ='" + orderStatus +"' WHERE referenceNumber = '" + referenceNumber + "'";
+                    extData.setData(sql, trans);
+                }
+               
+            }
+            extData.commitTransaction(trans);
+        }
+
+        //Inefficent as hell
+        //UNTESTED
+        public void updateLocalTransaction()
+        {
+            string sql = "SELECT referenceNumber FROM OrderHistory";
+            DataTable orderNums = extData.getData(sql);
+            SqlTransaction trans = extData.beginTransaction();
+            foreach (DataRow row in orderNums.Rows)
+            {
+                string referenceNumber = row["referenceNumber"].ToString().Trim();
+                DataTable transactions = extFunction.getOrderTransaction(referenceNumber);
+                foreach(DataRow tRow in transactions.Rows)
+                {
+                    string tID = tRow["transactionNumber"].ToString();
+
+                    //Check if transaction number already inserted
+
+                    //Check to see that nothing is returned from the prior functiion
+                    sql = "SELECT transactionNumber FROM Transactions WHERE transactionNumber = '" + tID + "'";
+                    DataTable localTrans = extData.getData(sql);
+                    if(localTrans == null || localTrans.Rows.Count == 0)
+                    {
+                        sql = "INSERT INTO Transactions (transactionNumber, executeDate, executeShares, executePrice, referenceNumber) VALUES ('" +
+                        tID + "', '" +
+                        tRow["executeDate"].ToString() + "', '" +
+                        tRow["executeShares"] + "', '" +
+                        tRow["executePrice"] + "', '" +
+                        referenceNumber + ")";
+                        extData.setData(sql, trans);
+                    }
+
+                    //Not sure if this will commit all transactions
+                }
+
+            }
+            extData.commitTransaction(trans);
         }
 
         protected void ExecuteOrderClick(object sender, EventArgs e)
@@ -398,13 +458,13 @@ namespace HKeInvestWebApplication.EmployeeOnly
                     }
                     else if (varTransactionType.Equals("Buy"))
                     {
-                        
+
                         InvalidStockSharesQuantity.Text = stockSharesAmountIsValid(varShares, TransactionType.Text, varStockCode);
-                        if(InvalidStockSharesQuantity.Text != "")
+                        if (InvalidStockSharesQuantity.Text != "")
                         {
                             return;
                         }
-                        
+
                         //Limit price = high price here
                         string result = extFunction.submitStockBuyOrder(varStockCode, varShares, varOrderType, varExpiryDate, varAllOrNone, varLimitPrice, varStopPrice);
 
@@ -433,7 +493,7 @@ namespace HKeInvestWebApplication.EmployeeOnly
                     }
                     else if (TransactionType.SelectedValue.Equals("Sell"))
                     {
-              
+
                         //Check sell price to see if stock is avlid
 
                         InvalidStockSharesQuantity.Text = stockSharesAmountIsValid(varShares, TransactionType.Text, varStockCode);
@@ -477,7 +537,7 @@ namespace HKeInvestWebApplication.EmployeeOnly
                     string varBondTrustCode = BondTrustCode.Text.ToString();
                     if (TransactionType.SelectedValue.Equals("Buy"))
                     {
-                       
+
                         string varBondTrustSharesAmount = BondTrustSharesQuantity.Text.ToString();
                         if (SecurityType.SelectedValue.Equals("Bond"))
                         {
@@ -491,28 +551,28 @@ namespace HKeInvestWebApplication.EmployeeOnly
                             {
                                 string result = extFunction.submitBondBuyOrder(varBondTrustCode, varBondTrustSharesAmount);
 
-                                if(result != null)
+                                if (result != null)
                                 {
                                     string sql = "INSERT INTO OrderHistory ([referenceNumber], [buyOrSell], [securityType], [securityCode], [dateSubmitted], [amount], [accountNumber]) VALUES ('" +
-                               result + "', '" +
-                               varTransactionType + "', '" +
-                               varSecurityType + "', '" +
-                               varBondTrustCode + "', '" +
-                               DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss tt") + "', '" +
-                               varBondTrustSharesAmount + "', '" +
+                                       result + "', '" +
+                                       varTransactionType + "', '" +
+                                       varSecurityType + "', '" +
+                                       varBondTrustCode + "', '" +
+                                       DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss tt") + "', '" +
+                                       varBondTrustSharesAmount + "', '" +
 
-                               accountNumber + "')";
+                                       accountNumber + "')";
 
                                     SqlTransaction trans = extData.beginTransaction();
                                     extData.setData(sql, trans);
                                     extData.commitTransaction(trans);
                                 }
-                               
+
                             }
                         }
-                        else if(SecurityType.SelectedValue.Equals("Unit Trust"))
+                        else if (SecurityType.SelectedValue.Equals("Unit Trust"))
                         {
-                            
+
                             var validSecurity = extFunction.getSecuritiesByCode("unit trust", varBondTrustCode);
                             if (validSecurity == null)
                             {
@@ -523,17 +583,17 @@ namespace HKeInvestWebApplication.EmployeeOnly
                             {
                                 string result = extFunction.submitUnitTrustBuyOrder(varBondTrustCode, varBondTrustSharesAmount);
 
-                                if(result !=null )
+                                if (result != null)
                                 {
                                     string sql = "INSERT INTO OrderHistory ([referenceNumber], [buyOrSell], [securityType], [securityCode], [dateSubmitted], [amount], [accountNumber]) VALUES ('" +
-                              result + "', '" +
-                              varTransactionType + "', '" +
-                              varSecurityType + "', '" +
-                              varBondTrustCode + "', '" +
-                              DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss tt") + "', '" +
-                              varBondTrustSharesAmount + "', '" +
+                                      result + "', '" +
+                                      varTransactionType + "', '" +
+                                      varSecurityType + "', '" +
+                                      varBondTrustCode + "', '" +
+                                      DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss tt") + "', '" +
+                                      varBondTrustSharesAmount + "', '" +
 
-                              accountNumber + "')";
+                                      accountNumber + "')";
 
                                     SqlTransaction trans = extData.beginTransaction();
                                     extData.setData(sql, trans);
@@ -560,17 +620,17 @@ namespace HKeInvestWebApplication.EmployeeOnly
                                 {
                                     string result = extFunction.submitBondSellOrder(varBondTrustCode, varBondTrustShares);
 
-                                    if(result != null)
+                                    if (result != null)
                                     {
                                         string sql = "INSERT INTO OrderHistory ([referenceNumber], [buyOrSell], [securityType], [securityCode], [dateSubmitted], [shares], [accountNumber]) VALUES ('" +
-result + "', '" +
-varTransactionType + "', '" +
-varSecurityType + "', '" +
-varBondTrustCode + "', '" +
-DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss tt") + "', '" +
-varBondTrustShares + "', '" +
+                                        result + "', '" +
+                                        varTransactionType + "', '" +
+                                        varSecurityType + "', '" +
+                                        varBondTrustCode + "', '" +
+                                        DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss tt") + "', '" +
+                                        varBondTrustShares + "', '" +
 
-accountNumber + "')";
+                                        accountNumber + "')";
 
                                         SqlTransaction trans = extData.beginTransaction();
                                         extData.setData(sql, trans);
@@ -591,17 +651,17 @@ accountNumber + "')";
                             {
                                 string result = extFunction.submitUnitTrustSellOrder(varBondTrustCode, varBondTrustShares);
 
-                                if(result != null)
+                                if (result != null)
                                 {
                                     string sql = "INSERT INTO OrderHistory ([referenceNumber], [buyOrSell], [securityType], [securityCode], [dateSubmitted], [shares], [accountNumber]) VALUES ('" +
-result + "', '" +
-varTransactionType + "', '" +
-varSecurityType + "', '" +
-varBondTrustCode + "', '" +
-DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss tt") + "', '" +
-varBondTrustShares + "', '" +
+                                        result + "', '" +
+                                        varTransactionType + "', '" +
+                                        varSecurityType + "', '" +
+                                        varBondTrustCode + "', '" +
+                                        DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss tt") + "', '" +
+                                        varBondTrustShares + "', '" +
 
-accountNumber + "')";
+                                        accountNumber + "')";
 
                                     SqlTransaction trans = extData.beginTransaction();
                                     extData.setData(sql, trans);
@@ -611,36 +671,53 @@ accountNumber + "')";
                         }
                     }
                 }
-               
+
             }
         }
 
-        private string amountIsValid(string securityType, string amount)
+        private string amountIsValid(string securityType, string code, string amount)
         {
             decimal number;
             if (!decimal.TryParse(amount, out number) || number <= 0)
             {
-                return("Invalid or missing dollar amount of " + securityType + " to buy.\nValue is '" + amount + "'.");
-               
+                return ("Invalid or missing dollar amount of " + securityType + " to buy.\nValue is '" + amount + "'.");
             }
+
+            //SQL query to get quantity of bonds or unit trusts owned
+            //Querying over the security holding's details
+
+            string accountNumber = getAccountNumber();
+
+            string sql = "SELECT shares FROM SecurityHolding WHERE accountNumber = '" +
+                accountNumber + "' AND type = '" +
+                securityType + "' AND code = '" +
+                code + "'";
+            DataTable qty = extData.getData(sql);
+
+            //Bonds or Unit trusts only
+            int availSecurities = Convert.ToInt32(qty.Rows[0]["shares"]);
+
+            if (availSecurities > number)
+            {
+                return "Not enough securites to sell";
+            }
+
             return "";
         }
 
         /**
         For Checking selling of bonds
         */
-        private string sharesIsValid(string securityType, string code, string shares)
+        private string bondSharesAmountIsValid(string securityType, string code, string shares)
         {
-            decimal number;
-            //SQL to check number of shares owned.
+            decimal numShares;
 
-            DataTable data = extFunction.getSecuritiesByCode(securityType, code);
+            decimal.TryParse(shares,out numShares);
 
-
-            if (!decimal.TryParse(shares, out number) || number <= 0)
+            if (numShares <= 0)
             {
-                return("Invalid or missing number of " + securityType + " shares to sell.\nValue is '" + shares + "'.");
-               
+                return ("Invalid or missing number of " + " shares to buy.\nValue is '" + shares + "'.");
+
             }
             return "";
         }
@@ -651,7 +728,7 @@ accountNumber + "')";
         private string stockSharesAmountIsValid(string shares, string typeOfTransaction, string stockCode)
         {
             decimal numShares;
-            decimal.TryParse(shares,out numShares);
+            decimal.TryParse(shares, out numShares);
             if (numShares <= 0)
             {
                 return "Shares is not a positive number number";
@@ -661,8 +738,8 @@ accountNumber + "')";
                 {
                     //Passing in empty stock code
                     if (stockCode != "")
-                    { 
-                    decimal availShares = numOfSharesAbleToSell("stock", stockCode);
+                    {
+                        decimal availShares = numOfSharesAbleToSell("stock", stockCode);
                         if (numShares > availShares)
                         {
                             return ("Shares to Sell is not valid. There are not that many shares to sell.\nValue is '" + shares + "'.");
@@ -678,7 +755,7 @@ accountNumber + "')";
                 }
             }
             return "";
-            
+
         }
 
         private string orderTypeIsValid(string buyOrSell, string orderType, string expiryDay, string allOrNone, string limitPrice, string stopPrice)
@@ -691,21 +768,21 @@ accountNumber + "')";
             if (!(orderType == "market" || orderType == "limit" || orderType == "stop" || orderType == "stop limit"))
             {
                 return "Invalid or missing stock order type.\nValue is '" + orderType + "'.";
-                
+
             }
 
             // Check if expiry day is valid.
             if (!int.TryParse(expiryDay, out intNumber) || intNumber < 1 || intNumber > 7)
             {
-                return("Invalid or missing expiry day.\nValue is '" + expiryDay + "'.");
-               
+                return ("Invalid or missing expiry day.\nValue is '" + expiryDay + "'.");
+
             }
 
             // Check if all or none is valid.
             if (!(allOrNone.ToUpper() == "Y" || allOrNone.ToUpper() == "N"))
             {
-                return("Invalid or missing all or none.\nValue is '" + allOrNone + "'.");
-               
+                return ("Invalid or missing all or none.\nValue is '" + allOrNone + "'.");
+
             }
 
             // Check if limit price is valid.
@@ -713,8 +790,8 @@ accountNumber + "')";
             {
                 if (!decimal.TryParse(limitPrice, out decLimitPrice) || decLimitPrice <= 0)
                 {
-                    return("Invalid or missing limit price.\nValue is '" + limitPrice + "'.");
-                    
+                    return ("Invalid or missing limit price.\nValue is '" + limitPrice + "'.");
+
                 }
             }
 
@@ -723,8 +800,8 @@ accountNumber + "')";
             {
                 if (!decimal.TryParse(stopPrice, out decStopPrice) || decStopPrice <= 0)
                 {
-                    return("Invalid or missing stop price.\nValue is '" + stopPrice + "'.");
-                   
+                    return ("Invalid or missing stop price.\nValue is '" + stopPrice + "'.");
+
                 }
 
             }
@@ -736,16 +813,16 @@ accountNumber + "')";
                 {
                     if (decStopPrice > decLimitPrice)
                     {
-                        return("Stock buy order:\nstop price must be <= limit price.");
-                        
+                        return ("Stock buy order:\nstop price must be <= limit price.");
+
                     }
                 }
                 else // Sell order.
                 {
                     if (decStopPrice < decLimitPrice)
                     {
-                        return("Stock sell order:\n stop price must be >= limit price.");
-                        
+                        return ("Stock sell order:\n stop price must be >= limit price.");
+
                     }
                 }
             }

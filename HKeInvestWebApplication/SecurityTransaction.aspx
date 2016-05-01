@@ -33,7 +33,7 @@
             <div id="bondtrust" runat="server" style="display:none;"> 
                  <div class="form-group">
                      <asp:Label AssociatedControlID="BondTrustCode" runat="server" Text="Bond/Trust Code:"></asp:Label>
-                    <asp:TextBox ID="BondTrustCode" runat="server" TextMode="Month"></asp:TextBox>
+                    <asp:TextBox ID="BondTrustCode" runat="server"></asp:TextBox>
                     <asp:RegularExpressionValidator runat="server" ValidationExpression="^[\d]+$" ControlToValidate="BondTrustCode" Display="Dynamic" EnableClientScript="false" ErrorMessage="Must contain only digits" CssClass="text-danger"></asp:RegularExpressionValidator>
                     <asp:Label ID="InvalidBondTrustCode" runat="server" CssClass="text-danger"></asp:Label>
                  </div>
