@@ -214,7 +214,7 @@ namespace HKeInvestWebApplication.Code_File
                         {
                             foreach (DataRow tRow in transactions.Rows)
                             {
-                                costOfOrder += decimal.Parse(row["executeShares"].ToString()) * decimal.Parse(row["executePrice"].ToString());
+                                costOfOrder += decimal.Parse(tRow["executeShares"].ToString()) * decimal.Parse(tRow["executePrice"].ToString());
                             }
                         }
 
@@ -244,7 +244,7 @@ namespace HKeInvestWebApplication.Code_File
         //Running on thread for backups
         public void updateLocalTransaction()
         {
-            string sql = "SELECT referenceNumber FROM OrderHistory";
+           string sql = "SELECT referenceNumber FROM OrderHistory";
             DataTable orderNums = extData.getData(sql);
 
                 foreach (DataRow row in orderNums.Rows)
@@ -259,9 +259,10 @@ namespace HKeInvestWebApplication.Code_File
                         //Check if transaction number already inserted
 
                         //Check to see that nothing is returned from the prior functiion
-                        SqlTransaction trans = extData.beginTransaction();
+                       
                         sql = "SELECT transactionNumber FROM Transactions WHERE transactionNumber = '" + tID + "'";
                         DataTable localTrans = extData.getData(sql);
+                        SqlTransaction trans = extData.beginTransaction();
                         if (localTrans == null || localTrans.Rows.Count == 0)
                         {
                             sql = "INSERT INTO Transactions (transactionNumber, executeDate, executeShares, executePrice, referenceNumber) VALUES ('" +
@@ -269,7 +270,7 @@ namespace HKeInvestWebApplication.Code_File
                             tRow["executeDate"].ToString() + "', '" +
                             tRow["executeShares"] + "', '" +
                             tRow["executePrice"] + "', '" +
-                            referenceNumber + ")";
+                            referenceNumber + "')";
                             extData.setData(sql, trans);
                         }
                         extData.commitTransaction(trans);
