@@ -62,30 +62,6 @@ namespace HKeInvestWebApplication
             return true;
         }
 
-
-        protected void ShowProfitLoss_Click(object sender, EventArgs e)
-        {
-
-           
-            
-            
-                string sql = "SELECT securityType, securityCode, shares from Order where securityCode=" + SecurityCode.Text; // Complete the SQL statement.
-                
-                DataTable dtClient = myHKeInvestData.getData(sql);
-                if (dtClient == null) { return; } // If the DataSet is null, a SQL error occurred.
-                                                  //myHKeInvestData.getAggregateValue(“select count(*) from [Person]”);
-                                                  // If no result is returned by the SQL statement, then display a message.
-                if (dtClient.Rows.Count == 0)
-                {
-                    //lblResultMessage.Text = Context.User.Identity.GetUserName();
-                    //gvSecurityHolding.Visible = false;
-                    InvalidCode.Text = "You don't have any transactions with this security";
-                    return;
-                }
-
-
-        }
-
         protected void CustomValidator1_ServerValidate(object source, ServerValidateEventArgs args)
         {
             if (!securityCodeIsValid(SecurityTypeList.SelectedValue, SecurityCode.Text))
@@ -93,5 +69,47 @@ namespace HKeInvestWebApplication
                 InvalidCode.Text = "This code is invalid";
             }
         }
+
+
+        protected void ShowProfitLoss_Click(object sender, EventArgs e)
+        {
+
+            GetIndividualSecurity();
+
+        }
+
+        private void GetIndividualSecurity()
+        {
+            string sql = "SELECT distinct securityType, name, securityCode, shares, amount,  " +
+                "cast('0.00' AS numeric(12,2)) AS dollarBuying, " +
+                "cast('0.00' AS numeric(12,2)) AS dollarSelling, " +
+                "cast('0.00' AS numeric(12,2)) AS totalFees, " +
+                "cast('0.00' AS numeric(12,2)) AS profitLoss " +
+                "from OrderHistory where securityCode=" + SecurityCode.Text; // Complete the SQL statement.
+            DataTable dtClient = myHKeInvestData.getData(sql);
+            if (dtClient == null) { return; } // If the DataSet is null, a SQL error occurred.
+                                              //myHKeInvestData.getAggregateValue(“select count(*) from [Person]”);
+                                              // If no result is returned by the SQL statement, then display a message.
+            if (dtClient.Rows.Count == 0)
+            {
+                //lblResultMessage.Text = Context.User.Identity.GetUserName();
+                SingleSecurity.Visible = false;
+                InvalidCode.Text = "You don't have any transactions with this security";
+                return;
+            }
+            //var shares = 
+            var amount = myHKeInvestData.getAggregateValue("select sum(amount) from OrderHistory where securityCode=" + SecurityCode.Text);
+
+            dtClient.Rows[0]["amount"] = amount;
+
+            // Bind the GridView to the DataTable.
+            SingleSecurity.DataSource = dtClient;
+            SingleSecurity.DataBind();
+
+            // Set the visibility of GridView data.
+            SingleSecurity.Visible = true;
+        }
     }
+
+   
 }
