@@ -113,7 +113,7 @@ namespace HKeInvestWebApplication.EmployeeOnly
                     InvalidBondTrustSharesSelling.Text = "Please a enter a positive number of shares to sell";
                 }
                 var type = SecurityType.SelectedValue == "Bond" ? "bond" : "unit trust";
-                InvalidBondTrustSharesSelling.Text = bondSharesAmountIsValid(type, BondTrustCode.Text.Trim(), BondTrustSharesSelling.Text);
+                InvalidBondTrustSharesSelling.Text = bondSharesAmountIsValid(type, BondTrustCode.Text.Trim(), BondTrustSharesSelling.Text, "sell");
             }
         }
 
@@ -351,12 +351,15 @@ namespace HKeInvestWebApplication.EmployeeOnly
                     else if (TransactionType.SelectedValue.Equals("Sell"))
                     {
                         string varBondTrustShares = BondTrustSharesSelling.Text.ToString();
-                        if (SecurityType.SelectedValue.Equals("Bond"))
-                        {
+
+                        
+
                             if (SecurityType.SelectedValue.Equals("Bond"))
                             {
                                 var validSecurity = extFunction.getSecuritiesByCode("bond", varBondTrustCode);
-                                if (validSecurity == null)
+
+                            string validSharesAmount = bondSharesAmountIsValid("bond", varBondTrustCode, varBondTrustShares, "sell");
+                                if (validSecurity == null || validSharesAmount != "")
                                 {
                                     //Buy order was not succesfully submitted
                                     InvalidBondTrustCode.Text = "The code given does not exist";
@@ -387,12 +390,14 @@ namespace HKeInvestWebApplication.EmployeeOnly
                                         extData.commitTransaction(trans);
                                     }
                                 }
-                            }
+                            
                         }
                         else if (SecurityType.SelectedValue.Equals("Unit Trust"))
                         {
                             var validSecurity = extFunction.getSecuritiesByCode("unit trust", varBondTrustCode);
-                            if (validSecurity == null)
+
+                            string validSharesAmount = bondSharesAmountIsValid("unit trust", varBondTrustCode, varBondTrustShares, "sell");
+                            if (validSecurity == null || validSharesAmount!="")
                             {
                                 //Buy order was not succesfully submitted
                                 InvalidBondTrustCode.Text = "The code given does not exist";
@@ -472,7 +477,7 @@ namespace HKeInvestWebApplication.EmployeeOnly
         /**
         For Checking selling of bonds
         */
-        private string bondSharesAmountIsValid(string securityType, string code, string shares)
+        private string bondSharesAmountIsValid(string securityType, string code, string shares, string typeOfTransaction)
         {
             decimal numShares;
 
@@ -482,6 +487,20 @@ namespace HKeInvestWebApplication.EmployeeOnly
             {
                 return ("Invalid or missing number of " + " shares to buy.\nValue is '" + shares + "'.");
 
+            }
+            else
+            {
+                if (typeOfTransaction == "sell")
+                {
+                    if (code != "")
+                    {
+                        decimal availShares = numOfSharesAbleToSell(securityType, code);
+                        if (numShares > availShares)
+                        {
+                            return ("Shares to Sell is not valid. There are not that many shares to sell.\nValue is '" + shares + "'.");
+                        }
+                    }
+                }
             }
             return "";
         }
@@ -559,7 +578,7 @@ namespace HKeInvestWebApplication.EmployeeOnly
             decimal.TryParse(shares, out numShares);
             if (numShares <= 0)
             {
-                return "Shares is not a positive number number";
+                return "Shares is not a positive number";
             }
             else {
                 if (typeOfTransaction == "Sell")
