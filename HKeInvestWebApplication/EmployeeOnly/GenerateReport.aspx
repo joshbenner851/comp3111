@@ -66,23 +66,23 @@
             <asp:Label ID="SecurityError" runat="server" Text="" Visible="False"></asp:Label>
         </div>
 
-        <!--Part C-->
+                <!--Part C-->
         <div id="ActiveOrders">
             <h3>Active Orders</h3>
             <hr />
             <asp:GridView ID="gvActiveOrders" runat="server" AutoGenerateColumns="False">
                 <Columns>
-                    <asp:BoundField DataField="referenceNo" HeaderText="Reference No." ReadOnly="True" SortExpression="referenceNo" />
-                    <asp:BoundField DataField="orderType" HeaderText="Order Type" ReadOnly="True" SortExpression="orderType" />
+                    <asp:BoundField DataField="referenceNumber" HeaderText="Reference No." ReadOnly="True" SortExpression="referenceNumber" />
+                    <asp:BoundField DataField="buyOrSell" HeaderText="Order Type" ReadOnly="True" SortExpression="orderType" />
                     <asp:BoundField DataField="securityType" ReadOnly="True" HeaderText="Security Type" SortExpression="securityType" />
-                    <asp:BoundField DataField="code" HeaderText="Code" ReadOnly="True" />
+                    <asp:BoundField DataField="securityCode" HeaderText="Code" ReadOnly="True" />
                     <asp:BoundField DataField="name" ReadOnly="True" HeaderText="Name" />
-                    <asp:BoundField DataField="submitted" ReadOnly="True" HeaderText="Date Submitted" />
+                    <asp:BoundField DataField="dateSubmitted" ReadOnly="True" HeaderText="Date Submitted" />
                     <asp:BoundField DataField="status" ReadOnly="True" HeaderText="Status" />
-                    <asp:BoundField DataField="sharesRequested" ReadOnly="True" HeaderText="Shares Requested" />
+                    <asp:BoundField DataField="shares" ReadOnly="True" HeaderText="Shares Requested" />
                     <asp:BoundField DataField="limitPrice" ReadOnly="True" HeaderText="Limit Price" />
                     <asp:BoundField DataField="stopPrice" ReadOnly="True" HeaderText="Stop Price" />
-                    <asp:BoundField DataField="Expiry Date" ReadOnly="True" HeaderText="Expiry Date" />
+                    <asp:BoundField DataField="expiryDay" ReadOnly="True" HeaderText="Expiry Date" />
                 </Columns>
             </asp:GridView>
             <asp:Label ID="ActiveError" runat="server" Visible="False"></asp:Label>
@@ -95,12 +95,12 @@
             <asp:Label runat="server" Text="Begin Date: " AssociatedControlID="BeginDate"></asp:Label><asp:TextBox ID="BeginDate" runat="server" TextMode="Date"></asp:TextBox><asp:Label runat="server" Text="End Date: " AssociatedControlID="EndDate"></asp:Label><asp:TextBox ID="EndDate" runat="server" TextMode="Date"></asp:TextBox>
             <asp:GridView ID="gvOrderHistory" runat="server" AutoGenerateColumns="False" AllowSorting="True" OnSorting="gvOrderHistory_Sorting">
                 <Columns>
-                    <asp:BoundField DataField="referenceNo" HeaderText="Reference No." ReadOnly="True" />
-                    <asp:BoundField DataField="orderType" HeaderText="Order Type" ReadOnly="True" />
+                    <asp:BoundField DataField="referenceNumber" HeaderText="Reference No." ReadOnly="True" />
+                    <asp:BoundField DataField="buyOrSell" HeaderText="Order Type" ReadOnly="True" />
                     <asp:BoundField DataField="securityType" ReadOnly="True" HeaderText="Security Type" SortExpression="securityType" />
-                    <asp:BoundField DataField="code" HeaderText="Code" ReadOnly="True" />
+                    <asp:BoundField DataField="securityCode" HeaderText="Code" ReadOnly="True" />
                     <asp:BoundField DataField="name" ReadOnly="True" HeaderText="Name" SortExpression="name" />
-                    <asp:BoundField DataField="submitted" ReadOnly="True" HeaderText="Date Submitted" />
+                    <asp:BoundField DataField="dateSubmitted" ReadOnly="True" HeaderText="Date Submitted" />
                     <asp:BoundField DataField="status" ReadOnly="True" HeaderText="Status" SortExpression="status" />
                 </Columns>
             </asp:GridView>
