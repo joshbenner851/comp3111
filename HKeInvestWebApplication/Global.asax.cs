@@ -9,7 +9,6 @@ using System.Web.SessionState;
 using System.Threading;
 using Microsoft.AspNet.Identity;
 using HKeInvestWebApplication.Code_File;
-using HKeInvestWebApplication.Alerts;
 
 namespace HKeInvestWebApplication
 {
