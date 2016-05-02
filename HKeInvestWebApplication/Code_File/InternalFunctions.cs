@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Net.Mail;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -19,7 +20,7 @@ namespace HKeInvestWebApplication.Code_File
         ExternalFunctions extFunction = new ExternalFunctions();
         HKeInvestData extData = new HKeInvestData();
 
-       
+
 
         //Calculate the fees for the order (will calculate for the set of transactions)     
         public decimal calculateFees(string referenceNumber, string accountNumber)
@@ -177,7 +178,8 @@ namespace HKeInvestWebApplication.Code_File
             string sql = "SELECT referenceNumber, accountNumber, buyOrSell, name, securityType, securityCode, stockOrderType, dateSubmitted, feesPaid FROM OrderHistory WHERE status = 'pending'";
             //string accountNumber = getAccountNumber();
             DataTable orderNums = extData.getData(sql);
-            if(orderNums != null && orderNums.Rows != null) {
+            if (orderNums != null && orderNums.Rows != null)
+            {
                 foreach (DataRow row in orderNums.Rows)
                 {
                     string referenceNumber = row["referenceNumber"].ToString().Trim();
@@ -236,8 +238,12 @@ namespace HKeInvestWebApplication.Code_File
                         //orderReference, accountNumber, buyorsell, securitycode, securityname, (stock order type), dateSubmited, totalnumSharesBoughtt, executedDollarAmount, feeCharged, (FOREACH transaction) transactionNumber, date executed, quantity of shares, price per share
                         string address = "";//get from sql statement
 
-                        sql = "SELECT email FROM Account WHERE accountNumber = '" + accountNumber + "' AND isPrimary = 'Y'";
-                        address = extData.getData(sql).Rows[0]["email"].ToString().Trim();
+                        sql = "SELECT email FROM Client WHERE accountNumber = '" + accountNumber + "' AND isPrimary = 'Y'";
+                        DataTable tempForAddress = extData.getData(sql);
+                        if (tempForAddress != null && tempForAddress.Rows.Count > 0)
+                        {
+                            address = tempForAddress.Rows[0]["email"].ToString().Trim();
+                        }
 
                         string subject = "Order Number: " + referenceNumber + " has been " + orderStatus;
                         string body = "Order Reference Number: " + referenceNumber + "\n" +
@@ -260,7 +266,7 @@ namespace HKeInvestWebApplication.Code_File
                                 body += "Transaction number: " + tRow["transactionNumber"].ToString() + "\n" +
                                     "Execution Date: " + tRow["executeDate"].ToString() + "\n" +
                                     "Quantity of Shares: " + tRow["executeShares"].ToString() + "\n" +
-                                    "Price per share: " + tRow["executePrice"].ToString()+"\n"; 
+                                    "Price per share: " + tRow["executePrice"].ToString() + "\n";
                             }
                         }
                         body += "\n Sincerely yours, the HKeInvestment Team. Contact our hotline if there is any issues with your invoice.";
@@ -278,6 +284,16 @@ namespace HKeInvestWebApplication.Code_File
         {
             //Email setup code
 
+            MailMessage mail = new MailMessage();
+            SmtpClient emailServer = new SmtpClient("smtp.cse.ust.hk");
+
+            mail.From = new MailAddress("comp3111_team106@cse.ust.hk", "HKeInvest Alerts");
+            mail.To.Add(address);
+            mail.Subject = subject;
+            mail.Body = body;
+
+            emailServer.Send(mail);
+
         }
 
         //Inefficent as hell
@@ -285,14 +301,15 @@ namespace HKeInvestWebApplication.Code_File
         //Running on thread for backups
         public void updateLocalTransaction()
         {
-           string sql = "SELECT referenceNumber FROM OrderHistory";
+            string sql = "SELECT referenceNumber FROM OrderHistory";
             DataTable orderNums = extData.getData(sql);
 
-                foreach (DataRow row in orderNums.Rows)
+            foreach (DataRow row in orderNums.Rows)
+            {
+                string referenceNumber = row["referenceNumber"].ToString().Trim();
+                DataTable transactions = extFunction.getOrderTransaction(referenceNumber);
+                if (transactions != null && transactions.Rows != null)
                 {
-                    string referenceNumber = row["referenceNumber"].ToString().Trim();
-                    DataTable transactions = extFunction.getOrderTransaction(referenceNumber);
-                    if (transactions != null && transactions.Rows != null) {
                     foreach (DataRow tRow in transactions.Rows)
                     {
                         string tID = tRow["transactionNumber"].ToString();
@@ -300,7 +317,7 @@ namespace HKeInvestWebApplication.Code_File
                         //Check if transaction number already inserted
 
                         //Check to see that nothing is returned from the prior functiion
-                       
+
                         sql = "SELECT transactionNumber FROM Transactions WHERE transactionNumber = '" + tID + "'";
                         DataTable localTrans = extData.getData(sql);
                         SqlTransaction trans = extData.beginTransaction();
@@ -320,7 +337,7 @@ namespace HKeInvestWebApplication.Code_File
                     }
                 }
             }
-            
+
         }
     }
 }
