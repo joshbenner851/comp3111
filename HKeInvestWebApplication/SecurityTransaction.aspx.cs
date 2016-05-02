@@ -156,6 +156,7 @@ namespace HKeInvestWebApplication.EmployeeOnly
                     //Sorry for bad naming convention
                     string varStockCode = StockCode.Text.ToString();
                     string varShares = StockSharesQuantity.Text.ToString();
+                    varShares = decimal
                     string varOrderType = "";
                     string varExpiryDate = DaysUntilExpiration.SelectedValue;
                     string varAllOrNone = AllOrNone.Checked == true ? "Y" : "N";

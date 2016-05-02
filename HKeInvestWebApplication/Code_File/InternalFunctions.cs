@@ -192,7 +192,7 @@ namespace HKeInvestWebApplication.Code_File
 
                         decimal fees = calculateFees(referenceNumber, accountNumber);
                         SqlTransaction trans = extData.beginTransaction();
-                        sql = "UPDATE OrderHistory SET status ='" + orderStatus + "', feesPaid = '" + fees.ToString() + "' WHERE referenceNumber = '" + referenceNumber + "'";
+                        sql = "UPDATE OrderHistory SET status ='" + orderStatus + "', feesPaid = '" + fees + "' WHERE referenceNumber = '" + referenceNumber + "'";
                         extData.setData(sql, trans);
                         extData.commitTransaction(trans);
                         //Now that the order has been completed fees can be calculated and applied to the balance in account and the feespaid in orderhistory
@@ -288,11 +288,11 @@ namespace HKeInvestWebApplication.Code_File
             SmtpClient emailServer = new SmtpClient("smtp.cse.ust.hk");
 
             mail.From = new MailAddress("comp3111_team106@cse.ust.hk", "HKeInvest Alerts");
-            mail.To.Add(address);
+            mail.To.Add("bennerster@gmail.com"); //Fix this later
             mail.Subject = subject;
             mail.Body = body;
 
-            emailServer.Send(mail);
+            //emailServer.Send(mail);
 
         }
 
