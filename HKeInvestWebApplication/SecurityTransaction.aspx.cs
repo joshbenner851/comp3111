@@ -291,7 +291,7 @@ namespace HKeInvestWebApplication.EmployeeOnly
                                 {
 
                                     //Yes. This is a redundant execution
-                                    name = extFunction.getSecuritiesByCode("stock", varBondTrustCode).Rows[0]["name"].ToString().Trim();
+                                    name = extFunction.getSecuritiesByCode("bond", varBondTrustCode).Rows[0]["name"].ToString().Trim();
 
                                     string sql = "INSERT INTO OrderHistory ([referenceNumber], [buyOrSell], [securityType], [securityCode], [dateSubmitted], [amount], [accountNumber], [name]) VALUES ('" +
                                        result + "', '" +

@@ -233,6 +233,11 @@ namespace HKeInvestWebApplication.Code_File
                         sql = "UPDATE Account SET balance = '" + balance + "' WHERE accountNumber = '" + accountNumber + "'";
                         extData.commitTransaction(trans);
 
+
+
+                        string varSecurityType = row["securityType"].ToString();
+                        string varSecurityCode = row["securityCode"].ToString();
+
                         //Now that the order has been completed. Send email
 
                         //orderReference, accountNumber, buyorsell, securitycode, securityname, (stock order type), dateSubmited, totalnumSharesBoughtt, executedDollarAmount, feeCharged, (FOREACH transaction) transactionNumber, date executed, quantity of shares, price per share
@@ -249,9 +254,9 @@ namespace HKeInvestWebApplication.Code_File
                         string body = "Order Reference Number: " + referenceNumber + "\n" +
                             "Account Number: " + accountNumber + "\n" +
                             "Buy or Sell Order: " + buyOrSell + "\n" +
-                            "Security Code: " + row["securityCode"].ToString() + "\n" +
+                            "Security Code: " + varSecurityCode + "\n" +
                             "Security Name: " + row["name"].ToString() + "\n";
-                        if (row["securityType"].Equals("stock"))
+                        if (varSecurityType.Equals("stock"))
                         {
                             body += "Stock Order Type: " + row["stockOrderType"].ToString() + "\n";
                         }
@@ -272,7 +277,7 @@ namespace HKeInvestWebApplication.Code_File
                         body += "\n Sincerely yours, the HKeInvestment Team. Contact our hotline if there is any issues with your invoice.";
 
                         // Check that the email is not missing a sender's address, a subject, or a body
-                        if (address != null && subject != null && body !=null)
+                        if (address != null && subject != null && body !=null && address!= "")
                         {
                             sendInvoiceEmail(address, subject, body);
                         }
@@ -280,6 +285,81 @@ namespace HKeInvestWebApplication.Code_File
                         {
                             // TODO: Handle this
                         }
+
+
+                        //Get base of transaction
+                        //Should probably store in the local database as well
+                        string currencyBase = "";
+                        DataTable currencyBaseTable = extFunction.getSecuritiesByCode(varSecurityType, varSecurityCode);
+                        if(currencyBaseTable!=null && currencyBaseTable.Rows.Count > 0)
+                        {
+                            //All stocks lack a currency base
+                            if (varSecurityType.Equals("stock"))
+                            {
+                               
+                                currencyBase = "HKD";
+                            }
+                            else
+                            {
+                                currencyBase = currencyBaseTable.Rows[0]["base"].ToString();
+                            }
+                        }
+
+                        /////////////////////////UPDATE SECURITY HOLDING DETAILS///////////////////////////////////////
+
+                        sql = "SELECT * FROM SecurityHolding WHERE accountNumber = '" + accountNumber + "' AND type = '" + varSecurityType + "' AND code = '" + varSecurityCode + "'";
+                        DataTable curSecurityHolding = extData.getData(sql);
+
+                        //Checking the values of the secuityholding
+                        if (curSecurityHolding == null || curSecurityHolding.Rows.Count == 0)
+                        {
+                            if (buyOrSell.Equals("buy"))
+                            {
+                                trans = extData.beginTransaction();
+                                sql = "INSERT INTO SecurityHolding (accountNumber, type, code, name, shares, base) VALUES ('" +
+                                    accountNumber + "', '" +
+                                    varSecurityType + "', '" +
+                                    varSecurityCode + "', '" +
+                                    row["name"].ToString() + "', '" +
+                                    totalSharesExecuted.ToString() + "', '" +
+                                    currencyBase + "')";
+                                extData.setData(sql, trans);
+                                extData.commitTransaction(trans);
+                            }
+                            else
+                            {
+                                //THROW SOME ERROR
+                            }
+                        }
+                        else
+                        {
+
+                            //current number of shares held
+                            decimal curShares = decimal.Parse(curSecurityHolding.Rows[0]["shares"].ToString());
+
+                            trans = extData.beginTransaction();
+                            sql = "";
+                            if (buyOrSell.Equals("buy"))
+                            {
+                                curShares += totalSharesExecuted;
+                            }
+                            else
+                            {
+                                curShares -= totalSharesExecuted;
+                            }
+                            if (curShares <= 0m)
+                            {
+                                sql = "DELETE FROM SecurityHolding WHERE accountNumber = '" + accountNumber + "' AND type = '" + varSecurityType + "' AND code = '" + varSecurityCode + "'"; 
+                            }
+                            else
+                            {
+                                sql = "UPDATE SecurityHolding SET shares ='" + curShares + "' WHERE accountNumber = '" + accountNumber + "' AND type = '" + varSecurityType + "' AND code = '" + varSecurityCode + "'";
+                            }
+                            extData.setData(sql, trans);
+                            extData.commitTransaction(trans);
+                        }
+
+                       
                     }
                 }
             }
