@@ -104,8 +104,22 @@
                     <asp:BoundField DataField="status" ReadOnly="True" HeaderText="Status" SortExpression="status" />
                 </Columns>
             </asp:GridView>
-                        <asp:Label ID="HistoryError" runat="server">Please select a time interval</asp:Label>
+            <asp:Label ID="HistoryError" runat="server">Please select a time interval</asp:Label>
         </div>
 
+        <!--Part E-->
+        <div>
+            <h3>Transactions</h3>
+            <asp:Label runat="server" Text="Reference Number" AssociatedControlID="RefNumber"></asp:Label><asp:TextBox ID="RefNumber" runat="server"></asp:TextBox>
+            <asp:GridView ID="gvTransactions" runat="server" AutoGenerateColumns="false">
+                <Columns>
+                     <asp:BoundField DataField="transactionNumber" ReadOnly="True" HeaderText="Transaction No." />
+                     <asp:BoundField DataField="executeDate" ReadOnly="True" HeaderText="Date Executed" />
+                     <asp:BoundField DataField="executeShares" ReadOnly="True" HeaderText="Quantity Executed" />
+                     <asp:BoundField DataField="executePrice" ReadOnly="True" HeaderText="Price Per Share" />
+                </Columns>
+            </asp:GridView>
+            <asp:Label ID="TransactionError" runat="server" Text="" Visible="False"></asp:Label>
+        </div>
     </div>
 </asp:Content>

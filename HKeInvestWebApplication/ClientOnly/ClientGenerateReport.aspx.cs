@@ -182,6 +182,23 @@ namespace HKeInvestWebApplication.ClientOnly
                 gvOrderHistory.DataBind();
                 Session["HistoryTable"] = myHKeInvestCode.unloadGridView(gvOrderHistory);
             }
+
+            //PART E
+            TransactionError.Visible = false;
+            gvTransactions.Visible = true;
+            sql = "select transactionNumber, executeDate, executeShares, executePrice from Transactions where referenceNumber='" + RefNumber.Text.Trim() + "'";
+            data = myHKeInvestData.getData(sql);
+            if (data.Rows.Count == 0)
+            {
+                TransactionError.Text = "No transactions found";
+                TransactionError.Visible = true;
+                gvTransactions.Visible = false;
+            }
+            else
+            {
+                gvTransactions.DataSource = data;
+                gvTransactions.DataBind();
+            }
         }
 
         /*
