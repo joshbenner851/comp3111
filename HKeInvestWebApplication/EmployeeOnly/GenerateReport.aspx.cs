@@ -162,8 +162,41 @@ namespace HKeInvestWebApplication
                 gvActiveOrders.DataSource = data;
                 gvActiveOrders.DataBind();
             }
-            
+
             //PART D
+            string beginDate = BeginDate.Text.Trim();
+            string endDate = EndDate.Text.Trim();
+            gvOrderHistory.Visible = true;
+            HistoryError.Visible = false;
+            sql = "select referenceNumber, buyOrSell, securityType, securityCode, name, dateSubmitted, status from OrderHistory where accountNumber='" + accountNumber + "' and dateSubmitted between '" + beginDate + "' and '" + endDate + "'";
+            data = myHKeInvestData.getData(sql);
+            if (data.Rows.Count == 0)
+            {
+                HistoryError.Text = "No orders found";
+                HistoryError.Visible = true;
+                gvOrderHistory.Visible = false;
+            } else
+            {
+                gvOrderHistory.DataSource = data;
+                gvOrderHistory.DataBind();
+                Session["HistoryTable"] = myHKeInvestCode.unloadGridView(gvOrderHistory);
+            }
+
+            //PART E
+            TransactionError.Visible = false;
+            gvTransactions.Visible = true;
+            sql = "select transactionNumber, executeDate, executeShares, executePrice from Transactions where referenceNumber='" + RefNumber.Text.Trim() + "'";
+            data = myHKeInvestData.getData(sql);
+            if (data.Rows.Count == 0)
+            {
+                TransactionError.Text = "No transactions found";
+                TransactionError.Visible = true;
+                gvTransactions.Visible = false;
+            } else
+            {
+                gvTransactions.DataSource = data;
+                gvTransactions.DataBind();
+            }
         }
 
         /*
@@ -354,6 +387,19 @@ namespace HKeInvestWebApplication
                 //Sort the data.
                 dt.DefaultView.Sort = e.SortExpression + " " + GetSortDirection(e.SortExpression);
                 gvSecurities.DataSource = Session["SecurityTable"];
+                gvSecurities.DataBind();
+            }
+        }
+
+        protected void gvOrderHistory_Sorting(object sender, GridViewSortEventArgs e)
+        {
+            DataTable dt = Session["HistoryTable"] as DataTable;
+
+            if (dt != null)
+            {
+                //Sort the data.
+                dt.DefaultView.Sort = e.SortExpression + " " + GetSortDirection(e.SortExpression);
+                gvSecurities.DataSource = Session["HistoryTable"];
                 gvSecurities.DataBind();
             }
         }
