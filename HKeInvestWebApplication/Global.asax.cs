@@ -9,6 +9,7 @@ using System.Web.SessionState;
 using System.Threading;
 using Microsoft.AspNet.Identity;
 using HKeInvestWebApplication.Code_File;
+using HKeInvestWebApplication.Alerts;
 
 namespace HKeInvestWebApplication
 {
@@ -23,6 +24,10 @@ namespace HKeInvestWebApplication
             Thread updateLocalTransaction = new Thread(updateLocalTransactionTask);
             updateLocalTransaction.IsBackground = true;
             updateLocalTransaction.Start();
+
+            Thread checkAlertsThread = new Thread(checkAlerts);
+            checkAlertsThread.IsBackground = true;
+            checkAlertsThread.Start();
         }
 
         InternalFunctions intFunction = new InternalFunctions();
@@ -37,10 +42,13 @@ namespace HKeInvestWebApplication
             } while (true);
         }
 
-
-
-
-    }
-
-
+        private void checkAlerts()
+        {
+            do
+            {
+                // TODO: Check all alerts
+                Thread.Sleep(10000);
+            } while (true);
+        }
+    } 
 }

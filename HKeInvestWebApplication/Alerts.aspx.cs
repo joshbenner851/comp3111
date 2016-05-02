@@ -1,17 +1,91 @@
-﻿using System;
+﻿using HKeInvestWebApplication.Code_File;
+using HKeInvestWebApplication.ExternalSystems.Code_File;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Data;
-using HKeInvestWebApplication.Code_File;
-using HKeInvestWebApplication.ExternalSystems.Code_File;
+using System.Data.SqlClient;
+using System.Net;
+using System.Net.Mail;
 using System.Collections.Specialized;
 using Microsoft.AspNet.Identity;
 
-namespace HKeInvestWebApplication
+namespace HKeInvestWebApplication.ClientOnly
 {
+    public class SecurityAlert
+    {
+         ExternalFunctions myExternalFunctions = new ExternalFunctions();
+
+        private string securityType;
+        private string securityCode;
+        private string alertType;
+        private float alertValue;
+        private string email;
+        private DateTime lastTimeFired;
+
+        public SecurityAlert(string newSecurityType, string newSecurityCode, string newAlertType, float newAlertValue, string newEmail)
+        {
+            this.securityType = newSecurityType;
+            this.securityCode = newSecurityCode;
+            this.alertType = newAlertType;
+            this.alertValue = newAlertValue;
+            this.email = newEmail;
+            this.lastTimeFired = null;
+        }
+
+        public void checkForTrigger()
+        {
+            if (lastTimeFired == null || lastTimeFired.AddDays(1) < DateTime.UtcNow)
+            {
+                if (alertType == "high")
+                {
+                    DataTable currentSecurity = myExternalFunctions.getSecuritiesByCode(securityType, securityCode);
+                    float price = currentSecurity.Rows[0].Field<float>("price");
+
+                    if (alertValue < price)
+                    {
+                        MailMessage mail = new MailMessage();
+                        SmtpClient emailServer = new SmtpClient("smtp.cse.ust.hk");
+
+                        mail.From = new MailAddress("comp3111_team106@cse.ust.hk", "HKeInvest Alerts");
+                        mail.To.Add(email);
+                        mail.Subject = "An Alert You've Set Has Been Triggered";
+                        mail.Body = "Hello, an alert you've set on a security has been triggered.\n\n" +
+                            "The Security in question is:\n" +
+                            "Type - " + securityType + "; Code - " + securityCode + "\n" +
+                            "The price of the security has exceeded the specified value of: " + alertValue;
+
+                        emailServer.Send(mail);
+                    }
+                }
+                else
+                {
+                    DataTable currentSecurity = myExternalFunctions.getSecuritiesByCode(securityType, securityCode);
+                    float price = currentSecurity.Rows[0].Field<float>("price");
+
+                    if (alertValue > price)
+                    {
+                        MailMessage mail = new MailMessage();
+                        SmtpClient emailServer = new SmtpClient("smtp.cse.ust.hk");
+
+                        mail.From = new MailAddress("comp3111_team106@cse.ust.hk", "HKeInvest Alerts");
+                        mail.To.Add(email);
+                        mail.Subject = "An Alert You've Set Has Been Triggered";
+                        mail.Body = "Hello, an alert you've set on a security has been triggered.\n\n" +
+                            "The Security in question is:\n" +
+                            "Type - " + securityType + "; Code - " + securityCode + "\n" +
+                            "The price of the security has gone below the specified value of: " + alertValue;
+
+                        emailServer.Send(mail);
+                    }
+                }
+            }
+        }
+    }
+
     public partial class Alerts : System.Web.UI.Page
     {
         HKeInvestData myHKeInvestData = new HKeInvestData();
@@ -21,7 +95,15 @@ namespace HKeInvestWebApplication
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            MailMessage mail = new MailMessage();
+            SmtpClient emailServer = new SmtpClient("smtp.cse.ust.hk");
 
+            mail.From = new MailAddress("comp3111_team106@cse.ust.hk", "HKeInvest Alerts");
+            mail.To.Add("rms@connect.ust.hk");
+            mail.Subject = "Test";
+            mail.Body = "Test";
+
+            emailServer.Send(mail);
         }
 
         protected void cuvSecurityCodeInput_ServerValidate(object source, ServerValidateEventArgs args)
@@ -51,6 +133,7 @@ namespace HKeInvestWebApplication
                 if (desiredSecurity == null)
                 {
                     cuvSecurityCodeInput.Text = "This security does not exist.";
+                    cuvSecurityCodeInput.IsValid = false;
                 }
 
                 float price = desiredSecurity.Rows[0].Field<float>("price");
@@ -79,7 +162,8 @@ namespace HKeInvestWebApplication
                 rfvAlertValue.IsValid && revSecurityCodeInput.IsValid && revAlertValue.IsValid &&
                 cuvSecurityCodeInput.IsValid)
             {
-                // Create Actual Alert
+                // TODO: Create Actual Alert
+                // new SecurityAlert(string newSecurityType, string newSecurityCode, string newAlertType, float newAlertValue, string newEmail)
             }
         }
     }
