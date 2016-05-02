@@ -85,25 +85,26 @@
                     <asp:BoundField DataField="Expiry Date" ReadOnly="True" HeaderText="Expiry Date" />
                 </Columns>
             </asp:GridView>
-            <asp:Label ID="ActiveError" runat="server"></asp:Label>
+            <asp:Label ID="ActiveError" runat="server" Visible="False"></asp:Label>
         </div>
 
         <!--Part D-->
         <div id="OrderHistory">
             <h3>Order History</h3>
             <hr />
-            <asp:GridView ID="gvOrderHistory" runat="server" AutoGenerateColumns="False">
+            <asp:Label runat="server" Text="Begin Date: " AssociatedControlID="BeginDate"></asp:Label><asp:TextBox ID="BeginDate" runat="server" TextMode="Date"></asp:TextBox><asp:Label runat="server" Text="End Date: " AssociatedControlID="EndDate"></asp:Label><asp:TextBox ID="EndDate" runat="server" TextMode="Date"></asp:TextBox>
+            <asp:GridView ID="gvOrderHistory" runat="server" AutoGenerateColumns="False" AllowSorting="True" OnSorting="gvOrderHistory_Sorting">
                 <Columns>
-                    <asp:BoundField DataField="referenceNo" HeaderText="Reference No." ReadOnly="True" SortExpression="referenceNo" />
-                    <asp:BoundField DataField="orderType" HeaderText="Order Type" ReadOnly="True" SortExpression="orderType" />
+                    <asp:BoundField DataField="referenceNo" HeaderText="Reference No." ReadOnly="True" />
+                    <asp:BoundField DataField="orderType" HeaderText="Order Type" ReadOnly="True" />
                     <asp:BoundField DataField="securityType" ReadOnly="True" HeaderText="Security Type" SortExpression="securityType" />
                     <asp:BoundField DataField="code" HeaderText="Code" ReadOnly="True" />
-                    <asp:BoundField DataField="name" ReadOnly="True" HeaderText="Name" />
+                    <asp:BoundField DataField="name" ReadOnly="True" HeaderText="Name" SortExpression="name" />
                     <asp:BoundField DataField="submitted" ReadOnly="True" HeaderText="Date Submitted" />
-                    <asp:BoundField DataField="status" ReadOnly="True" HeaderText="Status" />
+                    <asp:BoundField DataField="status" ReadOnly="True" HeaderText="Status" SortExpression="status" />
                 </Columns>
             </asp:GridView>
-
+                        <asp:Label ID="HistoryError" runat="server">Please select a time interval</asp:Label>
         </div>
 
     </div>
