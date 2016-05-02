@@ -48,7 +48,7 @@
         <div id="SecuritySummary">
             <h3>Securities Summary</h3>
             <hr />
-            <asp:DropDownList ID="securityType" runat="server" OnSelectedIndexChanged="securityType_SelectedIndexChanged">
+            <asp:DropDownList ID="securityType" runat="server" OnSelectedIndexChanged="securityType_SelectedIndexChanged" AutoPostBack="True">
                 <asp:ListItem Value="stock">Stock</asp:ListItem>
                 <asp:ListItem Value="bond">Bond</asp:ListItem>
                 <asp:ListItem Value="unitTrust">Unit Trust</asp:ListItem>
@@ -63,6 +63,8 @@
                     <asp:BoundField DataField="base" ReadOnly="True" HeaderText="Base" /> 
                 </Columns>
             </asp:GridView>
+            <br />
+            <asp:Label ID="SecurityError" runat="server" Text="" Visible="False"></asp:Label>
         </div>
 
         <!--Part C-->

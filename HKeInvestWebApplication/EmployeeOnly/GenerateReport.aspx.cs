@@ -23,6 +23,7 @@ namespace HKeInvestWebApplication
             {
                 myHKeInvestCode.retrieveCurrency(Session);
             }
+            securityType.Visible = false;
         }
 
         protected void AccountNumber_TextChanged(object sender, EventArgs e)
@@ -35,7 +36,6 @@ namespace HKeInvestWebApplication
             decimal total = 0;
 
             //PART A
-            AccountNum.Text = accountNumber;
 
             if (accountNumber == "")
             {
@@ -121,18 +121,30 @@ namespace HKeInvestWebApplication
             }
 
             //PART B
-            sql = "select code, name, shares, '0.00' as price, '0.00' as totalValue, 'HKD' as base from SecurityHolding where accountNumber='" + accountNumber + "'";
+            securityType.Visible = true;
+            gvSecurities.Visible = true;
+            sql = "select code, name, shares, '0.00' as price, '0.00' as totalValue, 'HKD' as base from SecurityHolding where accountNumber='" + accountNumber + "' and type='stock'";
             data = myHKeInvestData.getData(sql);
-            gvSecurities.DataSource = data;
-            gvSecurities.DataBind();
-            DataTable dtSecurities = myHKeInvestCode.unloadGridView(gvSecurities);
-            foreach(DataRow row in dtSecurities.Rows) {
-                decimal prix = myExternalFunctions.getSecuritiesPrice("stock", row[0].ToString());
-                row[3] = prix;
-                row[4] = ((decimal)(prix * (decimal)row[2])).ToString("F");
+            if (data.Rows.Count != 0)
+            {
+                gvSecurities.DataSource = data;
+                gvSecurities.DataBind();
+                DataTable dtSecurities = myHKeInvestCode.unloadGridView(gvSecurities);
+                foreach (DataRow row in dtSecurities.Rows)
+                {
+                    decimal prix = myExternalFunctions.getSecuritiesPrice("stock", row[0].ToString());
+                    row[3] = prix;
+                    row[4] = ((decimal)(prix * (decimal)row[2])).ToString("F");
+                }
+                gvSecurities.DataSource = dtSecurities;
+                gvSecurities.DataBind();
+            } else
+            {
+                SecurityError.Text = "No stocks found";
+                SecurityError.Visible = true;
+                gvSecurities.Visible = false;
             }
-            gvSecurities.DataSource = dtSecurities;
-            gvSecurities.DataBind();
+
 
             //PART C
             sql = "select referenceNumber, buyOrSell, securityType, securityCode";
@@ -206,7 +218,84 @@ namespace HKeInvestWebApplication
 
         protected void securityType_SelectedIndexChanged(object sender, EventArgs e)
         {
+            string sql = "";
+            DataTable data;
+            string accountNumber = AccountNum.Text;
+            gvSecurities.Visible = true;
+            securityType.Visible = true;
+            if (securityType.SelectedValue.Equals("stock"))
+            {
+                sql = "select code, name, shares, '0.00' as price, '0.00' as totalValue, 'HKD' as base from SecurityHolding where accountNumber='" + accountNumber + "' and type='stock'";
+                data = myHKeInvestData.getData(sql);
+                if (data.Rows.Count != 0)
+                {
+                    gvSecurities.DataSource = data;
+                    gvSecurities.DataBind();
+                    DataTable dtSecurities = myHKeInvestCode.unloadGridView(gvSecurities);
+                    foreach (DataRow row in dtSecurities.Rows)
+                    {
+                        decimal prix = myExternalFunctions.getSecuritiesPrice("stock", row[0].ToString());
+                        row[3] = prix;
+                        row[4] = ((decimal)(prix * (decimal)row[2])).ToString("F");
+                    }
+                    gvSecurities.DataSource = dtSecurities;
+                    gvSecurities.DataBind();
+                } else
+                {
+                    SecurityError.Text = "No stocks found";
+                    SecurityError.Visible = true;
+                    gvSecurities.Visible = false;
+                }
 
+            } else if (securityType.SelectedValue.Equals("bond"))
+            {
+                sql = "select code, name, shares, '0.00' as price, '0.00' as totalValue, 'HKD' as base from SecurityHolding where accountNumber='" + accountNumber + "' and type='bond'";
+                data = myHKeInvestData.getData(sql);
+                if (data.Rows.Count != 0)
+                {
+                    gvSecurities.DataSource = data;
+                    gvSecurities.DataBind();
+                    DataTable dtSecurities = myHKeInvestCode.unloadGridView(gvSecurities);
+                    foreach (DataRow row in dtSecurities.Rows)
+                    {
+                        decimal prix = myExternalFunctions.getSecuritiesPrice("bond", row[0].ToString());
+                        row[3] = prix;
+                        row[4] = ((decimal)(prix * (decimal)row[2])).ToString("F");
+                    }
+                    gvSecurities.DataSource = dtSecurities;
+                    gvSecurities.DataBind();
+                } else
+                {
+                    SecurityError.Text = "No bonds found";
+                    SecurityError.Visible = true;
+                    gvSecurities.Visible = false;
+                }
+
+            } else
+            {
+                sql = "select code, name, shares, '0.00' as price, '0.00' as totalValue, 'HKD' as base from SecurityHolding where accountNumber='" + accountNumber + "' and type='unit trust'";
+                data = myHKeInvestData.getData(sql);
+                gvSecurities.DataSource = data;
+                if (data.Rows.Count != 0)
+                {
+                    gvSecurities.DataBind();
+                    DataTable dtSecurities = myHKeInvestCode.unloadGridView(gvSecurities);
+                    foreach (DataRow row in dtSecurities.Rows)
+                    {
+                        decimal prix = myExternalFunctions.getSecuritiesPrice("unit trust", row[0].ToString());
+                        row[3] = prix;
+                        row[4] = ((decimal)(prix * (decimal)row[2])).ToString("F");
+                    }
+                    gvSecurities.DataSource = dtSecurities;
+                    gvSecurities.DataBind();
+                } else
+                {
+                    SecurityError.Text = "No unit trusts found";
+                    SecurityError.Visible = true;
+                    gvSecurities.Visible = false;
+                }
+
+            }
         }
     }
 }
