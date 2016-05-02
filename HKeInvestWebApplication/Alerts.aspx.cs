@@ -41,18 +41,25 @@ namespace HKeInvestWebApplication
             if (clientSecurity == null || clientSecurity.Rows.Count == 0)
             {
                 cuvSecurityCodeInput.Text = "Client has no security of this type with this code.";
+                cuvSecurityCodeInput.IsValid = false;
             }
             else
             {
                 sql = "SELECT price FROM " + securityType + " WHERE code='" + securityCode + "';";
-                DataTable desiredSecurity = myExternalData.getData(sql);
-                float price = desiredSecurity.Rows[0].Field<float>("price");
+                DataTable desiredSecurity = myExternalFunctions.getSecuritiesByCode(securityType, securityCode);
 
+                if (desiredSecurity == null)
+                {
+                    cuvSecurityCodeInput.Text = "This security does not exist.";
+                }
+
+                float price = desiredSecurity.Rows[0].Field<float>("price");
                 if (rblAlertType.SelectedValue == "High")
                 {
                     if (price > alertValue)
                     {
                         cuvSecurityCodeInput.Text = "The price is already higher than the high alert value.";
+                        cuvSecurityCodeInput.IsValid = false;
                     }
                 }
                 else
@@ -60,8 +67,19 @@ namespace HKeInvestWebApplication
                     if (price < alertValue)
                     {
                         cuvSecurityCodeInput.Text = "The price is already lower than the low alert value.";
+                        cuvSecurityCodeInput.IsValid = false;
                     }
                 }
+            }
+        }
+
+        protected void CreateAlertClick(object source, ServerValidateEventArgs args)
+        {
+            if (rfvAlertType.IsValid && rfvSecurityTypeInput.IsValid && rfvSecurityCodeInput.IsValid &&
+                rfvAlertValue.IsValid && revSecurityCodeInput.IsValid && revAlertValue.IsValid &&
+                cuvSecurityCodeInput.IsValid)
+            {
+                // Create Actual Alert
             }
         }
     }

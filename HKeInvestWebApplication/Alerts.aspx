@@ -31,7 +31,7 @@
             <asp:RegularExpressionValidator ID="revAlertValue" runat="server" ControlToValidate="tbxAlertValue" CssClass="text-danger" Display="Dynamic" ErrorMessage="Alert Value must have at least one digit left and exactly two digits right of the decimal point." ValidationExpression="[\d]+[.][\d]{2}"></asp:RegularExpressionValidator>
             <asp:RequiredFieldValidator ID="rfvAlertValue" runat="server" ControlToValidate="tbxAlertValue" CssClass="text-danger" ErrorMessage="Alert Value is required." Display="Dynamic"></asp:RequiredFieldValidator>
             <br />
-            <asp:Button ID="btnCreateAlert" runat="server" Text="Create Alert" />
+            <asp:Button ID="btnCreateAlert" runat="server" Text="Create Alert" OnClick="CreateAlertClick" />
         </div>
     </div>
 </asp:Content>
