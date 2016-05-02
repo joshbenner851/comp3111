@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Net.Mail;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -282,6 +283,16 @@ namespace HKeInvestWebApplication.Code_File
         public void sendInvoiceEmail(string address, string subject, string body)
         {
             //Email setup code
+
+            MailMessage mail = new MailMessage();
+            SmtpClient emailServer = new SmtpClient("smtp.cse.ust.hk");
+
+            mail.From = new MailAddress("comp3111_team106@cse.ust.hk", "HKeInvest Alerts");
+            mail.To.Add(address);
+            mail.Subject = subject;
+            mail.Body = body;
+
+            emailServer.Send(mail);
 
         }
 
