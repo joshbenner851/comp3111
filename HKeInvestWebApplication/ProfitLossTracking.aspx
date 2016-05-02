@@ -52,7 +52,7 @@
                         <asp:BoundField HeaderText="Security Name" ReadOnly="True" DataField="name" />
                         <asp:BoundField HeaderText="Security Code" ReadOnly="True" DataField="securityCode" />
                         <asp:BoundField DataFormatString="{0:n2}" HeaderText="Shares Held" ReadOnly="True" DataField="shares" />
-                        <asp:BoundField DataFormatString="{0:n2}" HeaderText="$ for Buying" ReadOnly="True" DataField="amount" />
+                        <asp:BoundField DataFormatString="{0:n2}" HeaderText="$ for Buying" ReadOnly="True" DataField="dollarBuying" />
                         <asp:BoundField DataFormatString="{0:n2}" HeaderText="$ from Selling" ReadOnly="True" DataField="dollarSelling" />
                         <asp:BoundField DataFormatString="{0:n2}" HeaderText="Total Fees Paid" ReadOnly="True" DataField="totalFees" />
                         <asp:BoundField DataFormatString="{0:n2}" HeaderText="Profit/Loss" ReadOnly="True" DataField="profitLoss" />
@@ -63,23 +63,21 @@
             <div class="form-group">
                 <asp:GridView ID="SecuritiesGivenType" runat="server" AutoGenerateColumns="False">
                     <Columns>
-                        <asp:BoundField DataFormatString="{0:n2}" HeaderText="Shares Held" ReadOnly="True" />
-                        <asp:BoundField DataFormatString="{0:n2}" HeaderText="$ for Buying" ReadOnly="True" />
-                        <asp:BoundField DataFormatString="{0:n2}" HeaderText="$ from Selling" ReadOnly="True" />
-                        <asp:BoundField DataFormatString="{0:n2}" HeaderText="Total Fees Paid" ReadOnly="True" />
-                        <asp:BoundField DataFormatString="{0:n2}" HeaderText="Profit/Loss" ReadOnly="True" />
+                        <asp:BoundField DataFormatString="{0:n2}" HeaderText="$ for Buying" ReadOnly="True" DataField="dollarBuying" />
+                        <asp:BoundField DataFormatString="{0:n2}" HeaderText="$ from Selling" ReadOnly="True" DataField="dollarSelling" />
+                        <asp:BoundField DataFormatString="{0:n2}" HeaderText="Total Fees Paid" ReadOnly="True" DataField="totalFees" />
+                        <asp:BoundField DataFormatString="{0:n2}" HeaderText="Profit/Loss" ReadOnly="True" DataField="profitLoss" />
                     </Columns>
                 </asp:GridView>
             </div>
 
             <div class="form-group">
-                <asp:GridView ID="SecuritiesAll" runat="server" AutoGenerateColumns="False">
+                <asp:GridView ID="SecuritiesAll" runat="server" AutoGenerateColumns="False" >
                     <Columns>
-                        <asp:BoundField DataFormatString="{0:n2}" HeaderText="Shares Held" ReadOnly="True" />
-                        <asp:BoundField DataFormatString="{0:n2}" HeaderText="$ for Buying" ReadOnly="True" />
-                        <asp:BoundField DataFormatString="{0:n2}" HeaderText="$ from Selling" ReadOnly="True" />
-                        <asp:BoundField DataFormatString="{0:n2}" HeaderText="Total Fees Paid" ReadOnly="True" />
-                        <asp:BoundField DataFormatString="{0:n2}" HeaderText="Profit/Loss" ReadOnly="True" />
+                        <asp:BoundField DataFormatString="{0:n2}" HeaderText="$ for Buying" ReadOnly="True"  DataField="dollarBuying" />
+                        <asp:BoundField DataFormatString="{0:n2}" HeaderText="$ from Selling" ReadOnly="True" DataField="dollarSelling" />
+                        <asp:BoundField DataFormatString="{0:n2}" HeaderText="Total Fees Paid" ReadOnly="True" DataField="totalFees" />
+                        <asp:BoundField DataFormatString="{0:n2}" HeaderText="Profit/Loss" ReadOnly="True" DataField="profitLoss" />
                     </Columns>
                 </asp:GridView>
 
