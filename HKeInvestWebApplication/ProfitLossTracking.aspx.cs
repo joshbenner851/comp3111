@@ -11,6 +11,9 @@ using System.Data.SqlClient;
 using System.Windows.Forms;
 using System.Globalization;
 using Microsoft.AspNet.Identity;
+using System.Data;
+using System.Data.SqlClient;
+
 
 namespace HKeInvestWebApplication
 {
@@ -109,7 +112,7 @@ namespace HKeInvestWebApplication
             string sql = "SELECT accountNumber FROM Account WHERE userName = '" +
                HttpContext.Current.User.Identity.GetUserName() + "'";
 
-            DataTable temp = myExternalData.getData(sql);
+            DataTable temp = myHKeInvestData.getData(sql);
 
             //ERROR: no error catching for not having the account number
 
@@ -153,7 +156,7 @@ namespace HKeInvestWebApplication
 
         private DataTable GetAllGivenTypeSecurity(string type)
         {
-            string accountNumber = "YU00000001";
+            string accountNumber = getAccountNumber();
             //string type = SecurityTypeList.SelectedValue;
             DataTable dtAllGivenSecurities = new DataTable();
             dtAllGivenSecurities.Columns.Add("dollarBuying");
@@ -232,7 +235,7 @@ namespace HKeInvestWebApplication
         private DataTable GetIndividualSecurity(string securityCode)
         {
             // CHANGE THIS TO THE DYNAMIC ACTUAL NUMBERRRRRR
-            string accountNumber = "YU00000001";            // CHANGE THIS TO THE DYNAMIC ACTUAL NUMBERRRRRR
+            string accountNumber = getAccountNumber();         // CHANGE THIS TO THE DYNAMIC ACTUAL NUMBERRRRRR
 
             string secTypeSql = "select securityType from OrderHistory where status='completed' and securityCode=" + securityCode + " and accountNumber='" + accountNumber + "'";
             DataTable dtSecType = myHKeInvestData.getData(secTypeSql);
