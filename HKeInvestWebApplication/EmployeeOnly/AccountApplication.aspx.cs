@@ -121,7 +121,8 @@ namespace HKeInvestWebApplication
                         "'" + BusinessNature.Text + "'" + "," +
                          "'" + IsEmployedFinancial.SelectedValue + "'" + "," +
                         "'" + IsInIPO.SelectedValue + "'" + "," +
-                         "'" + FormatDateToSQL(SignedOn.Text) + "'" + ")";
+                         "'" + FormatDateToSQL(SignedOn.Text) + "'," +
+                         "'Y')";
 
                     SqlTransaction trans2 = myHKeInvestData.beginTransaction();
                     myHKeInvestData.setData(updateClient, trans2);
@@ -157,7 +158,7 @@ namespace HKeInvestWebApplication
                         "'" + COIsEmployedFinancial.SelectedValue + "'" + "," +
                         "'" + COIsInIPO.SelectedValue + "'" + "," +
                         "'" + FormatDateToSQL(COSignedOn.Text) + "'" +
-                        ")";
+                        "'N')";
 
                         SqlTransaction trans3 = myHKeInvestData.beginTransaction();
                         myHKeInvestData.setData(updateCOClient, trans3);
