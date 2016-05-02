@@ -20,20 +20,20 @@
             <asp:Label runat="server" AssociatedControlID="ClientName" Text="Client Name(s): "></asp:Label>
             <asp:Label ID="ClientName" runat="server"></asp:Label>
             <br />
-            <asp:Label runat="server" AssociatedControlID="TotalValue" Text="Total Monetary Value: "></asp:Label>
+            <asp:Label runat="server" AssociatedControlID="TotalValue" Text="Total Monetary Value(HKD): "></asp:Label>
             <asp:Label ID="TotalValue" runat="server"></asp:Label>
             <br />
-            <asp:Label runat="server" Text="Free Balance: " AssociatedControlID="FreeBalance"></asp:Label>
+            <asp:Label runat="server" Text="Free Balance(HKD): " AssociatedControlID="FreeBalance"></asp:Label>
             <asp:Label ID="FreeBalance" runat="server"></asp:Label>
 
             <br />
-            <asp:Label runat="server" AssociatedControlID="StockValue" Text="Total Stock Value: "></asp:Label>
+            <asp:Label runat="server" AssociatedControlID="StockValue" Text="Total Stock Value(HKD): "></asp:Label>
             <asp:Label ID="StockValue" runat="server"></asp:Label>
             <br />
-            <asp:Label runat="server" AssociatedControlID="BondValue" Text="Total Bond Value:"></asp:Label>
+            <asp:Label runat="server" AssociatedControlID="BondValue" Text="Total Bond Value(HKD):"></asp:Label>
             <asp:Label ID="BondValue" runat="server"></asp:Label>
             <br />
-            <asp:Label runat="server" AssociatedControlID="UnitTrustValue" Text="Total Unit Trust Value: "></asp:Label>
+            <asp:Label runat="server" AssociatedControlID="UnitTrustValue" Text="Total Unit Trust Value(HKD): "></asp:Label>
             <asp:Label ID="UnitTrustValue" runat="server"></asp:Label>
             <br />
             <asp:Label runat="server" AssociatedControlID="LastOrderDate" Text="Last Executed Order Date:"></asp:Label>
@@ -53,14 +53,13 @@
                 <asp:ListItem Value="bond">Bond</asp:ListItem>
                 <asp:ListItem Value="unitTrust">Unit Trust</asp:ListItem>
             </asp:DropDownList>
-            <asp:GridView ID="gvSecurities" runat="server" AutoGenerateColumns="False">
+            <asp:GridView ID="gvSecurities" runat="server" AutoGenerateColumns="False" AllowSorting="True" OnSorting="gvSecurities_Sorting">
                 <Columns>
                     <asp:BoundField DataField="code" HeaderText="Code" ReadOnly="True" SortExpression="code" />
-                    <asp:BoundField DataField="name" HeaderText="Name" ReadOnly="True" SortExpression="name" />
-                    <asp:BoundField DataField="shares" ReadOnly="True" HeaderText="Shares Held" SortExpression="sharesHeld" />
+                    <asp:BoundField DataField="name" HeaderText="Name" ReadOnly="True" />
+                    <asp:BoundField DataField="shares" ReadOnly="True" HeaderText="Shares Held" SortExpression="shares" />
                     <asp:BoundField DataField="price" HeaderText="Price Per Share" ReadOnly="True" />
                     <asp:BoundField DataField="totalValue" ReadOnly="True" HeaderText="Total Value" SortExpression="totalValue" />
-                    <asp:BoundField DataField="base" ReadOnly="True" HeaderText="Base" /> 
                 </Columns>
             </asp:GridView>
             <br />

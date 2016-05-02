@@ -138,6 +138,7 @@ namespace HKeInvestWebApplication
                 }
                 gvSecurities.DataSource = dtSecurities;
                 gvSecurities.DataBind();
+                Session["SecurityTable"] = myHKeInvestCode.unloadGridView(gvSecurities);
             } else
             {
                 SecurityError.Text = "No stocks found";
@@ -240,6 +241,7 @@ namespace HKeInvestWebApplication
                     }
                     gvSecurities.DataSource = dtSecurities;
                     gvSecurities.DataBind();
+                    Session["SecurityTable"] = myHKeInvestCode.unloadGridView(gvSecurities);
                 } else
                 {
                     SecurityError.Text = "No stocks found";
@@ -264,6 +266,7 @@ namespace HKeInvestWebApplication
                     }
                     gvSecurities.DataSource = dtSecurities;
                     gvSecurities.DataBind();
+                    Session["SecurityTable"] = myHKeInvestCode.unloadGridView(gvSecurities);
                 } else
                 {
                     SecurityError.Text = "No bonds found";
@@ -273,7 +276,7 @@ namespace HKeInvestWebApplication
 
             } else
             {
-                sql = "select code, name, shares, '0.00' as price, '0.00' as totalValue, 'HKD' as base from SecurityHolding where accountNumber='" + accountNumber + "' and type='unit trust'";
+                sql = "select code, name, shares, '0.00' as price, '0.00' as totalValue from SecurityHolding where accountNumber='" + accountNumber + "' and type='unit trust'";
                 data = myHKeInvestData.getData(sql);
                 gvSecurities.DataSource = data;
                 if (data.Rows.Count != 0)
@@ -288,6 +291,7 @@ namespace HKeInvestWebApplication
                     }
                     gvSecurities.DataSource = dtSecurities;
                     gvSecurities.DataBind();
+                    Session["SecurityTable"] = myHKeInvestCode.unloadGridView(gvSecurities);
                 } else
                 {
                     SecurityError.Text = "No unit trusts found";
@@ -295,6 +299,49 @@ namespace HKeInvestWebApplication
                     gvSecurities.Visible = false;
                 }
 
+            }
+        }
+
+        private string GetSortDirection(string column)
+        {
+
+            // By default, set the sort direction to ascending.
+            string sortDirection = "ASC";
+
+            // Retrieve the last column that was sorted.
+            string sortExpression = ViewState["SortExpression"] as string;
+
+            if (sortExpression != null)
+            {
+                // Check if the same column is being sorted.
+                // Otherwise, the default value can be returned.
+                if (sortExpression == column)
+                {
+                    string lastDirection = ViewState["SortDirection"] as string;
+                    if ((lastDirection != null) && (lastDirection == "ASC"))
+                    {
+                        sortDirection = "DESC";
+                    }
+                }
+            }
+
+            // Save new values in ViewState.
+            ViewState["SortDirection"] = sortDirection;
+            ViewState["SortExpression"] = column;
+
+            return sortDirection;
+        }
+
+        protected void gvSecurities_Sorting(object sender, GridViewSortEventArgs e)
+        {
+            DataTable dt = Session["SecurityTable"] as DataTable;
+
+            if (dt != null)
+            {
+                //Sort the data.
+                dt.DefaultView.Sort = e.SortExpression + " " + GetSortDirection(e.SortExpression);
+                gvSecurities.DataSource = Session["SecurityTable"];
+                gvSecurities.DataBind();
             }
         }
     }
