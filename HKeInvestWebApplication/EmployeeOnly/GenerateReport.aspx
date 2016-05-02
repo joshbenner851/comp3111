@@ -85,6 +85,7 @@
                     <asp:BoundField DataField="Expiry Date" ReadOnly="True" HeaderText="Expiry Date" />
                 </Columns>
             </asp:GridView>
+            <asp:Label ID="ActiveError" runat="server"></asp:Label>
         </div>
 
         <!--Part D-->

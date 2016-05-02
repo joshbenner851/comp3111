@@ -148,7 +148,20 @@ namespace HKeInvestWebApplication
 
 
             //PART C
-            sql = "select referenceNumber, buyOrSell, securityType, securityCode";
+            ActiveError.Visible = false;
+            gvActiveOrders.Visible = true;
+            sql = "select referenceNumber, buyOrSell, securityType, securityCode, name, dateSubmitted, status, shares, limitPrice, stopPrice, expiryDay from OrderHistory where accountNumber='" + accountNumber + "'";
+            data = myHKeInvestData.getData(sql);
+            if (data.Rows.Count == 0)
+            {
+                ActiveError.Text = "No active orders found";
+                ActiveError.Visible = true;
+                gvActiveOrders.Visible = false;
+            } else
+            {
+                gvActiveOrders.DataSource = data;
+                gvActiveOrders.DataBind();
+            }
             
             //PART D
         }
