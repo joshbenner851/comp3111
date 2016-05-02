@@ -111,5 +111,12 @@ namespace HKeInvestWebApplication.Code_File
                 return Math.Round(Convert.ToDecimal(fromCurrencyRate) / Convert.ToDecimal(toCurrencyRate) * value, 2);
             }
         }
+
+        public void retrieveCurrency(System.Web.SessionState.HttpSessionState session)
+        {
+            ExternalFunctions myExternalFunctions = new ExternalFunctions();
+            DataTable currencies = myExternalFunctions.getCurrencyData();
+            session["currency"] = currencies;
+        }
     }
 }

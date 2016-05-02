@@ -19,7 +19,10 @@ namespace HKeInvestWebApplication
 
         protected void Page_Load(object sender, EventArgs e)
         {
-
+            if (!IsPostBack)
+            {
+                myHKeInvestCode.retrieveCurrency(Session);
+            }
         }
 
         protected void AccountNumber_TextChanged(object sender, EventArgs e)
@@ -72,31 +75,32 @@ namespace HKeInvestWebApplication
             FreeBalance.Text = data.Rows[0][0].ToString();
             total += (decimal)data.Rows[0][0];
 
-            sql = "select code, shares from SecurityHolding where accountNumber='" + accountNumber + "' and type='stock'";
+            sql = "select code, shares, base from SecurityHolding where accountNumber='" + accountNumber + "' and type='stock'";
             data = myHKeInvestData.getData(sql);
             foreach (DataRow row in data.Rows)
             {
-                price += myExternalFunctions.getSecuritiesPrice("stock", row[0].ToString()) * (decimal)row[1];
+
+                price += convertCurrency(row[2].ToString(), "HKD", myExternalFunctions.getSecuritiesPrice("stock", row[0].ToString()) * (decimal)row[1]);
             }
             StockValue.Text = price.ToString();
             total += price;
             price = 0;
 
-            sql = "select code, shares from SecurityHolding where accountNumber='" + accountNumber + "' and type='bond'";
+            sql = "select code, shares, base from SecurityHolding where accountNumber='" + accountNumber + "' and type='bond'";
             data = myHKeInvestData.getData(sql);
             foreach (DataRow row in data.Rows)
             {
-                price += myExternalFunctions.getSecuritiesPrice("bond", row[0].ToString()) * (decimal)row[1];
+                price += convertCurrency(row[2].ToString(), "HKD", myExternalFunctions.getSecuritiesPrice("bond", row[0].ToString()) * (decimal)row[1]);
             }
             BondValue.Text = price.ToString();
             total += price;
             price = 0;
 
-            sql = "select code, shares from SecurityHolding where accountNumber='" + accountNumber + "' and type='unit trust'";
+            sql = "select code, shares, base from SecurityHolding where accountNumber='" + accountNumber + "' and type='unit trust'";
             data = myHKeInvestData.getData(sql);
             foreach (DataRow row in data.Rows)
             {
-                price += myExternalFunctions.getSecuritiesPrice("unit trust", row[0].ToString()) * (decimal)row[1];
+                price += convertCurrency(row[2].ToString(), "HKD", myExternalFunctions.getSecuritiesPrice("unit trust", row[0].ToString()) * (decimal)row[1]);
             }
             UnitTrustValue.Text = price.ToString();
             total += price;
@@ -117,11 +121,11 @@ namespace HKeInvestWebApplication
             }
 
             //PART B
-            sql = "select code, name, shares from SecurityHolding where accountNumber='" + accountNumber + "'";
-            data = myHKeInvestData.getData(sql);
+            //sql = "select code, name, shares from SecurityHolding where accountNumber='" + accountNumber + "'";
+            //data = myHKeInvestData.getData(sql);
 
             //PART C
-            sql = "select referenceNumber, buyOrSell, securityType, securityCode";
+            //sql = "select referenceNumber, buyOrSell, securityType, securityCode";
             //PART D
         }
 
@@ -169,6 +173,24 @@ namespace HKeInvestWebApplication
                 }
             }
             return result;
+        }
+
+        protected decimal convertCurrency(string from, string to, decimal value)
+        {
+            decimal fromRate = 1, toRate = 1;
+            DataTable dtCurrency = (DataTable)Session["currency"];
+            foreach (DataRow row in dtCurrency.Rows)
+            {
+                if (row[0].Equals(from))
+                {
+                    fromRate = (decimal)row[1];
+                }
+                if (row[0].Equals(to))
+                {
+                    toRate = (decimal)row[1];
+                }
+            }
+            return fromRate / toRate * value;
         }
     }
 }
