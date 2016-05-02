@@ -271,9 +271,15 @@ namespace HKeInvestWebApplication.Code_File
                         }
                         body += "\n Sincerely yours, the HKeInvestment Team. Contact our hotline if there is any issues with your invoice.";
 
-                        sendInvoiceEmail(address, subject, body);
-
-
+                        // Check that the email is not missing a sender's address, a subject, or a body
+                        if (address != null && subject != null && body !=null)
+                        {
+                            sendInvoiceEmail(address, subject, body);
+                        }
+                        else
+                        {
+                            // TODO: Handle this
+                        }
                     }
                 }
             }
