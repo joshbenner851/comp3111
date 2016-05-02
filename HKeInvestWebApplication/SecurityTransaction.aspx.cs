@@ -148,6 +148,8 @@ namespace HKeInvestWebApplication.EmployeeOnly
                 string varTransactionType = TransactionType.SelectedValue.ToString().Trim();
                 string accountNumber = getAccountNumber();
 
+                string name = "";
+
                 if (varSecurityType.Equals("Stock"))
                 {
                     //declare all relevant variables for placing a stock order
@@ -159,6 +161,8 @@ namespace HKeInvestWebApplication.EmployeeOnly
                     string varAllOrNone = AllOrNone.Checked == true ? "Y" : "N";
                     string varStopPrice = StopPrice.Text.ToString();
                     string varLimitPrice = "";
+                    name = extFunction.getSecuritiesByCode("stock", varStockCode).Rows[0]["name"].ToString().Trim();
+
                     //typeorder
                     if (OrderType.SelectedValue.Equals("Market Order"))
                     {
@@ -201,7 +205,7 @@ namespace HKeInvestWebApplication.EmployeeOnly
                         {
 
                             //Figure out how to query with a value that should be zero
-                            string sql = "INSERT INTO OrderHistory ([referenceNumber], [buyOrSell], [securityType], [securityCode], [dateSubmitted], [shares], [stockOrderType], [expiryDay], [allOrNone], [limitPrice], [stopPrice], [accountNumber]) VALUES ('" +
+                            string sql = "INSERT INTO OrderHistory ([referenceNumber], [buyOrSell], [securityType], [securityCode], [dateSubmitted], [shares], [stockOrderType], [expiryDay], [allOrNone], [limitPrice], [stopPrice], [accountNumber], [name]) VALUES ('" +
                                 result + "', '" +
                                 varTransactionType + "', '" +
                                 varSecurityType + "', '" +
@@ -213,7 +217,8 @@ namespace HKeInvestWebApplication.EmployeeOnly
                                 varAllOrNone + "', '" +
                                 varLimitPrice + "', '" +
                                 varStopPrice + "', '" +
-                                accountNumber + "')";
+                                accountNumber + "', '"+
+                                name +"')";
 
                             SqlTransaction trans = extData.beginTransaction();
                             extData.setData(sql, trans);
@@ -237,10 +242,9 @@ namespace HKeInvestWebApplication.EmployeeOnly
                         {
                             //Code to write result into order history table
 
-
                             //Tested and properly replicates in the bonds
                             //Testing sql for Sell stock
-                            string sql = "INSERT INTO OrderHistory ([referenceNumber], [buyOrSell], [securityType], [securityCode], [dateSubmitted], [shares], [stockOrderType], [expiryDay], [allOrNone], [limitPrice], [stopPrice], [accountNumber]) VALUES ('" +
+                            string sql = "INSERT INTO OrderHistory ([referenceNumber], [buyOrSell], [securityType], [securityCode], [dateSubmitted], [shares], [stockOrderType], [expiryDay], [allOrNone], [limitPrice], [stopPrice], [accountNumber], [name]) VALUES ('" +
                                  result + "', '" +
                                  varTransactionType + "', '" +
                                  varSecurityType + "', '" +
@@ -252,7 +256,8 @@ namespace HKeInvestWebApplication.EmployeeOnly
                                  varAllOrNone + "', '" +
                                  varLimitPrice + "', '" +
                                  varStopPrice + "', '" +
-                                 accountNumber + "')";
+                                 accountNumber + "', '"+
+                                 name + "')";
 
                             SqlTransaction trans = extData.beginTransaction();
                             extData.setData(sql, trans);
@@ -278,11 +283,17 @@ namespace HKeInvestWebApplication.EmployeeOnly
                             }
                             else
                             {
+
+
                                 string result = extFunction.submitBondBuyOrder(varBondTrustCode, varBondTrustSharesAmount);
 
                                 if (result != null)
                                 {
-                                    string sql = "INSERT INTO OrderHistory ([referenceNumber], [buyOrSell], [securityType], [securityCode], [dateSubmitted], [amount], [accountNumber]) VALUES ('" +
+
+                                    //Yes. This is a redundant execution
+                                    name = extFunction.getSecuritiesByCode("stock", varBondTrustCode).Rows[0]["name"].ToString().Trim();
+
+                                    string sql = "INSERT INTO OrderHistory ([referenceNumber], [buyOrSell], [securityType], [securityCode], [dateSubmitted], [amount], [accountNumber], [name]) VALUES ('" +
                                        result + "', '" +
                                        varTransactionType + "', '" +
                                        varSecurityType + "', '" +
@@ -290,7 +301,8 @@ namespace HKeInvestWebApplication.EmployeeOnly
                                        DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss tt") + "', '" +
                                        varBondTrustSharesAmount + "', '" +
 
-                                       accountNumber + "')";
+                                       accountNumber + "', '"+
+                                       name + "')";
 
                                     SqlTransaction trans = extData.beginTransaction();
                                     extData.setData(sql, trans);
@@ -314,7 +326,10 @@ namespace HKeInvestWebApplication.EmployeeOnly
 
                                 if (result != null)
                                 {
-                                    string sql = "INSERT INTO OrderHistory ([referenceNumber], [buyOrSell], [securityType], [securityCode], [dateSubmitted], [amount], [accountNumber]) VALUES ('" +
+
+                                    name = extFunction.getSecuritiesByCode("unit trust", varBondTrustCode).Rows[0]["name"].ToString().Trim();
+
+                                    string sql = "INSERT INTO OrderHistory ([referenceNumber], [buyOrSell], [securityType], [securityCode], [dateSubmitted], [amount], [accountNumber], [name]) VALUES ('" +
                                       result + "', '" +
                                       varTransactionType + "', '" +
                                       varSecurityType + "', '" +
@@ -322,7 +337,8 @@ namespace HKeInvestWebApplication.EmployeeOnly
                                       DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss tt") + "', '" +
                                       varBondTrustSharesAmount + "', '" +
 
-                                      accountNumber + "')";
+                                      accountNumber + "', '"+
+                                      name +"')";
 
                                     SqlTransaction trans = extData.beginTransaction();
                                     extData.setData(sql, trans);
@@ -351,7 +367,11 @@ namespace HKeInvestWebApplication.EmployeeOnly
 
                                     if (result != null)
                                     {
-                                        string sql = "INSERT INTO OrderHistory ([referenceNumber], [buyOrSell], [securityType], [securityCode], [dateSubmitted], [shares], [accountNumber]) VALUES ('" +
+
+                                        //Yes. This is a redundant execution
+                                        name = extFunction.getSecuritiesByCode("bond", varBondTrustCode).Rows[0]["name"].ToString().Trim();
+
+                                        string sql = "INSERT INTO OrderHistory ([referenceNumber], [buyOrSell], [securityType], [securityCode], [dateSubmitted], [shares], [accountNumber], [name]) VALUES ('" +
                                         result + "', '" +
                                         varTransactionType + "', '" +
                                         varSecurityType + "', '" +
@@ -359,7 +379,8 @@ namespace HKeInvestWebApplication.EmployeeOnly
                                         DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss tt") + "', '" +
                                         varBondTrustShares + "', '" +
 
-                                        accountNumber + "')";
+                                        accountNumber + "', '" +
+                                        name + "')" ;
 
                                         SqlTransaction trans = extData.beginTransaction();
                                         extData.setData(sql, trans);
@@ -382,7 +403,11 @@ namespace HKeInvestWebApplication.EmployeeOnly
 
                                 if (result != null)
                                 {
-                                    string sql = "INSERT INTO OrderHistory ([referenceNumber], [buyOrSell], [securityType], [securityCode], [dateSubmitted], [shares], [accountNumber]) VALUES ('" +
+
+                                    //Yes. This is a redundant execution
+                                    name = extFunction.getSecuritiesByCode("unit trust", varBondTrustCode).Rows[0]["name"].ToString().Trim();
+
+                                    string sql = "INSERT INTO OrderHistory ([referenceNumber], [buyOrSell], [securityType], [securityCode], [dateSubmitted], [shares], [accountNumber], [name]) VALUES ('" +
                                         result + "', '" +
                                         varTransactionType + "', '" +
                                         varSecurityType + "', '" +
@@ -390,7 +415,8 @@ namespace HKeInvestWebApplication.EmployeeOnly
                                         DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss tt") + "', '" +
                                         varBondTrustShares + "', '" +
 
-                                        accountNumber + "')";
+                                        accountNumber + "', '"+
+                                        name+"')";
 
                                     SqlTransaction trans = extData.beginTransaction();
                                     extData.setData(sql, trans);

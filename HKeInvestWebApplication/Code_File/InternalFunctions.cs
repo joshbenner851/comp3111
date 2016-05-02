@@ -174,7 +174,7 @@ namespace HKeInvestWebApplication.Code_File
         //To be called through threading
         public void updateLocalOrderStatus()
         {
-            string sql = "SELECT referenceNumber, accountNumber, buyOrSell FROM OrderHistory WHERE status = 'pending'";
+            string sql = "SELECT referenceNumber, accountNumber, buyOrSell,  FROM OrderHistory WHERE status = 'pending'";
             //string accountNumber = getAccountNumber();
             DataTable orderNums = extData.getData(sql);
             if(orderNums != null && orderNums.Rows != null) {
@@ -194,11 +194,6 @@ namespace HKeInvestWebApplication.Code_File
                         extData.setData(sql, trans);
                         extData.commitTransaction(trans);
                         //Now that the order has been completed fees can be calculated and applied to the balance in account and the feespaid in orderhistory
-
-                        //Depends on whether function was buy or sell for determining 
-
-
-
 
                         string buyOrSell = row["buyOrSell"].ToString();
 
@@ -233,9 +228,30 @@ namespace HKeInvestWebApplication.Code_File
                         sql = "UPDATE Account SET balance = '" + balance + "' WHERE accountNumber = '" + accountNumber + "'";
                         extData.commitTransaction(trans);
 
+                        //Now that the order has been completed. Send email
+
+
+                        //Get security name somewhere
+
+
+                        //orderReference, accountNumber, buyorsell, securitycode, securityname, (stock order type), dateSubmited, totalnumSharesBoughtt, executedDollarAmount, feeCharged, (FOREACH transaction) transactionNumber, date executed, quantity of shares, price per share
+                        string address = "";//get from sql statement
+                        string subject = "Order Number: " + referenceNumber + " has been " + orderStatus;
+                        string body = "Order Reference Number: " + referenceNumber + "\n" +
+                            "Account Number: " + accountNumber + "\n" +
+                            "Buy or Sell Order: " + buyOrSell.ToUpper() + "\n" +
+                            "Security Code: " + row["securityCode"].ToString() + "\n" +
+                            "Security Name: " + row;
+
                     }
                 }
             }
+
+        }
+
+        public void sendInvoiceEmail(string address, string subject, string body)
+        {
+            //Email setup code
 
         }
 
