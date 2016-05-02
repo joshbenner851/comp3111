@@ -213,7 +213,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="About.aspx" />
-    <Content Include="Alerts.aspx" />
+    <Content Include="ClientOnly\Alerts.aspx" />
     <Content Include="ClientOnly\ClientGenerateReport.aspx" />
     <Content Include="EmployeeOnly\AccountApplication.aspx" />
     <Content Include="Account\AddPhoneNumber.aspx" />
@@ -325,11 +325,11 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Alerts.aspx.cs">
+    <Compile Include="ClientOnly\Alerts.aspx.cs">
       <DependentUpon>Alerts.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Alerts.aspx.designer.cs">
+    <Compile Include="ClientOnly\Alerts.aspx.designer.cs">
       <DependentUpon>Alerts.aspx</DependentUpon>
     </Compile>
     <Compile Include="ClientOnly\ClientGenerateReport.aspx.cs">

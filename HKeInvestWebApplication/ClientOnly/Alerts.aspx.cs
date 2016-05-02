@@ -64,7 +64,7 @@ namespace HKeInvestWebApplication
                         cuvSecurityCodeInput.IsValid = false;
                     }
                 }
-                else
+                else // Alert type should only either be "High" or "Low"
                 {
                     if (price < alertValue)
                     {
