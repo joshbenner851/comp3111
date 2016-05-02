@@ -6,9 +6,9 @@ TODO:
 Email about parentheses in data
 -------------------------------
 TODO by Peer Testing(Tuesday the 3rd):
- * Linking pages together so they can actually be accessible <------- MAIN PRIORITY IN MORNING!!!!
+ * Linking pages together so they can actually be accessible <------- MAIN PRIORITY IN MORNING!!!
  * Add the required testing data before Tuesday's lab so we don't get disqualified <------- MAIN PRIORITY IN MORNING!!!
----------------
+-------------------------------
  * Buy/Sell(only checking the clients account if enough shares/funds left)
  * Alerts
  * Report Generation
