@@ -174,7 +174,7 @@ namespace HKeInvestWebApplication.Code_File
         //To be called through threading
         public void updateLocalOrderStatus()
         {
-            string sql = "SELECT referenceNumber, accountNumber, buyOrSell,  FROM OrderHistory WHERE status = 'pending'";
+            string sql = "SELECT referenceNumber, accountNumber, buyOrSell, name, securityType, securityCode, stockOrderType, dateSubmitted, feesPaid FROM OrderHistory WHERE status = 'pending'";
             //string accountNumber = getAccountNumber();
             DataTable orderNums = extData.getData(sql);
             if(orderNums != null && orderNums.Rows != null) {
@@ -204,12 +204,15 @@ namespace HKeInvestWebApplication.Code_File
                         //Get transaction information from external table
                         decimal costOfOrder = 0m;
 
+                        decimal totalSharesExecuted = 0m;
+
                         DataTable transactions = extFunction.getOrderTransaction(referenceNumber);
                         if (transactions != null && transactions.Rows != null)
                         {
                             foreach (DataRow tRow in transactions.Rows)
                             {
                                 costOfOrder += decimal.Parse(tRow["executeShares"].ToString()) * decimal.Parse(tRow["executePrice"].ToString());
+                                totalSharesExecuted += decimal.Parse(tRow["executeShares"].ToString());
                             }
                         }
 
@@ -230,18 +233,40 @@ namespace HKeInvestWebApplication.Code_File
 
                         //Now that the order has been completed. Send email
 
-
-                        //Get security name somewhere
-
-
                         //orderReference, accountNumber, buyorsell, securitycode, securityname, (stock order type), dateSubmited, totalnumSharesBoughtt, executedDollarAmount, feeCharged, (FOREACH transaction) transactionNumber, date executed, quantity of shares, price per share
                         string address = "";//get from sql statement
+
+                        sql = "SELECT email FROM Account WHERE accountNumber = '" + accountNumber + "' AND isPrimary = 'Y'";
+                        address = extData.getData(sql).Rows[0]["email"].ToString().Trim();
+
                         string subject = "Order Number: " + referenceNumber + " has been " + orderStatus;
                         string body = "Order Reference Number: " + referenceNumber + "\n" +
                             "Account Number: " + accountNumber + "\n" +
-                            "Buy or Sell Order: " + buyOrSell.ToUpper() + "\n" +
+                            "Buy or Sell Order: " + buyOrSell + "\n" +
                             "Security Code: " + row["securityCode"].ToString() + "\n" +
-                            "Security Name: " + row;
+                            "Security Name: " + row["name"].ToString() + "\n";
+                        if (row["securityType"].Equals("stock"))
+                        {
+                            body += "Stock Order Type: " + row["stockOrderType"].ToString() + "\n";
+                        }
+                        body += "Date Submitted: " + row["dateSubmitted"].ToString() + "\n" +
+                            "Total Shares Executed: " + totalSharesExecuted.ToString() + "\n" +
+                            "Total Executed Dollar Amount: " + costOfOrder + "\n";
+
+                        if (transactions != null && transactions.Rows != null)
+                        {
+                            foreach (DataRow tRow in transactions.Rows)
+                            {
+                                body += "Transaction number: " + tRow["transactionNumber"].ToString() + "\n" +
+                                    "Execution Date: " + tRow["executeDate"].ToString() + "\n" +
+                                    "Quantity of Shares: " + tRow["executeShares"].ToString() + "\n" +
+                                    "Price per share: " + tRow["executePrice"].ToString()+"\n"; 
+                            }
+                        }
+                        body += "\n Sincerely yours, the HKeInvestment Team. Contact our hotline if there is any issues with your invoice.";
+
+                        sendInvoiceEmail(address, subject, body);
+
 
                     }
                 }
