@@ -20,7 +20,20 @@ namespace HKeInvestWebApplication.Code_File
         ExternalFunctions extFunction = new ExternalFunctions();
         HKeInvestData extData = new HKeInvestData();
 
+        public decimal convertCurrency(string from, string to, decimal amount)
+        {
+            decimal convertedCurrency = 0m;
 
+            decimal value = Convert.ToDecimal(amount);
+            //query for the existing information
+            decimal baseRate = extFunction.getCurrencyRate(from);
+            //string sql = "SELECT rate FROM CurrencyRate WHERE currency = '" + baseCurrency + "'";
+            decimal toRate = extFunction.getCurrencyRate(to);
+            //query for the rate it should change to
+
+            convertedCurrency = value * baseRate / toRate;
+            return convertedCurrency;
+        }
 
         //Calculate the fees for the order (will calculate for the set of transactions)     
         public decimal calculateFees(string referenceNumber, string accountNumber)
@@ -33,8 +46,8 @@ namespace HKeInvestWebApplication.Code_File
             string sql = "SELECT * FROM OrderHistory WHERE referenceNumber = '" +
                 referenceNumber + "'";
             DataTable orderH = extData.getData(sql);
-            string type = orderH.Rows[0]["securityType"].ToString();
-            string buyOrSell = orderH.Rows[0]["buyOrSell"].ToString();
+            string type = orderH.Rows[0]["securityType"].ToString().Trim();
+            string buyOrSell = orderH.Rows[0]["buyOrSell"].ToString().Trim();
 
 
             //Query to get completed transactions 
@@ -46,7 +59,7 @@ namespace HKeInvestWebApplication.Code_File
             if (type.Equals("stock"))
             {
                 //Query to get the order type (from local history maybe)
-                string orderType = orderH.Rows[0]["stockOrderType"].ToString();
+                string orderType = orderH.Rows[0]["stockOrderType"].ToString().Trim();
 
                 //variable for checking if the assessed fee is greater than the minimmum fee
                 decimal minFeeCheck = 0m;
@@ -82,7 +95,7 @@ namespace HKeInvestWebApplication.Code_File
                     {
                         minFeeCheck = calculateFeesAtRate(extTransaction, .006m);
                     }
-
+                    fee = minFeeCheck > 100m ? minFeeCheck : 100m;
                 }
             }
             else
@@ -107,7 +120,7 @@ namespace HKeInvestWebApplication.Code_File
                     }
                     else
                     {
-                        fee = 500m;
+                        fee = 50m;
                     }
                 }
             }
@@ -146,12 +159,12 @@ namespace HKeInvestWebApplication.Code_File
 
             decimal securitySum = 0;
 
-            foreach (DataRow Row in securities.Rows)
+            foreach (DataRow row in securities.Rows)
             {
                 //Assuming that the securities stored in the external database are returned in HKD
 
                 //Iterate and get the value of the currency based on the type and code
-                decimal currentPrice = extFunction.getSecuritiesPrice(Row["type"].ToString(), Row["code"].ToString());
+                decimal currentPrice = extFunction.getSecuritiesPrice(row["type"].ToString().Trim(), row["code"].ToString().Trim());
                 if (currentPrice == -1)
                 {
                     //Throw some error;
@@ -160,10 +173,11 @@ namespace HKeInvestWebApplication.Code_File
                 else
                 {
                     //ASK: Is the current price always reflected in HKD
-                    decimal priceTemp = currentPrice * Decimal.Parse(Row["shares"].ToString());
-                    string bases = Row["base"].ToString();
+                    decimal priceTemp = currentPrice * Decimal.Parse(row["shares"].ToString().Trim());
+                    string bases = row["base"].ToString().Trim().ToUpper();
                     //Check this convert currency function
-                    securitySum += priceTemp * extFunction.getCurrencyRate(bases);
+                    decimal convertFactor = convertCurrency("HKD", bases, priceTemp);
+                    securitySum += convertFactor;// * extFunction.getCurrencyRate(bases);
                 }
             }
             //Should return net balance of the accounts
@@ -175,29 +189,33 @@ namespace HKeInvestWebApplication.Code_File
         //To be called through threading
         public void updateLocalOrderStatus()
         {
-            string sql = "SELECT referenceNumber, accountNumber, buyOrSell, name, securityType, securityCode, stockOrderType, dateSubmitted, feesPaid FROM OrderHistory WHERE status = 'pending'";
+            string sql = "SELECT referenceNumber, accountNumber, buyOrSell, name, securityType, securityCode, stockOrderType, dateSubmitted, feesPaid FROM OrderHistory WHERE status = 'pending' OR status = 'partial'";
             //string accountNumber = getAccountNumber();
             DataTable orderNums = extData.getData(sql);
-            if (orderNums != null && orderNums.Rows != null)
+            if (orderNums != null && orderNums.Rows.Count>0)
             {
                 foreach (DataRow row in orderNums.Rows)
                 {
                     string referenceNumber = row["referenceNumber"].ToString().Trim();
-                    string orderStatus = extFunction.getOrderStatus(referenceNumber);
+                    string orderStatus = extFunction.getOrderStatus(referenceNumber).Trim();
                     string accountNumber = row["accountNumber"].ToString().Trim();
-                    if (orderStatus != "pending")
+
+                    string varSecurityType = row["securityType"].ToString().Trim();
+                    string varSecurityCode = row["securityCode"].ToString().Trim();
+                    if (orderStatus != "pending" && orderStatus != "partial")
                     {
 
                         //Including calculate fees function
 
                         decimal fees = calculateFees(referenceNumber, accountNumber);
+
                         SqlTransaction trans = extData.beginTransaction();
-                        sql = "UPDATE OrderHistory SET status ='" + orderStatus + "', feesPaid = '" + fees.ToString() + "' WHERE referenceNumber = '" + referenceNumber + "'";
+                        sql = "UPDATE OrderHistory SET status ='" + orderStatus + "', feesPaid = '" + fees.ToString().Trim() + "' WHERE referenceNumber = '" + referenceNumber + "'";
                         extData.setData(sql, trans);
                         extData.commitTransaction(trans);
                         //Now that the order has been completed fees can be calculated and applied to the balance in account and the feespaid in orderhistory
 
-                        string buyOrSell = row["buyOrSell"].ToString();
+                        string buyOrSell = row["buyOrSell"].ToString().Trim();
 
                         sql = "SELECT balance FROM Account WHERE accountNumber = '" + accountNumber + "'";
 
@@ -213,6 +231,7 @@ namespace HKeInvestWebApplication.Code_File
                         {
                             foreach (DataRow tRow in transactions.Rows)
                             {
+                                //Implement some sort of currency conversion here
                                 costOfOrder += decimal.Parse(tRow["executeShares"].ToString()) * decimal.Parse(tRow["executePrice"].ToString());
                                 totalSharesExecuted += decimal.Parse(tRow["executeShares"].ToString());
                             }
@@ -231,12 +250,11 @@ namespace HKeInvestWebApplication.Code_File
 
                         trans = extData.beginTransaction();
                         sql = "UPDATE Account SET balance = '" + balance + "' WHERE accountNumber = '" + accountNumber + "'";
+                        extData.setData(sql, trans);
                         extData.commitTransaction(trans);
 
 
 
-                        string varSecurityType = row["securityType"].ToString();
-                        string varSecurityCode = row["securityCode"].ToString();
 
                         //Now that the order has been completed. Send email
 
@@ -301,7 +319,7 @@ namespace HKeInvestWebApplication.Code_File
                             }
                             else
                             {
-                                currencyBase = currencyBaseTable.Rows[0]["base"].ToString();
+                                currencyBase = currencyBaseTable.Rows[0]["base"].ToString().Trim();
                             }
                         }
 
@@ -313,23 +331,19 @@ namespace HKeInvestWebApplication.Code_File
                         //Checking the values of the secuityholding
                         if (curSecurityHolding == null || curSecurityHolding.Rows.Count == 0)
                         {
-                            if (buyOrSell.Equals("buy"))
-                            {
+                            //if (buyOrSell.Equals("buy"))
+                            //{
                                 trans = extData.beginTransaction();
                                 sql = "INSERT INTO SecurityHolding (accountNumber, type, code, name, shares, base) VALUES ('" +
                                     accountNumber + "', '" +
                                     varSecurityType + "', '" +
                                     varSecurityCode + "', '" +
-                                    row["name"].ToString() + "', '" +
-                                    totalSharesExecuted.ToString() + "', '" +
+                                    row["name"].ToString().Trim() + "', '" +
+                                    totalSharesExecuted.ToString().Trim() + "', '" +
                                     currencyBase + "')";
                                 extData.setData(sql, trans);
                                 extData.commitTransaction(trans);
-                            }
-                            else
-                            {
-                                //THROW SOME ERROR
-                            }
+                           //}
                         }
                         else
                         {

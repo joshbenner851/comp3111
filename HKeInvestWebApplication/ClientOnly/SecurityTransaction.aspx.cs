@@ -144,13 +144,13 @@ namespace HKeInvestWebApplication.EmployeeOnly
             if (Page.IsValid)
             {
 
-                string varSecurityType = SecurityType.SelectedValue.ToString().Trim();
-                string varTransactionType = TransactionType.SelectedValue.ToString().Trim();
+                string varSecurityType = SecurityType.SelectedValue.ToString().Trim().ToLower();
+                string varTransactionType = TransactionType.SelectedValue.ToString().Trim().ToLower();
                 string accountNumber = getAccountNumber();
 
                 string name = "";
 
-                if (varSecurityType.Equals("Stock"))
+                if (varSecurityType.Equals("stock"))
                 {
                     //declare all relevant variables for placing a stock order
                     //Sorry for bad naming convention
@@ -189,7 +189,7 @@ namespace HKeInvestWebApplication.EmployeeOnly
                         //Sell order was not succesfully submitted
                         InvalidStockCode.Text = "The code given does not exist";
                     }
-                    else if (varTransactionType.Equals("Buy"))
+                    else if (varTransactionType.Equals("buy"))
                     {
 
                         InvalidStockSharesQuantity.Text = stockSharesAmountIsValid(varShares, TransactionType.Text, varStockCode);
@@ -207,8 +207,8 @@ namespace HKeInvestWebApplication.EmployeeOnly
                             //Figure out how to query with a value that should be zero
                             string sql = "INSERT INTO OrderHistory ([referenceNumber], [buyOrSell], [securityType], [securityCode], [dateSubmitted], [shares], [stockOrderType], [expiryDay], [allOrNone], [limitPrice], [stopPrice], [accountNumber], [name]) VALUES ('" +
                                 result + "', '" +
-                                varTransactionType + "', '" +
-                                varSecurityType + "', '" +
+                                varTransactionType.Trim() + "', '" +
+                                varSecurityType.Trim() + "', '" +
                                 varStockCode + "', '" +
                                 DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss tt") + "', '" +
                                 varShares + "', '" +

@@ -257,7 +257,7 @@
     <Content Include="Fees.aspx" />
     <Content Include="ProfitLossTracking.aspx" />
     <Content Include="SearchSecurities.aspx" />
-    <Content Include="SecurityTransaction.aspx" />
+    <Content Include="ClientOnly\SecurityTransaction.aspx" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
@@ -580,11 +580,11 @@
     <Compile Include="SearchSecurities.aspx.designer.cs">
       <DependentUpon>SearchSecurities.aspx</DependentUpon>
     </Compile>
-    <Compile Include="SecurityTransaction.aspx.cs">
+    <Compile Include="ClientOnly\SecurityTransaction.aspx.cs">
       <DependentUpon>SecurityTransaction.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="SecurityTransaction.aspx.designer.cs">
+    <Compile Include="ClientOnly\SecurityTransaction.aspx.designer.cs">
       <DependentUpon>SecurityTransaction.aspx</DependentUpon>
     </Compile>
     <Compile Include="Global.asax.cs">
