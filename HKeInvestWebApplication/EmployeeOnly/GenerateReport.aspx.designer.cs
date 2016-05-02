@@ -112,6 +112,15 @@ namespace HKeInvestWebApplication {
         protected global::System.Web.UI.WebControls.Label LastOrderValue;
         
         /// <summary>
+        /// securityType control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList securityType;
+        
+        /// <summary>
         /// gvSecurities control.
         /// </summary>
         /// <remarks>

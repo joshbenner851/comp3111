@@ -48,6 +48,11 @@
         <div id="SecuritySummary">
             <h3>Securities Summary</h3>
             <hr />
+            <asp:DropDownList ID="securityType" runat="server" OnSelectedIndexChanged="securityType_SelectedIndexChanged">
+                <asp:ListItem Value="stock">Stock</asp:ListItem>
+                <asp:ListItem Value="bond">Bond</asp:ListItem>
+                <asp:ListItem Value="unitTrust">Unit Trust</asp:ListItem>
+            </asp:DropDownList>
             <asp:GridView ID="gvSecurities" runat="server" AutoGenerateColumns="False">
                 <Columns>
                     <asp:BoundField DataField="code" HeaderText="Code" ReadOnly="True" SortExpression="code" />
@@ -55,6 +60,7 @@
                     <asp:BoundField DataField="shares" ReadOnly="True" HeaderText="Shares Held" SortExpression="sharesHeld" />
                     <asp:BoundField DataField="price" HeaderText="Price Per Share" ReadOnly="True" />
                     <asp:BoundField DataField="totalValue" ReadOnly="True" HeaderText="Total Value" SortExpression="totalValue" />
+                    <asp:BoundField DataField="base" ReadOnly="True" HeaderText="Base" /> 
                 </Columns>
             </asp:GridView>
         </div>

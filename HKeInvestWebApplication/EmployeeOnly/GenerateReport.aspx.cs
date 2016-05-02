@@ -82,7 +82,7 @@ namespace HKeInvestWebApplication
 
                 price += convertCurrency(row[2].ToString(), "HKD", myExternalFunctions.getSecuritiesPrice("stock", row[0].ToString()) * (decimal)row[1]);
             }
-            StockValue.Text = price.ToString();
+            StockValue.Text = price.ToString("F");
             total += price;
             price = 0;
 
@@ -92,7 +92,7 @@ namespace HKeInvestWebApplication
             {
                 price += convertCurrency(row[2].ToString(), "HKD", myExternalFunctions.getSecuritiesPrice("bond", row[0].ToString()) * (decimal)row[1]);
             }
-            BondValue.Text = price.ToString();
+            BondValue.Text = price.ToString("F");
             total += price;
             price = 0;
 
@@ -102,11 +102,11 @@ namespace HKeInvestWebApplication
             {
                 price += convertCurrency(row[2].ToString(), "HKD", myExternalFunctions.getSecuritiesPrice("unit trust", row[0].ToString()) * (decimal)row[1]);
             }
-            UnitTrustValue.Text = price.ToString();
+            UnitTrustValue.Text = price.ToString("F");
             total += price;
             price = 0;
 
-            TotalValue.Text = total.ToString();
+            TotalValue.Text = total.ToString("F");
 
             sql = "select dateSubmitted, amount from OrderHistory where accountNumber='" + accountNumber + "' and status='completed' order by dateSubmitted asc";
             data = myHKeInvestData.getData(sql);
@@ -121,11 +121,22 @@ namespace HKeInvestWebApplication
             }
 
             //PART B
-            //sql = "select code, name, shares from SecurityHolding where accountNumber='" + accountNumber + "'";
-            //data = myHKeInvestData.getData(sql);
+            sql = "select code, name, shares, '0.00' as price, '0.00' as totalValue, 'HKD' as base from SecurityHolding where accountNumber='" + accountNumber + "'";
+            data = myHKeInvestData.getData(sql);
+            gvSecurities.DataSource = data;
+            gvSecurities.DataBind();
+            DataTable dtSecurities = myHKeInvestCode.unloadGridView(gvSecurities);
+            foreach(DataRow row in dtSecurities.Rows) {
+                decimal prix = myExternalFunctions.getSecuritiesPrice("stock", row[0].ToString());
+                row[3] = prix;
+                row[4] = ((decimal)(prix * (decimal)row[2])).ToString("F");
+            }
+            gvSecurities.DataSource = dtSecurities;
+            gvSecurities.DataBind();
 
             //PART C
-            //sql = "select referenceNumber, buyOrSell, securityType, securityCode";
+            sql = "select referenceNumber, buyOrSell, securityType, securityCode";
+            
             //PART D
         }
 
@@ -191,6 +202,11 @@ namespace HKeInvestWebApplication
                 }
             }
             return fromRate / toRate * value;
+        }
+
+        protected void securityType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
