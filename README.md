@@ -4,9 +4,11 @@ TODO:
 
 
 Email about parentheses in data
-
+-------------------------------
 TODO by Peer Testing(Tuesday the 3rd):
- * Linking pages together so they can actually be accessible <------- MAIN PRIORITY IN MORNING
+ * Linking pages together so they can actually be accessible <------- MAIN PRIORITY IN MORNING!!!!
+ * Add the required testing data before Tuesday's lab so we don't get disqualified <------- MAIN PRIORITY IN MORNING!!!
+---------------
  * Buy/Sell(only checking the clients account if enough shares/funds left)
  * Alerts
  * Report Generation
@@ -19,7 +21,7 @@ TODO by Peer Testing(Tuesday the 3rd):
  -documentation. A securities account number and a user name should never be changed.
  * Register client validation for two letters of last name (This was previously removed)
  * Add auto postback to account application page
- * Add the required testing data before Tuesday's lab so we don't get disqualified
+-----------------
  
 
 TODO by Acceptance Testing(Monday the 9th)
