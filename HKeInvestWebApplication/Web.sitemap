@@ -6,6 +6,7 @@
         <siteMapNode url="~/AccountApplication.aspx" title="Account Application"  description="" />
         <siteMapNode url="~/GenerateReport.aspx" title="Generate Report"  description="" />
         <siteMapNode url="~/SecurityHoldingDetails.aspx" title="Security Holding Details"  description="" />
+         <siteMapNode url="~/EditClientInfo.aspx" title="Edit Client Information"  description="" />
       </siteMapNode>
       <siteMapNode url="~/ClientOnly" title="Client"  description="">
         <siteMapNode url="~/Alerts.aspx" title="Alerts"  description="" />
