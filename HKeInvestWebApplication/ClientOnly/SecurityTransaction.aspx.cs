@@ -205,20 +205,39 @@ namespace HKeInvestWebApplication.EmployeeOnly
                         {
 
                             //Figure out how to query with a value that should be zero
-                            string sql = "INSERT INTO OrderHistory ([referenceNumber], [buyOrSell], [securityType], [securityCode], [dateSubmitted], [shares], [stockOrderType], [expiryDay], [allOrNone], [limitPrice], [stopPrice], [accountNumber], [name]) VALUES ('" +
-                                result + "', '" +
-                                varTransactionType.Trim() + "', '" +
-                                varSecurityType.Trim() + "', '" +
-                                varStockCode + "', '" +
-                                DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss tt") + "', '" +
-                                varShares + "', '" +
-                                varOrderType + "', '" +
-                                varExpiryDate + "', '" +
-                                varAllOrNone + "', '" +
-                                varLimitPrice + "', '" +
-                                varStopPrice + "', '" +
-                                accountNumber + "', '"+
-                                name +"')";
+                            string sql = "INSERT INTO OrderHistory ([referenceNumber], [buyOrSell], [securityType], [securityCode], [dateSubmitted], [shares], [stockOrderType], [expiryDay], [allOrNone],";
+
+
+                                if (varLimitPrice != "")
+                            {
+                                sql += "[limitPrice],";
+                            }
+                                if(varStopPrice != "")
+                            {
+                                sql += "[stopPrice],";
+                            }
+                            sql += "[accountNumber], [name]) VALUES ('" +
+                            result + "', '" +
+                            varTransactionType.Trim() + "', '" +
+                            varSecurityType.Trim() + "', '" +
+                            varStockCode + "', '" +
+                            DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss tt") + "', cast('" +
+                            varShares + "' as decimal(18,2)), '" +
+                            varOrderType + "', '" +
+                            varExpiryDate + "', '" +
+                            varAllOrNone + "', '";
+
+
+                                if (varLimitPrice != "")
+                            {
+                                sql += varLimitPrice + "', '";
+                            }
+                            if (varStopPrice != "")
+                            {
+                                sql += varStopPrice + "', '";
+                            }
+                           sql += accountNumber + "', '" +
+                                name + "')";
 
                             SqlTransaction trans = extData.beginTransaction();
                             extData.setData(sql, trans);
@@ -244,25 +263,43 @@ namespace HKeInvestWebApplication.EmployeeOnly
 
                             //Tested and properly replicates in the bonds
                             //Testing sql for Sell stock
-                            string sql = "INSERT INTO OrderHistory ([referenceNumber], [buyOrSell], [securityType], [securityCode], [dateSubmitted], [shares], [stockOrderType], [expiryDay], [allOrNone], [limitPrice], [stopPrice], [accountNumber], [name]) VALUES ('" +
-                                 result + "', '" +
-                                 varTransactionType + "', '" +
-                                 varSecurityType + "', '" +
-                                 varStockCode + "', '" +
-                                 DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss tt") + "', '" +
-                                 varShares + "', '" +
-                                 varOrderType + "', '" +
-                                 varExpiryDate + "', '" +
-                                 varAllOrNone + "', '" +
-                                 varLimitPrice + "', '" +
-                                 varStopPrice + "', '" +
-                                 accountNumber + "', '"+
+                            string sql = "INSERT INTO OrderHistory ([referenceNumber], [buyOrSell], [securityType], [securityCode], [dateSubmitted], [shares], [stockOrderType], [expiryDay], [allOrNone],";
+
+
+                            if (varLimitPrice != "")
+                            {
+                                sql += "[limitPrice],";
+                            }
+                            if (varStopPrice != "")
+                            {
+                                sql += "[stopPrice],";
+                            }
+                            sql += "[accountNumber], [name]) VALUES ('" +
+                            result + "', '" +
+                            varTransactionType.Trim() + "', '" +
+                            varSecurityType.Trim() + "', '" +
+                            varStockCode + "', '" +
+                            DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss tt") + "', cast('" +
+                            varShares + "' as decimal(18,2)), '" +
+                            varOrderType + "', '" +
+                            varExpiryDate + "', '" +
+                            varAllOrNone + "', '";
+
+
+                            if (varLimitPrice != "")
+                            {
+                                sql += varLimitPrice + "', '";
+                            }
+                            if (varStopPrice != "")
+                            {
+                                sql += varStopPrice + "', '";
+                            }
+                            sql += accountNumber + "', '" +
                                  name + "')";
 
                             SqlTransaction trans = extData.beginTransaction();
                             extData.setData(sql, trans);
-                            extData.commitTransaction(trans);
-                            //Return URL
+                            extData.commitTransaction(trans);                            //Return URL
                         }
                     }
                 }
