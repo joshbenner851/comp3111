@@ -36,19 +36,20 @@ namespace HKeInvestWebApplication
             string sql = "";
 
             // Select "*" because we are just making sure the client has the security
-            sql = "SELECT * FROM Account NATURAL JOIN SecurityHolding WHERE userName='" + clientUserName + "' AND code='" + securityCode + "';";
+            sql = "SELECT * FROM Account, SecurityHolding WHERE userName='" + clientUserName + "' AND code='" + securityCode + "'";
+            // sql = "SELECT * FROM SecurityHolding WHERE acc AND code='22'";
 
             // Create a DataTable to hold our query to the local database
             DataTable clientSecurity = myHKeInvestData.getData(sql);
 
             if (clientSecurity == null || clientSecurity.Rows.Count == 0)
-            {
-                cuvSecurityCodeInput.Text = "Client has no security of this type with this code.";
+            { 
+                cuvSecurityCodeInput.ErrorMessage = "Client has no security of this type with this code.";
                 cuvSecurityCodeInput.IsValid = false;
             }
             else
             {
-                sql = "SELECT price FROM " + securityType + " WHERE code='" + securityCode + "';";
+                sql = "SELECT price FROM " + securityType + " WHERE code='" + securityCode + "'";
                 DataTable desiredSecurity = myExternalFunctions.getSecuritiesByCode(securityType, securityCode);
 
                 if (desiredSecurity == null)
@@ -79,16 +80,17 @@ namespace HKeInvestWebApplication
 
         protected void CreateAlertClick(object sender, EventArgs e)
         {
-            if (rfvAlertType.IsValid && rfvAlertValue.IsValid && rfvSecurityCodeInput.IsValid && rfvSecurityTypeInput.IsValid &&
-                revAlertValue.IsValid && revSecurityCodeInput.IsValid && cuvSecurityCodeInput.IsValid)
+            Page.Validate("alertValidation");
+            if (Page.IsValid)
             {
                 string securityType = rblSecurityTypeInput.SelectedValue.ToString();
                 string securityCode = tbxSecurityCodeInput.Text.ToString();
                 string alertType = rblAlertType.SelectedValue.ToString();
+                string number = tbxAlertValue.Text.ToString();
                 float alertValue = float.Parse(tbxAlertValue.Text.ToString());
 
                 // TODO: make sure to get the primary account holder's email
-                DataTable getClientEmail = myHKeInvestData.getData("SELECT email FROM Client WHERE userName='" + Context.User.Identity.GetUserName() + "';");
+                DataTable getClientEmail = myHKeInvestData.getData("SELECT email FROM Client, Account WHERE userName='" + Context.User.Identity.GetUserName() + "'");
                 string clientEmail = getClientEmail.Rows[0].Field<string>("email");
 
                 myInternalFunctions.createAlert(securityType, securityCode, alertType, alertValue, clientEmail);
