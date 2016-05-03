@@ -3,17 +3,17 @@
     <siteMapNode url ="~" title="Home"  description="">
       <siteMapNode url="~/ExternalSystems/ControlCenter.aspx" title="Control Center"  description="" />
       <siteMapNode url="~/EmployeeOnly" title="Employee"  description="">
-        <siteMapNode url="~/AccountApplication.aspx" title="Account Application"  description="" />
-        <siteMapNode url="~/GenerateReport.aspx" title="Generate Report"  description="" />
-        <siteMapNode url="~/SecurityHoldingDetails.aspx" title="Security Holding Details"  description="" />
-         <siteMapNode url="~/EditClientInfo.aspx" title="Edit Client Information"  description="" />
+        <siteMapNode url="~/EmployeeOnly/AccountApplication.aspx" title="Account Application"  description="" />
+        <siteMapNode url="~/EmployeeOnly/GenerateReport.aspx" title="Generate Report"  description="" />
+        <siteMapNode url="~/EmployeeOnly/SecurityHoldingDetails.aspx" title="Security Holding Details"  description="" />
+         <siteMapNode url="~/EmployeeOnly/EditClientInfo.aspx" title="Edit Client Information"  description="" />
       </siteMapNode>
       <siteMapNode url="~/ClientOnly" title="Client"  description="">
-        <siteMapNode url="~/Alerts.aspx" title="Alerts"  description="" />
-        <siteMapNode url="~/ClientGenerateReport.aspx" title="Generate Report"  description="" />
-        <siteMapNode url="~/ClientSecurityHoldingDetails.aspx" title="Security Holding Details"  description="" />
-        <siteMapNode url="~/ProfitLossTracking.aspx" title="Profit/Loss Tracking"  description="" />
-        <siteMapNode url="~/SecurityTransaction.aspx" title="Security Transactions"  description="" />
+        <siteMapNode url="~/ClientOnly/Alerts.aspx" title="Alerts"  description="" />
+        <siteMapNode url="~/ClientOnly/ClientGenerateReport.aspx" title="Generate Report"  description="" />
+        <siteMapNode url="~/ClientOnly/ClientSecurityHoldingDetails.aspx" title="Security Holding Details"  description="" />
+        <siteMapNode url="~/ClientOnly/ProfitLossTracking.aspx" title="Profit/Loss Tracking"  description="" />
+        <siteMapNode url="~/ClientOnly/SecurityTransaction.aspx" title="Security Transactions"  description="" />
       </siteMapNode>
       
         <siteMapNode url="~/SearchSecurities.aspx" title="Securities Searching"  description="" />
