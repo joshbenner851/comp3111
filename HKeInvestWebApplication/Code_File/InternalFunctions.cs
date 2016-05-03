@@ -458,7 +458,7 @@ namespace HKeInvestWebApplication.Code_File
 					{
 						// Get the current price of the security
 						DataTable currentSecurity = myExternalFunctions.getSecuritiesByCode(securityType, securityCode);
-						float price = currentSecurity.Rows[0].Field<float>("price");
+						float price = float.Parse(currentSecurity.Rows[0]["price"].ToString());
 
 						if (alertValue <= price)
 						{
@@ -481,7 +481,7 @@ namespace HKeInvestWebApplication.Code_File
 					else // Alert value is either "High" or "Low"
 					{
 						DataTable currentSecurity = myExternalFunctions.getSecuritiesByCode(securityType, securityCode);
-						float price = currentSecurity.Rows[0].Field<float>("price");
+						float price = float.Parse(currentSecurity.Rows[0]["price"].ToString());
 
 						if (alertValue >= price)
 						{
