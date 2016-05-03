@@ -11,11 +11,12 @@
         <siteMapNode url="~/Alerts.aspx" title="Alerts"  description="" />
         <siteMapNode url="~/ClientGenerateReport.aspx" title="Generate Report"  description="" />
         <siteMapNode url="~/ClientSecurityHoldingDetails.aspx" title="Security Holding Details"  description="" />
+        <siteMapNode url="~/ProfitLossTracking.aspx" title="Profit/Loss Tracking"  description="" />
         <siteMapNode url="~/SecurityTransaction.aspx" title="Security Transactions"  description="" />
       </siteMapNode>
       
         <siteMapNode url="~/SearchSecurities.aspx" title="Securities Searching"  description="" />
-        <siteMapNode url="~/ProfitLossTracking.aspx" title="Profit/Loss Tracking"  description="" />
+
         <siteMapNode url="~/Fees.aspx" title="View Fees" description="" />
     </siteMapNode>
   
