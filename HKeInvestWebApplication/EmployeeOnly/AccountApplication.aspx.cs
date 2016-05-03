@@ -79,7 +79,7 @@ namespace HKeInvestWebApplication
                 {
                     string accountNumber = GenerateNextKey(LastName.Text.Trim());
                     decimal balance = Convert.ToDecimal(DepositAmount.Text.Trim());
-
+                    string hkidPassNum = HKID.Text == "" ? PassportNumber.Text : HKID.Text;
                     string updateAccount = "INSERT INTO Account VALUES (" + "'" + accountNumber + "','" +
                     RadioButtonList1.SelectedValue + "','" +
                     balance + "','" +
@@ -111,7 +111,7 @@ namespace HKeInvestWebApplication
                         "'" + MobilePhone.Text + "'" + "," +
                         "'" + CitizenshipCountry.Text + "'" + "," +
                         "'" + ResidenceCountry.Text + "'" + "," +
-                        "'" + HKID.Text + "'" + "," +
+                        "'" + hkidPassNum + "'" + "," +
                         "'" + PassportCountry.Text + "'" + "," +
                          "'" + cbEmploymentStatus.Text + "'" + "," +
                         "'" + SpecificOccupation.Text + "'" + "," +
@@ -204,6 +204,22 @@ namespace HKeInvestWebApplication
             }
         }
 
+        protected void CustomValidator1_ServerValidate(object source, ServerValidateEventArgs args)
+        {
+            if(HomePhone.Text == "" && MobilePhone.Text == "" && BusinessPhone.Text == "")
+            {
+                CustomValidator1.ErrorMessage = "At least one of Home Phone/Business Phone/Mobile Phones";
+                args.IsValid = false;
+            }
+        }
 
+        protected void CustomValidator2_ServerValidate(object source, ServerValidateEventArgs args)
+        {
+            if(HKID.Text == "" && ( PassportCountry.Text == "" || PassportNumber.Text == ""))
+            {
+                CustomValidator2.ErrorMessage = "Either HKID or Passport # and Passport Country of Issue are required";
+                args.IsValid = false;
+            }
+        }
     }
 }

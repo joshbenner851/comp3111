@@ -82,6 +82,7 @@
 
                 </div>
                 <div class="form-group">
+                    <asp:CustomValidator ID="CustomValidator1" runat="server" ControlToValidate="HomePhone" EnableClientScript="False" OnServerValidate="CustomValidator1_ServerValidate" CssClass="text-danger" ValidateEmptyText="True" Text="*"></asp:CustomValidator>
                     <asp:Label CssClass="col-md-2 control-label" runat="server" Text="Home Phone" AssociatedControlID="HomePhone"></asp:Label>
                     <div class="col-md-4">
                         <asp:TextBox CssClass="form-control"  ID="HomePhone" runat="server" MaxLength="8" TextMode="Phone"></asp:TextBox>
@@ -119,15 +120,22 @@
                 </div>
                 <div class="form-group">
 
-                    <asp:Label CssClass="col-md-2 control-label" runat="server" AssociatedControlID="HKID" Text="HKID/Passport No."></asp:Label>
+                    <asp:Label CssClass="col-md-2 control-label" runat="server" AssociatedControlID="HKID" Text="HKID"></asp:Label>
+                    
                     <div class="col-md-4">
                         <asp:TextBox CssClass="form-control"  ID="HKID" runat="server" MaxLength="8"></asp:TextBox>
-                        <asp:RequiredFieldValidator ControlToValidate="HKID" runat="server" ErrorMessage="Please enter HKID/Passport number" Text="*" Display="Dynamic" CssClass="text-danger" EnableClientScript="false"></asp:RequiredFieldValidator>
+                        <!--<asp:RequiredFieldValidator ControlToValidate="HKID" runat="server" ErrorMessage="Please enter HKID/Passport number" Text="*" Display="Dynamic" CssClass="text-danger" EnableClientScript="false"></asp:RequiredFieldValidator>-->
                     </div>
+                    <asp:CustomValidator ID="CustomValidator2" runat="server" ControlToValidate="PassportNumber" EnableClientScript="False" OnServerValidate="CustomValidator2_ServerValidate" CssClass="text-danger" ValidateEmptyText="True" Text="*"></asp:CustomValidator>
+                    <asp:Label CssClass="col-md-2 control-label" AssociatedControlID="PassportNumber" runat="server" Text="Passport No."></asp:Label>
+
+                    <div class="col-md-4">
+                        <asp:TextBox CssClass="form-control" ID="PassportNumber" runat="server" MaxLength="9"></asp:TextBox>
+                    </div>
+                        
                     <asp:Label CssClass="col-md-2 control-label" runat="server" AssociatedControlID="PassportCountry" Text="Passport Country of Issue"></asp:Label>
                     <div class="col-md-4">
                         <asp:TextBox CssClass="form-control"  ID="PassportCountry" runat="server" MaxLength="70"></asp:TextBox>
-                        <asp:RequiredFieldValidator ControlToValidate="PassportCountry" runat="server" ErrorMessage="Please enter passport country of issue" Text="*" Display="Dynamic" CssClass="text-danger" EnableClientScript="false"></asp:RequiredFieldValidator>
                     </div>
 
                 </div>
