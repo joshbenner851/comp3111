@@ -45,7 +45,7 @@ namespace HKeInvestWebApplication
         {
             do
             {
-                // TODO: Check all alerts
+                intFunction.checkAlerts();
                 Thread.Sleep(10000);
             } while (true);
         }
