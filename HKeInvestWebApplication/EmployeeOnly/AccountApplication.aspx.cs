@@ -221,5 +221,23 @@ namespace HKeInvestWebApplication
                 args.IsValid = false;
             }
         }
+
+        protected void CustomValidator3_ServerValidate(object source, ServerValidateEventArgs args)
+        {
+            if (RadioButton1.Checked)
+            {
+                if(RoutingNumber.Text.Substring(0,1) != "1")
+                {
+                    CustomValidator3.ErrorMessage = "Routing number must start with a 1";
+                    args.IsValid = false;
+                }
+                else if(RoutingNumber.Text.Length < 9)
+                {
+                    CustomValidator3.ErrorMessage = "Routing number must be 9 digits long";
+                    args.IsValid = false;
+                }
+                
+            }
+        }
     }
 }

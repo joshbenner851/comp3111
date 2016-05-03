@@ -526,14 +526,31 @@
                 <h4>Part 7:</h4>
                 <div class="form-group">
                     <asp:Label CssClass="col-md-2 control-label" runat="server" AssociatedControlID="DepositAmount" Text="Initial Cheque Amount"></asp:Label>
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <asp:TextBox  CssClass="form-control" runat="server" ID="DepositAmount"></asp:TextBox>
                         <asp:RegularExpressionValidator runat="server" ValidationExpression="^[\d]{0,12}$" ControlToValidate="DepositAmount" Display="Dynamic" EnableClientScript="false" ErrorMessage="Cheque amount must contain only digits"></asp:RegularExpressionValidator>
+                        
                     </div>
+                    <asp:RadioButton ID="RadioButton1" runat="server" Text="Deposit/Withdraw" />
+                    
+                        <div class="depositWithdraw">
+                            <div class="col-md-6">
+                        <asp:Label CssClass="col-md-2 control-label" AssociatedControlID="RoutingNumber" runat="server" Text="Routing Number">
+                        </asp:Label><asp:TextBox CssClass="form-control" ID="RoutingNumber" runat="server" MaxLength="9" TextMode="Number"></asp:TextBox>
+                    <asp:CustomValidator ID="CustomValidator3" runat="server" EnableClientScript="False" CssClass="text-danger" ControlToValidate="RoutingNumber" OnServerValidate="CustomValidator3_ServerValidate"></asp:CustomValidator>
+
+                                </div>
+                            <div class="col-md-6">
+                        <asp:Label CssClass="col-md-2 control-label" AssociatedControlID="BankAccountNumber" runat="server" Text="Bank Account Number"
+                        ></asp:Label><asp:TextBox CssClass="form-control" ID="BankAccountNumber" runat="server" MaxLength="12" TextMode="Number"></asp:TextBox>
+                                </div>
+                    </div>
+                         </div>
                     
                 </div>
                 <hr />
             </div>
+
         </div>
         <div class="row">
             <h4>Part 8:</h4>
