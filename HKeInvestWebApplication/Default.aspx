@@ -6,6 +6,10 @@
         <h1>Download Form</h1>
         <p class="lead">HKeInvest is the premier investing platform. Trust us with your money</p>
         <asp:Button ID="button" runat="server" Text="Download" OnClick="button_Click" />
+        <h2>USEFUL LINKS:</h2>
+        <asp:SiteMapDataSource id="nav1" runat="server" />
+        
+        <asp:Menu runat="server" DataSourceId="nav1" />
     </div>
 
 </asp:Content>
