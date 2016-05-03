@@ -123,7 +123,8 @@ namespace HKeInvestWebApplication
             //PART B
             securityType.Visible = true;
             gvSecurities.Visible = true;
-            sql = "select code, name, shares, '0.00' as price, '0.00' as totalValue, 'HKD' as base from SecurityHolding where accountNumber='" + accountNumber + "' and type='stock'";
+            securityType.SelectedValue = "stock";
+            sql = "select code, name, shares, '0.00' as price, '0.00' as totalValue, 'HKD' as base from SecurityHolding where accountNumber='" + accountNumber + "'";
             data = myHKeInvestData.getData(sql);
             if (data.Rows.Count != 0)
             {
@@ -150,7 +151,7 @@ namespace HKeInvestWebApplication
             //PART C
             ActiveError.Visible = false;
             gvActiveOrders.Visible = true;
-            sql = "select referenceNumber, buyOrSell, securityType, securityCode, name, dateSubmitted, status, shares, limitPrice, stopPrice, expiryDay from OrderHistory where accountNumber='" + accountNumber + "'";
+            sql = "select referenceNumber, buyOrSell, securityType, securityCode, name, dateSubmitted, status, shares, limitPrice, stopPrice, expiryDay from OrderHistory where accountNumber='" + accountNumber + "' and securityType='stock' and status!='completed'";
             data = myHKeInvestData.getData(sql);
             if (data.Rows.Count == 0)
             {
