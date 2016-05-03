@@ -19,6 +19,7 @@ namespace HKeInvestWebApplication.Code_File
 
         ExternalFunctions extFunction = new ExternalFunctions();
         HKeInvestData extData = new HKeInvestData();
+        private static LinkedList<SecurityAlert> alertsLL = new LinkedList<SecurityAlert>();
 
 
 
@@ -424,6 +425,97 @@ namespace HKeInvestWebApplication.Code_File
                 }
             }
 
+        }
+
+		private class SecurityAlert
+		{
+			ExternalFunctions myExternalFunctions = new ExternalFunctions();
+
+			private string securityType;
+			private string securityCode;
+			private string alertType;
+			private float alertValue;
+			private string email;
+			// Use Utc time to keep consistent across time zones and when crossing time zones
+			private DateTime lastTimeFired;
+
+			public SecurityAlert(string newSecurityType, string newSecurityCode, string newAlertType, float newAlertValue, string newEmail)
+			{
+				this.securityType = newSecurityType;
+				this.securityCode = newSecurityCode;
+				this.alertType = newAlertType;
+				this.alertValue = newAlertValue;
+				this.email = newEmail;
+			}
+
+			public void checkForTrigger()
+			{
+				// "If the trigger has never been fired or it has been greater than 24 hours since the last time it has fired"
+				// This might be able to be reduced to only the statement on the right side of the logical or
+				if (lastTimeFired == DateTime.MinValue || lastTimeFired.AddDays(1) < DateTime.UtcNow)
+				{
+					if (alertType == "High")
+					{
+						// Get the current price of the security
+						DataTable currentSecurity = myExternalFunctions.getSecuritiesByCode(securityType, securityCode);
+						float price = currentSecurity.Rows[0].Field<float>("price");
+
+						if (alertValue <= price)
+						{
+                            MailMessage mail = new MailMessage();
+                            SmtpClient emailServer = new SmtpClient("smtp.cse.ust.hk");
+
+                            mail.From = new MailAddress("comp3111_team106@cse.ust.hk", "HKeInvest Alerts");
+                            mail.To.Add(email);
+                            mail.Subject = "An Alert You've Set Has Been Triggered";
+                            mail.Body = "Hello, an alert you've set on a security has been triggered.\n\n" +
+                                "The Security in question is:\n" +
+                                "Type - " + securityType + "; Code - " + securityCode + "\n" +
+                                "The price of the security has reached or exceeded the specified value of: " + alertValue;
+
+                            emailServer.Send(mail);
+
+                            lastTimeFired = DateTime.UtcNow;
+						}
+					}
+					else // Alert value is either "High" or "Low"
+					{
+						DataTable currentSecurity = myExternalFunctions.getSecuritiesByCode(securityType, securityCode);
+						float price = currentSecurity.Rows[0].Field<float>("price");
+
+						if (alertValue >= price)
+						{
+                            MailMessage mail = new MailMessage();
+                            SmtpClient emailServer = new SmtpClient("smtp.cse.ust.hk");
+
+                            mail.From = new MailAddress("comp3111_team106@cse.ust.hk", "HKeInvest Alerts");
+                            mail.To.Add(email);
+                            mail.Subject = "An Alert You've Set Has Been Triggered";
+                            mail.Body = "Hello, an alert you've set on a security has been triggered.\n\n" +
+                                "The Security in question is:\n" +
+                                "Type - " + securityType + "; Code - " + securityCode + "\n" +
+                                "The price of the security has reached or go\ne below the specified value of: " + alertValue;
+
+                            emailServer.Send(mail);
+
+                            lastTimeFired = DateTime.UtcNow;
+						}
+					}
+				}
+			}
+		}
+
+        public void createAlert(string securityType, string securityCode, string alertType, float alertValue, string email)
+        {
+            alertsLL.AddFirst(new SecurityAlert(securityType, securityCode, alertType, alertValue, email));
+        }
+
+        public void checkAlerts()
+        {
+            foreach (SecurityAlert alert in alertsLL)
+            {
+                alert.checkForTrigger();
+            }
         }
     }
 }
