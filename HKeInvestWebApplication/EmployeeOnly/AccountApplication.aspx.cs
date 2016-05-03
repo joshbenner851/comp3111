@@ -132,7 +132,7 @@ namespace HKeInvestWebApplication
                     if (!RadioButtonList1.SelectedValue.Equals("individual"))
                     {
 
-                        string updateCOClient = "INSERT INTO Client Values ('" + accountNumber + "'," +
+                        string updateCOClient = "INSERT INTO Client VALUES ('" + accountNumber + "'," +
                         "'" + COcbTitle.SelectedValue + "'," +
                             "'" + COFirstName.Text + "'" + "," +
                         "'" + COLastName.Text + "'" + "," +
@@ -157,9 +157,11 @@ namespace HKeInvestWebApplication
                         "'" + COBusinessNature.Text + "'" + "," +
                         "'" + COIsEmployedFinancial.SelectedValue + "'" + "," +
                         "'" + COIsInIPO.SelectedValue + "'" + "," +
-                        "'" + FormatDateToSQL(COSignedOn.Text) + "'" +
+                        "'" + FormatDateToSQL(COSignedOn.Text) + "'," +
                         "'N')";
 
+
+                        //Error is with this insertion
                         SqlTransaction trans3 = myHKeInvestData.beginTransaction();
                         myHKeInvestData.setData(updateCOClient, trans3);
                         myHKeInvestData.commitTransaction(trans3);
