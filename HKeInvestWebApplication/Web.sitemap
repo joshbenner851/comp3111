@@ -16,7 +16,7 @@
       </siteMapNode>
       
         <siteMapNode url="~/SearchSecurities.aspx" title="Securities Searching"  description="" />
-
+      <siteMapNode url="~/RegistrationPage.aspx" title="Client Registration" description="" />
         <siteMapNode url="~/Fees.aspx" title="View Fees" description="" />
     </siteMapNode>
   
