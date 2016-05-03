@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="EditClientInfo.aspx.cs" Inherits="HKeInvestWebApplication.EditClientInfo" %>
+﻿<%@ Page Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="EditInfo.aspx.cs" Inherits="HKeInvestWebApplication.ClientOnly.EditInfo" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <div class="container">
@@ -559,3 +559,4 @@
     </div>
 
 </asp:Content>
+
