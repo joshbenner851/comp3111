@@ -6,7 +6,7 @@
         <siteMapNode url="~/EmployeeOnly/AccountApplication.aspx" title="Account Application"  description="" />
         <siteMapNode url="~/EmployeeOnly/GenerateReport.aspx" title="Generate Report"  description="" />
         <siteMapNode url="~/EmployeeOnly/SecurityHoldingDetails.aspx" title="Security Holding Details"  description="" />
-         <siteMapNode url="~/EmployeeOnly/EditClientInfo.aspx" title="Edit Client Information"  description="" />
+        <siteMapNode url="~/EmployeeOnly/EditClientInfo.aspx" title="Edit Client Information"  description="" />
       </siteMapNode>
       <siteMapNode url="~/ClientOnly" title="Client"  description="">
         <siteMapNode url="~/ClientOnly/Alerts.aspx" title="Alerts"  description="" />
@@ -19,7 +19,7 @@
       </siteMapNode>
       
         <siteMapNode url="~/SearchSecurities.aspx" title="Securities Searching"  description="" />
-      <siteMapNode url="~/RegistrationPage.aspx" title="Client Registration" description="" />
+        <siteMapNode url="~/RegistrationPage.aspx" title="Client Registration" description="" />
         <siteMapNode url="~/Fees.aspx" title="View Fees" description="" />
     </siteMapNode>
   
