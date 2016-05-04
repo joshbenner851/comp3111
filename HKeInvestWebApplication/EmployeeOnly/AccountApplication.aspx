@@ -535,17 +535,18 @@
                     
                         <div class="depositWithdraw">
                             <div class="col-md-6">
-                        <asp:Label CssClass="col-md-2 control-label" AssociatedControlID="RoutingNumber" runat="server" Text="Routing Number">
-                        </asp:Label><asp:TextBox CssClass="form-control" ID="RoutingNumber" runat="server" MaxLength="9" TextMode="Number"></asp:TextBox>
-                    <asp:CustomValidator ID="CustomValidator3" runat="server" EnableClientScript="False" CssClass="text-danger" ControlToValidate="RoutingNumber" OnServerValidate="CustomValidator3_ServerValidate"></asp:CustomValidator>
+                                <asp:Label CssClass="col-md-2 control-label" AssociatedControlID="RoutingNumber" runat="server" Text="Routing Number">
+                                </asp:Label><asp:TextBox CssClass="form-control" ID="RoutingNumber" runat="server" MaxLength="9" TextMode="Number"></asp:TextBox>
+                                <asp:CustomValidator ID="CustomValidator3" runat="server" EnableClientScript="False" CssClass="text-danger" ControlToValidate="RoutingNumber" OnServerValidate="CustomValidator3_ServerValidate" ValidateEmptyText="True"></asp:CustomValidator>
 
-                                </div>
+                            </div>
                             <div class="col-md-6">
-                        <asp:Label CssClass="col-md-2 control-label" AssociatedControlID="BankAccountNumber" runat="server" Text="Bank Account Number"
-                        ></asp:Label><asp:TextBox CssClass="form-control" ID="BankAccountNumber" runat="server" MaxLength="12" TextMode="Number"></asp:TextBox>
-                                </div>
-                    </div>
-                         </div>
+                                <asp:Label CssClass="col-md-2 control-label" AssociatedControlID="BankAccountNumber" runat="server" Text="Bank Account Number"></asp:Label>
+                                <asp:TextBox CssClass="form-control" ID="BankAccountNumber" runat="server" MaxLength="12" TextMode="Number"></asp:TextBox>
+                                 <asp:CustomValidator ID="CustomValidator4" runat="server" EnableClientScript="False" CssClass="text-danger" ControlToValidate="BankAccountNumber" OnServerValidate="CustomValidator4_ServerValidate" ValidateEmptyText="True"></asp:CustomValidator>
+                            </div>
+                        </div>
+                </div>
                     
                 </div>
                 <hr />

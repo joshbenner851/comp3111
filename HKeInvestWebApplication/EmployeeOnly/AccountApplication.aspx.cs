@@ -90,7 +90,9 @@ namespace HKeInvestWebApplication
                     AnnualIncome.SelectedValue + "','" +
                     LiquidWorth.SelectedValue + "','" +
                     FreeCreditSwee.SelectedValue + "','" +
-                    null + "')";
+                    null + "','" + 
+                    RoutingNumber.Text + "','" +
+                    BankAccountNumber.Text + "')";
 
                     SqlTransaction trans1 = myHKeInvestData.beginTransaction();
                     myHKeInvestData.setData(updateAccount, trans1);
@@ -226,7 +228,12 @@ namespace HKeInvestWebApplication
         {
             if (RadioButton1.Checked)
             {
-                if(RoutingNumber.Text.Substring(0,1) != "1")
+                if(RoutingNumber.Text == "")
+                {
+                    CustomValidator3.ErrorMessage = "Routing number cannot be blank";
+                    args.IsValid = false;
+                }
+                else if(RoutingNumber.Text.Substring(0,1) != "1")
                 {
                     CustomValidator3.ErrorMessage = "Routing number must start with a 1";
                     args.IsValid = false;
@@ -236,7 +243,33 @@ namespace HKeInvestWebApplication
                     CustomValidator3.ErrorMessage = "Routing number must be 9 digits long";
                     args.IsValid = false;
                 }
+      
                 
+            }
+        }
+
+        protected void CustomValidator4_ServerValidate(object source, ServerValidateEventArgs args)
+        {
+            if (RadioButton1.Checked)
+            {
+                if (BankAccountNumber.Text == "")
+                {
+                    CustomValidator4.ErrorMessage = "Bank Account number cannot be blank";
+                    args.IsValid = false;
+                }
+                //Complete abritrary bullshit validation because can't find bank account standards
+                else if (BankAccountNumber.Text.Substring(0, 3) != "333")
+                {
+                    CustomValidator4.ErrorMessage = "Bank account number must start with 333";
+                    args.IsValid = false;
+                }
+                else if (BankAccountNumber.Text.Length < 10)
+                {
+                    CustomValidator4.ErrorMessage = "Bank account number must be at least 10 digits long";
+                    args.IsValid = false;
+                }
+
+
             }
         }
     }

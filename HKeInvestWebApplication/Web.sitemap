@@ -15,6 +15,7 @@
         <siteMapNode url="~/ClientOnly/ProfitLossTracking.aspx" title="Profit/Loss Tracking"  description="" />
         <siteMapNode url="~/ClientOnly/SecurityTransaction.aspx" title="Security Transactions"  description="" />
         <siteMapNode url="~/ClientOnly/EditInfo.aspx" title="Edit Client Information"  description="" />
+        <siteMapNode url="~/ClientOnly/DepositWithdraw.aspx" title="Deposit or Withdraw Money"  description="" />
       </siteMapNode>
       
         <siteMapNode url="~/SearchSecurities.aspx" title="Securities Searching"  description="" />

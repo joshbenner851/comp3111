@@ -217,6 +217,7 @@
     <Content Include="ClientOnly\ClientGenerateReport.aspx" />
     <Content Include="ClientOnly\EditInfo.aspx" />
     <Content Include="ClientOnly\ProfitLossTracking.aspx" />
+    <Content Include="ClientOnly\DepositWithdraw.aspx" />
     <Content Include="EmployeeOnly\AccountApplication.aspx" />
     <Content Include="Account\AddPhoneNumber.aspx" />
     <Content Include="Account\Confirm.aspx" />
@@ -357,6 +358,13 @@
       <DependentUpon>ProfitLossTracking.aspx</DependentUpon>
     </Compile>
     <Compile Include="Code_File\InternalFunctions.cs" />
+    <Compile Include="ClientOnly\DepositWithdraw.aspx.cs">
+      <DependentUpon>DepositWithdraw.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ClientOnly\DepositWithdraw.aspx.designer.cs">
+      <DependentUpon>DepositWithdraw.aspx</DependentUpon>
+    </Compile>
     <Compile Include="EmployeeOnly\AccountApplication.aspx.cs">
       <DependentUpon>AccountApplication.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
