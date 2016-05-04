@@ -22,7 +22,6 @@ namespace HKeInvestWebApplication
         HKeInvestData myHKeInvestData = new HKeInvestData();
         HKeInvestCode myHKeInvestCode = new HKeInvestCode();
         ExternalFunctions myExternalFunctions = new ExternalFunctions();
-        ExternalData myExternalData = new ExternalData();
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -56,9 +55,8 @@ namespace HKeInvestWebApplication
 
         private bool securityCodeIsValid(string securityType, string securityCode)
         {
-            TextInfo textInfo = new CultureInfo("en-US", false).TextInfo;
-            string dbTableName = textInfo.ToTitleCase(securityType).Replace(" ", string.Empty);
-            if (myExternalData.getAggregateValue("select count(*) from [" + dbTableName + "] where [code]='" + securityCode + "'") == 0)
+            DataTable data = myExternalFunctions.getSecuritiesByCode(securityType, securityCode);
+            if (data.Rows.Count == 0)
             {
                 //showMessage("Invalid or nonexistent " + securityType + " code.\nValue is '" + securityCode + "'.")
                 return false;
