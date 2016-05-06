@@ -4,7 +4,6 @@ TODO by Acceptance Testing(Monday the 9th)
  * Alerts
  * Report Generation
  * Deposit/Withdrawal <-- Additional feature, work on after Peer Acceptance
- * Unit Tests
  * Fix anything that fails test cases on Tuesday
  * Profit/Loss Bugs?
  * Add auto postback to account application page
