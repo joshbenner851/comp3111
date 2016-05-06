@@ -10,7 +10,7 @@ using System.Web.UI.WebControls;
 
 namespace HKeInvestWebApplication
 {
-    public partial class EditClientInfo : System.Web.UI.Page
+    public partial class ClientEditClientInfo : System.Web.UI.Page
     {
 
         HKeInvestData myHKeInvestData = new HKeInvestData();
@@ -20,8 +20,6 @@ namespace HKeInvestWebApplication
             coAccount3.Visible = false;
             coAccount2.Visible = false;
             coAccount4.Visible = false;
-            passport.Visible = false;
-            copassport.Visible = false;
         }
 
         private string FormatDateToSQL(string date)
@@ -50,7 +48,6 @@ namespace HKeInvestWebApplication
             else if (dtClient.Rows.Count == 1)
             {
                 mainform.Visible = true;
-                passport.Visible = dtClient.Rows[0]["passportCountry"].ToString().Trim() != "" ? true : false;
             }   
             else if(dtClient.Rows.Count == 2)
             {
@@ -58,19 +55,6 @@ namespace HKeInvestWebApplication
                 coAccount2.Visible = true;
                 coAccount3.Visible = true;
                 coAccount4.Visible = true;
-
-                if(dtClient.Rows[0]["isPrimary"].ToString().Trim() == "Y")
-                {
-                    passport.Visible = dtClient.Rows[0]["passportCountry"].ToString().Trim() != "" ? true : false;
-                    copassport.Visible = dtClient.Rows[1]["passportCountry"].ToString().Trim() != "" ? true : false;
-
-                }
-                else
-                {
-                    passport.Visible = dtClient.Rows[1]["passportCountry"].ToString().Trim() != "" ? true : false;
-                    copassport.Visible = dtClient.Rows[0]["passportCountry"].ToString().Trim() != "" ? true : false;
-
-                }
             }     
         }
 
@@ -138,14 +122,6 @@ namespace HKeInvestWebApplication
                     {
                         updateClient += "title='" + cbTitle.SelectedValue + "',";
                     }
-                    if (FirstName.Text.Trim() != "")
-                    {
-                        updateClient += "firstName='" + FirstName.Text.Trim() + "',";
-                    }
-                    if (LastName.Text.Trim() != "")
-                    {
-                        updateClient += "lastName='" + LastName.Text.Trim() + "',";
-                    }
                     if (Email.Text != "")
                     {
                         updateClient += "email" + Email.Text + "',";
@@ -177,31 +153,6 @@ namespace HKeInvestWebApplication
                     if (MobilePhone.Text != "")
                     {
                         updateClient += "mobilePhone='" + MobilePhone.Text + "',";
-                    }
-                    //Execute sql to check if HKID, or passport has been updated
-
-                    //Will fail if there is no regex from the 
-                    string sql = "SELECT * FROM Client WHERE accountNumber = '" + accountNumber + "' AND isPrimary = 'Y'";
-                    DataTable temp = myHKeInvestData.getData(sql);
-
-                    if (temp.Rows[0]["passportCountry"].ToString() != "")
-                    {
-                        if (HKID.Text != "")
-                        {
-                            updateClient += "HKIDPassportNumber='" + HKID.Text + "',";
-                        }
-                        if (PassportCountry.Text != "")
-                        {
-                            updateClient += "passportCountry='" + PassportCountry.Text + "',";
-                        }
-                    }
-                    if (CitizenshipCountry.Text != "")
-                    {
-                        updateClient += "citizenship='" + CitizenshipCountry.Text + "',";
-                    }
-                    if (ResidenceCountry.Text != "")
-                    {
-                        updateClient += "legalResidence='" + ResidenceCountry.Text + "',";
                     }
                     if (cbEmploymentStatus.Text != "")
                     {
@@ -253,14 +204,7 @@ namespace HKeInvestWebApplication
                     {
                         updateClient += "title='" + COcbTitle.SelectedValue + "',";
                     }
-                    if (COFirstName.Text.Trim() != "")
-                    {
-                        updateClient += "firstName='" + COFirstName.Text.Trim() + "',";
-                    }
-                    if (COLastName.Text.Trim() != "")
-                    {
-                        updateClient += "lastName='" + COLastName.Text.Trim() + "',";
-                    }
+                  
                     if (COEmail.Text != "")
                     {
                         updateClient += "email" + COEmail.Text + "',";
@@ -295,32 +239,7 @@ namespace HKeInvestWebApplication
                     }
                     //Execute sql to check if HKID, or passport has been updated
 
-                    //Will fail if there is no regex from the 
-                    sql = "SELECT * FROM Client WHERE accountNumber = '" + accountNumber + "' AND isPrimary='N'";
-                    temp = myHKeInvestData.getData(sql);
-
-                    //No error checking on temp
-
-                    //Only allow for passport information updating
-                    if (temp.Rows[0]["passportCountry"].ToString() != "")
-                    {
-                        if (COHKID.Text != "")
-                        {
-                            updateClient += "HKIDPassportNumber='" + COHKID.Text + "',";
-                        }
-                        if (COPassportCountry.Text != "")
-                        {
-                            updateClient += "passportCountry='" + COPassportCountry.Text + "',";
-                        }
-                    }
-                    if (COCitizenshipCountry.Text != "")
-                    {
-                        updateClient += "citizenship='" + COCitizenshipCountry.Text + "',";
-                    }
-                    if (COResidenceCountry.Text != "")
-                    {
-                        updateClient += "legalResidence='" + COResidenceCountry.Text + "',";
-                    }
+                    
                     if (COcbEmploymentStatus.Text != "")
                     {
                         updateClient += "employeeStatus'" + COcbEmploymentStatus.Text + "',";
