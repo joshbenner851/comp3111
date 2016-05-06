@@ -77,6 +77,7 @@
                         <asp:ListItem>Stop Order</asp:ListItem>
                         <asp:ListItem>Stop Limit Order</asp:ListItem>
                     </asp:RadioButtonList>
+
                 </div>
                
 

@@ -22,13 +22,13 @@ namespace HKeInvestWebApplication {
         protected global::System.Web.UI.WebControls.TextBox AccountNumber;
         
         /// <summary>
-        /// RadioButtonList1 control.
+        /// mainform control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RadioButtonList RadioButtonList1;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl mainform;
         
         /// <summary>
         /// cbTitle control.
@@ -157,6 +157,15 @@ namespace HKeInvestWebApplication {
         protected global::System.Web.UI.WebControls.TextBox ResidenceCountry;
         
         /// <summary>
+        /// passport control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl passport;
+        
+        /// <summary>
         /// HKID control.
         /// </summary>
         /// <remarks>
@@ -173,6 +182,15 @@ namespace HKeInvestWebApplication {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox PassportCountry;
+        
+        /// <summary>
+        /// coAccount2 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl coAccount2;
         
         /// <summary>
         /// COcbTitle control.
@@ -301,6 +319,15 @@ namespace HKeInvestWebApplication {
         protected global::System.Web.UI.WebControls.TextBox COResidenceCountry;
         
         /// <summary>
+        /// copassport control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl copassport;
+        
+        /// <summary>
         /// COHKID control.
         /// </summary>
         /// <remarks>
@@ -371,6 +398,15 @@ namespace HKeInvestWebApplication {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox BusinessNature;
+        
+        /// <summary>
+        /// coAccount3 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl coAccount3;
         
         /// <summary>
         /// COcbEmploymentStatus control.
@@ -463,6 +499,15 @@ namespace HKeInvestWebApplication {
         protected global::System.Web.UI.WebControls.TextBox OtherInformation;
         
         /// <summary>
+        /// coAccount4 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl coAccount4;
+        
+        /// <summary>
         /// COIsEmployedFinancial control.
         /// </summary>
         /// <remarks>
@@ -533,32 +578,5 @@ namespace HKeInvestWebApplication {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RadioButtonList FreeCreditSwee;
-        
-        /// <summary>
-        /// DepositAmount control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox DepositAmount;
-        
-        /// <summary>
-        /// SignedOn control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox SignedOn;
-        
-        /// <summary>
-        /// COSignedOn control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox COSignedOn;
     }
 }

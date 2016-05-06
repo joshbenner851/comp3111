@@ -91,16 +91,16 @@ namespace HKeInvestWebApplication.EmployeeOnly
             //SCHEDULED FOR DELETION 
             //Should be something to handle validation before finally passing the variable
 
-            //if(SecurityType.SelectedValue == "Stock" && TransactionType.SelectedValue == "Buy")
-            //{
+            if (SecurityType.SelectedValue == "Stock" && TransactionType.SelectedValue == "Buy")
+            {
 
-            //    InvalidStockSharesQuantity.Text = sharesAmountIsValid(StockSharesQuantity.Text,TransactionType.Text, StockCode.Text.Trim());
-            //}
-            //else if(SecurityType.SelectedValue == "Stock" && TransactionType.SelectedValue == "Sell")
-            //{
-            //    InvalidStockSharesQuantity.Text = sharesAmountIsValid(StockSharesQuantity.Text, TransactionType.Text);
-            //}
-        }
+                InvalidStockSharesQuantity.Text = stockSharesAmountIsValid(StockSharesQuantity.Text, TransactionType.Text, StockCode.Text.Trim());
+            }
+            else if (SecurityType.SelectedValue == "Stock" && TransactionType.SelectedValue == "Sell")
+            {
+                InvalidStockSharesQuantity.Text = stockSharesAmountIsValid(StockSharesQuantity.Text, TransactionType.Text, StockCode.Text.Trim());
+            }
+            }
 
         protected void CustomValidator2_ServerValidate(object source, ServerValidateEventArgs args)
         {
@@ -121,12 +121,12 @@ namespace HKeInvestWebApplication.EmployeeOnly
         {
             if (TransactionType.SelectedValue == "Buy")
             {
-                //int shares;
-                //Int32.TryParse(BondTrustSharesQuantity.Text, out shares);
-                //if (shares <= 0)
-                //{
-                //    InvalidBondTrustSharesQuantity.Text = "Please a enter a positive dollar amount";
-                //}
+                int shares;
+                Int32.TryParse(BondTrustSharesQuantity.Text, out shares);
+                if (shares <= 0)
+                {
+                    InvalidBondTrustSharesQuantity.Text = "Please a enter a positive dollar amount";
+                }
                 var type = SecurityType.SelectedValue == "Bond" ? "bond" : "unit trust";
                 //TODO Check the actual availability
                 InvalidBondTrustSharesQuantity.Text = amountIsValid(type, BondTrustCode.Text.Trim(), BondTrustSharesQuantity.Text);
@@ -618,23 +618,30 @@ namespace HKeInvestWebApplication.EmployeeOnly
                 return "Shares is not a positive number";
             }
             else {
-                if (typeOfTransaction == "Sell")
+
+                if (stockCode == "")
                 {
-                    //Passing in empty stock code
-                    if (stockCode != "")
+                    return "Invalid stock code";
+                }
+
+                else {
+                    if (typeOfTransaction == "Sell")
                     {
+                        //Passing in empty stock code
+
                         decimal availShares = numOfSharesAbleToSell("stock", stockCode);
                         if (numShares > availShares)
                         {
                             return ("Shares to Sell is not valid. There are not that many shares to sell.\nValue is '" + shares + "'.");
                         }
+
                     }
-                }
-                else
-                {
-                    if ((numShares % 100) != 0)
+                    else
                     {
-                        return ("Shares to buy is not a multiple of 100. \nValue is '" + shares + "'.");
+                        if ((numShares % 100) != 0)
+                        {
+                            return ("Shares to buy is not a multiple of 100. \nValue is '" + shares + "'.");
+                        }
                     }
                 }
             }

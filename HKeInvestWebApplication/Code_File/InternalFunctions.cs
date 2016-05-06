@@ -176,6 +176,8 @@ namespace HKeInvestWebApplication.Code_File
                     //ASK: Is the current price always reflected in HKD
                     decimal priceTemp = currentPrice * Decimal.Parse(row["shares"].ToString().Trim());
                     string bases = row["base"].ToString().Trim().ToUpper();
+
+                    //Getting available amount after converting the sum from base currency
                     //Check this convert currency function
                     decimal convertFactor = convertCurrency("HKD", bases, priceTemp);
                     securitySum += convertFactor;// * extFunction.getCurrencyRate(bases);
@@ -296,7 +298,7 @@ namespace HKeInvestWebApplication.Code_File
                         body += "\n Sincerely yours, the HKeInvestment Team. Contact our hotline if there is any issues with your invoice.";
 
                         // Check that the email is not missing a sender's address, a subject, or a body
-                        if (address != null && subject != null && body !=null && address!= "")
+                        if (body !="" && address!= "")
                         {
                             sendInvoiceEmail(address, subject, body);
                         }

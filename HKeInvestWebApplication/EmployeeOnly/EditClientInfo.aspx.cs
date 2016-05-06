@@ -16,7 +16,12 @@ namespace HKeInvestWebApplication
         HKeInvestData myHKeInvestData = new HKeInvestData();
         protected void Page_Load(object sender, EventArgs e)
         {
-
+            mainform.Visible = false;
+            coAccount3.Visible = false;
+            coAccount2.Visible = false;
+            coAccount4.Visible = false;
+            passport.Visible = false;
+            copassport.Visible = false;
         }
 
         private string FormatDateToSQL(string date)
@@ -29,7 +34,45 @@ namespace HKeInvestWebApplication
             return year + "-" + month + "-" + day;
         }
 
-       
+        //Error checking on display of program
+        protected void AccountNumberChanged(object sender, EventArgs e)
+        {
+            string accountNumber = AccountNumber.Text.Trim();
+
+            string sqlAccount = "SELECT * FROM Account WHERE accountNumber = '" + accountNumber + "'";
+            string sqlClient = "SELECT * FROM Client WHERE accountNumber = '" + accountNumber + "'";
+
+            DataTable dtClient = myHKeInvestData.getData(sqlClient);
+            if(dtClient == null || dtClient.Rows.Count == 0)
+            {
+                //Error invalid sql
+            }   
+            else if (dtClient.Rows.Count == 1)
+            {
+                mainform.Visible = true;
+                passport.Visible = dtClient.Rows[0]["passportCountry"].ToString().Trim() != "" ? true : false;
+            }   
+            else if(dtClient.Rows.Count == 2)
+            {
+                mainform.Visible = true;
+                coAccount2.Visible = true;
+                coAccount3.Visible = true;
+                coAccount4.Visible = true;
+
+                if(dtClient.Rows[0]["isPrimary"].ToString().Trim() == "Y")
+                {
+                    passport.Visible = dtClient.Rows[0]["passportCountry"].ToString().Trim() != "" ? true : false;
+                    copassport.Visible = dtClient.Rows[1]["passportCountry"].ToString().Trim() != "" ? true : false;
+
+                }
+                else
+                {
+                    passport.Visible = dtClient.Rows[1]["passportCountry"].ToString().Trim() != "" ? true : false;
+                    copassport.Visible = dtClient.Rows[0]["passportCountry"].ToString().Trim() != "" ? true : false;
+
+                }
+            }     
+        }
 
         protected void CreateClient_Click(object sender, EventArgs e)
         {
@@ -37,21 +80,19 @@ namespace HKeInvestWebApplication
             {
                 try
                 {
-
+                    
                     //Get user information if on client
                     string accountNumber = AccountNumber.Text.Trim();
-                    decimal balance = Convert.ToDecimal(DepositAmount.Text.Trim());
+
+                    //TODO figure out some way to bind data
+
+                   
 
                     //Update account
 
                     string updateAccount = "UPDATE Account SET ";
 
                     //If statement to update the sql commands
-
-                    if (DepositAmount.Text.Trim() != "")
-                    {
-                        updateAccount += "balance='" + DepositAmount.Text.Trim() + "',";
-                    }
                     if (PrimarySource.SelectedValue != "")
                     {
                         updateAccount += "sourceOfFunds='"+PrimarySource.SelectedValue + "',";
@@ -361,30 +402,6 @@ namespace HKeInvestWebApplication
             }
             else
             {
-            }
-        }
-
-        protected void RadioButtonList1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (RadioButtonList1.SelectedValue.Equals("Individual"))
-            {
-
-            }
-            else
-            {
-
-            }
-        }
-
-        protected void PrimarySource_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (PrimarySource.SelectedValue.Equals("Other"))
-            {
-
-            }
-            else
-            {
-
             }
         }
 
