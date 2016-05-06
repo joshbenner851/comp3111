@@ -104,7 +104,14 @@ namespace HKeInvestWebApplication
         {
             if (Page.IsValid)
             {
-                if (RadioButtonList1.SelectedValue == "Withdraw")
+                string Acctsql = "select bankAccountNumber, routingNumber from Account where accountNumber='" + getAccountNumber() + "' and bankAccountNumber IS NOT NULL";
+                DataTable acct = myHKeInvestData.getData(Acctsql);
+                if(acct == null || acct.Rows.Count == 0)
+                {
+                    IncorrectAmount.Text = "Sorry you don't have a bank account or routing number on file";
+                }
+
+                else  if (RadioButtonList1.SelectedValue == "Withdraw")
                 {
                     decimal withdrawal = decimal.Parse(Withdraw.Text);
                     string sql = "select balance from Account where accountNumber='" + getAccountNumber() + "'";

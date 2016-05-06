@@ -56,6 +56,10 @@ namespace HKeInvestWebApplication
         private bool securityCodeIsValid(string securityType, string securityCode)
         {
             DataTable data = myExternalFunctions.getSecuritiesByCode(securityType, securityCode);
+            if(data == null)
+            {
+                return false;
+            }
             if (data.Rows.Count == 0)
             {
                 //showMessage("Invalid or nonexistent " + securityType + " code.\nValue is '" + securityCode + "'.")
