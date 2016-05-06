@@ -127,10 +127,15 @@ namespace HKeInvestWebApplication
                     updateAccount = updateAccount.Remove(updateAccount.Length - 1);
 
                     updateAccount = " WHERE accountNumber = '" + accountNumber + "'";
+                    
+                    if(updateAccount.Length > 56 && mainform.Visible)
+                    {
+                        SqlTransaction trans1 = myHKeInvestData.beginTransaction();
+                        myHKeInvestData.setData(updateAccount, trans1);
+                        myHKeInvestData.commitTransaction(trans1);
+                    }
 
-                    SqlTransaction trans1 = myHKeInvestData.beginTransaction();
-                    myHKeInvestData.setData(updateAccount, trans1);
-                    myHKeInvestData.commitTransaction(trans1);
+                    
 
                     string updateClient = "UPDATE Client SET ";
 
@@ -240,10 +245,13 @@ namespace HKeInvestWebApplication
 
                     updateClient = " WHERE accountNumber = '" + accountNumber + "' AND isPrimary = 'Y'";
 
-
-                    SqlTransaction trans2 = myHKeInvestData.beginTransaction();
-                    myHKeInvestData.setData(updateClient, trans2);
-                    myHKeInvestData.commitTransaction(trans2);
+                    //Checking to see if any fields in client are to be updated (Length 77)
+                    if (updateClient.Length > 77 && mainform.Visible)
+                    {
+                        SqlTransaction trans2 = myHKeInvestData.beginTransaction();
+                        myHKeInvestData.setData(updateClient, trans2);
+                        myHKeInvestData.commitTransaction(trans2);
+                    }
 
 
                     //Add some sort of auto postback for the account information that should be displayed
@@ -358,12 +366,13 @@ namespace HKeInvestWebApplication
 
                     updateClient = " WHERE accountNumber = '" + accountNumber + "' AND isPrimary = 'N'";
 
- 
+                    if (updateClient.Length > 77 && coAccount2.Visible)
+                    {
 
                         SqlTransaction trans3 = myHKeInvestData.beginTransaction();
                         myHKeInvestData.setData(updateClient, trans3);
                         myHKeInvestData.commitTransaction(trans3);
-                        
+                    }
                     
                     Console.WriteLine("Updated Successfully");
                     IdentityHelper.RedirectToReturnUrl(Request.QueryString["ReturnUrl"], Response);

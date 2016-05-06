@@ -1,4 +1,5 @@
 ﻿using HKeInvestWebApplication.Code_File;
+using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -16,7 +17,6 @@ namespace HKeInvestWebApplication
         HKeInvestData myHKeInvestData = new HKeInvestData();
         protected void Page_Load(object sender, EventArgs e)
         {
-            mainform.Visible = false;
             coAccount3.Visible = false;
             coAccount2.Visible = false;
             coAccount4.Visible = false;
@@ -35,7 +35,7 @@ namespace HKeInvestWebApplication
         //Error checking on display of program
         protected void AccountNumberChanged(object sender, EventArgs e)
         {
-            string accountNumber = AccountNumber.Text.Trim();
+            string accountNumber = getAccountNumber();
 
             string sqlAccount = "SELECT * FROM Account WHERE accountNumber = '" + accountNumber + "'";
             string sqlClient = "SELECT * FROM Client WHERE accountNumber = '" + accountNumber + "'";
@@ -47,15 +47,26 @@ namespace HKeInvestWebApplication
             }   
             else if (dtClient.Rows.Count == 1)
             {
-                mainform.Visible = true;
             }   
             else if(dtClient.Rows.Count == 2)
             {
-                mainform.Visible = true;
                 coAccount2.Visible = true;
                 coAccount3.Visible = true;
                 coAccount4.Visible = true;
             }     
+        }
+
+        public string getAccountNumber()
+        {
+            string sql = "SELECT accountNumber FROM Account WHERE userName = '" +
+               HttpContext.Current.User.Identity.GetUserName() + "'";
+
+            DataTable temp = myHKeInvestData.getData(sql);
+
+            //ERROR: no error catching for not having the account number
+
+            return temp.Rows[0]["accountNumber"].ToString();
+
         }
 
         protected void CreateClient_Click(object sender, EventArgs e)
@@ -64,9 +75,9 @@ namespace HKeInvestWebApplication
             {
                 try
                 {
-                    
+
                     //Get user information if on client
-                    string accountNumber = AccountNumber.Text.Trim();
+                    string accountNumber = getAccountNumber();
 
                     //TODO figure out some way to bind data
 
@@ -112,9 +123,12 @@ namespace HKeInvestWebApplication
 
                     updateAccount = " WHERE accountNumber = '" + accountNumber + "'";
 
-                    SqlTransaction trans1 = myHKeInvestData.beginTransaction();
-                    myHKeInvestData.setData(updateAccount, trans1);
-                    myHKeInvestData.commitTransaction(trans1);
+                    if (updateAccount.Length > 56)
+                    {
+                        SqlTransaction trans1 = myHKeInvestData.beginTransaction();
+                        myHKeInvestData.setData(updateAccount, trans1);
+                        myHKeInvestData.commitTransaction(trans1);
+                    }
 
                     string updateClient = "UPDATE Client SET ";
 
@@ -192,9 +206,12 @@ namespace HKeInvestWebApplication
                     updateClient = " WHERE accountNumber = '" + accountNumber + "' AND isPrimary = 'Y'";
 
 
-                    SqlTransaction trans2 = myHKeInvestData.beginTransaction();
-                    myHKeInvestData.setData(updateClient, trans2);
-                    myHKeInvestData.commitTransaction(trans2);
+                    if (updateAccount.Length > 77)
+                    {
+                        SqlTransaction trans1 = myHKeInvestData.beginTransaction();
+                        myHKeInvestData.setData(updateAccount, trans1);
+                        myHKeInvestData.commitTransaction(trans1);
+                    }
 
 
                     //Add some sort of auto postback for the account information that should be displayed
@@ -277,13 +294,16 @@ namespace HKeInvestWebApplication
 
                     updateClient = " WHERE accountNumber = '" + accountNumber + "' AND isPrimary = 'N'";
 
- 
 
-                        SqlTransaction trans3 = myHKeInvestData.beginTransaction();
-                        myHKeInvestData.setData(updateClient, trans3);
-                        myHKeInvestData.commitTransaction(trans3);
-                        
-                    
+
+                    if (updateAccount.Length > 77 && coAccount2.Visible)
+                    {
+                        SqlTransaction trans1 = myHKeInvestData.beginTransaction();
+                        myHKeInvestData.setData(updateAccount, trans1);
+                        myHKeInvestData.commitTransaction(trans1);
+                    }
+
+
                     Console.WriteLine("Updated Successfully");
                     IdentityHelper.RedirectToReturnUrl(Request.QueryString["ReturnUrl"], Response);
                 }

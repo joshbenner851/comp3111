@@ -6,18 +6,6 @@
         <p>To modify your HKeInvest account, please complete all sections below.</p>
         <asp:ValidationSummary EnableClientScript="false" runat="server" CssClass="text-danger" />
         <div class="form-horizontal">
-            <div class="row">
-                <h4>Part 1:</h4>
-                <div class="form-group">
-                    <asp:Label CssClass="col-md-2 control-label" runat="server" Text="AccountNumber" AssociatedControlID="AccountNumber"></asp:Label>
-                    <div class="col-md-4">
-                        <asp:TextBox CssClass="form-control" ID="AccountNumber" runat="server" MaxLength="10" OnTextChanged="AccountNumberChanged"></asp:TextBox>
-                        <asp:RequiredFieldValidator ControlToValidate="AccountNumber" runat="server" ErrorMessage="Please type AccountNumber" Text="*" Display="Dynamic" CssClass="text-danger" EnableClientScript="false"></asp:RequiredFieldValidator>
-                    </div>
-                </div>
-                <hr />
-            </div>
-            <div runat="server" id="mainform" visible="false">
                 <div>
                     <h4>Part 2:</h4>
                     <div class="row">
@@ -437,7 +425,6 @@
                     </div>
                 </div>
             </div>
-        </div>
 
     </div>
 
