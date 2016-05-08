@@ -13,6 +13,15 @@ namespace HKeInvestWebApplication {
     public partial class Alerts {
         
         /// <summary>
+        /// AlertsValidationSummary control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ValidationSummary AlertsValidationSummary;
+        
+        /// <summary>
         /// lblAlertType control.
         /// </summary>
         /// <remarks>
@@ -20,15 +29,6 @@ namespace HKeInvestWebApplication {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblAlertType;
-        
-        /// <summary>
-        /// rblAlertType control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.RadioButtonList rblAlertType;
         
         /// <summary>
         /// rfvAlertType control.
@@ -40,6 +40,15 @@ namespace HKeInvestWebApplication {
         protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvAlertType;
         
         /// <summary>
+        /// rblAlertType control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RadioButtonList rblAlertType;
+        
+        /// <summary>
         /// lblSecurityTypeInput control.
         /// </summary>
         /// <remarks>
@@ -49,15 +58,6 @@ namespace HKeInvestWebApplication {
         protected global::System.Web.UI.WebControls.Label lblSecurityTypeInput;
         
         /// <summary>
-        /// rblSecurityTypeInput control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.RadioButtonList rblSecurityTypeInput;
-        
-        /// <summary>
         /// rfvSecurityTypeInput control.
         /// </summary>
         /// <remarks>
@@ -65,6 +65,15 @@ namespace HKeInvestWebApplication {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvSecurityTypeInput;
+        
+        /// <summary>
+        /// rblSecurityTypeInput control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RadioButtonList rblSecurityTypeInput;
         
         /// <summary>
         /// lblSecurityCodeInput control.

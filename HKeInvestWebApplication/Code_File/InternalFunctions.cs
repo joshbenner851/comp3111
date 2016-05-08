@@ -452,8 +452,7 @@ namespace HKeInvestWebApplication.Code_File
 			private string alertType;
 			private float alertValue;
 			private string email;
-			// Use Utc time to keep consistent across time zones and when crossing time zones
-			private DateTime lastTimeFired;
+			private DateTime lastTimeFired; // Uses UTC time for consistency across time zones
 
 			public SecurityAlert(string newSecurityType, string newSecurityCode, string newAlertType, float newAlertValue, string newEmail)
 			{
@@ -466,15 +465,29 @@ namespace HKeInvestWebApplication.Code_File
 
 			public void checkForTrigger()
 			{
-				// "If the trigger has never been fired or it has been greater than 24 hours since the last time it has fired"
-				// This might be able to be reduced to only the statement on the right side of the logical or
-				if (lastTimeFired == DateTime.MinValue || lastTimeFired.AddDays(1) < DateTime.UtcNow)
+                // The trigger only fires if it has been greater than 24 hours since the last time it fired
+				if (lastTimeFired.AddDays(1) < DateTime.UtcNow)
 				{
 					if (alertType == "High")
 					{
 						// Get the current price of the security
 						DataTable currentSecurity = myExternalFunctions.getSecuritiesByCode(securityType, securityCode);
-						float price = float.Parse(currentSecurity.Rows[0]["price"].ToString());
+                        float price;
+                        if (currentSecurity == null)
+                        {
+                            throw new System.ArgumentNullException("Alert has been created without a corresponding security.");
+                        }
+                        else
+                        {
+                            if (securityType == "stock")
+                            {
+                                price = float.Parse(currentSecurity.Rows[0]["close"].ToString());
+                            }
+                            else
+                            {
+                                price = float.Parse(currentSecurity.Rows[0]["price"].ToString());
+                            }
+                        }
 
 						if (alertValue <= price)
 						{
