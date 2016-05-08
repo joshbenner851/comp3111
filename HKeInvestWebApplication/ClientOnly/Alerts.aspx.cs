@@ -64,7 +64,7 @@ namespace HKeInvestWebApplication
                     if (desiredSecurity == null)
                     {
                         cuvSecurityCodeInput.ErrorMessage = "This security does not exist.";
-                        cuvSecurityCodeInput.IsValid = false;
+                        args.IsValid = false;
                     }
                     else
                     {
@@ -82,16 +82,16 @@ namespace HKeInvestWebApplication
                         {
                             if (price > alertValue)
                             {
-                                cuvSecurityCodeInput.ErrorMessage = "The price is already higher than the high alert value.";
-                                cuvSecurityCodeInput.IsValid = false;
+                                cuvSecurityCodeInput.ErrorMessage = "The price is already higher than the alert value.";
+                                args.IsValid = false;
                             }
                         }
                         else // Alert type should only either be "High" or "Low"
                         {
                             if (price < alertValue)
                             {
-                                cuvSecurityCodeInput.ErrorMessage = "The price is already lower than the low alert value.";
-                                cuvSecurityCodeInput.IsValid = false;
+                                cuvSecurityCodeInput.ErrorMessage = "The price is already lower than the alert value.";
+                                args.IsValid = false;
                             }
                         }
                     }
@@ -131,10 +131,6 @@ namespace HKeInvestWebApplication
                 tbxAlertValue.Text = "";
 
                 MessageBox.Show(new Form { TopMost = true }, "Alert successfully set.");
-            }
-            else
-            {
-                // MessageBox.Show(new Form { TopMost = true }, "Failed to set alert.");
             }
         }
     }
