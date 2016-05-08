@@ -456,6 +456,11 @@ namespace HKeInvestWebApplication.Code_File
 
 			public SecurityAlert(string newSecurityType, string newSecurityCode, string newAlertType, float newAlertValue, string newEmail)
 			{
+                if (newSecurityType == null || newSecurityCode == null || newAlertType == null || newEmail == null)
+                {
+                    throw new System.ArgumentNullException("Cannot construct an alert with null arguments.");
+                }
+
 				this.securityType = newSecurityType;
 				this.securityCode = newSecurityCode;
 				this.alertType = newAlertType;
@@ -499,7 +504,7 @@ namespace HKeInvestWebApplication.Code_File
                             mail.Subject = "An Alert You've Set Has Been Triggered";
                             mail.Body = "Hello, an alert you've set on a security has been triggered.\n\n" +
                                 "The Security in question is:\n" +
-                                "Type - " + securityType + "; Code - " + securityCode + "\n" +
+                                "Type: " + securityType + "; Code: " + securityCode + "\n" +
                                 "The price of the security has reached or exceeded the specified value of: " + alertValue;
 
                             emailServer.Send(mail);
@@ -517,13 +522,13 @@ namespace HKeInvestWebApplication.Code_File
                             MailMessage mail = new MailMessage();
                             SmtpClient emailServer = new SmtpClient("smtp.cse.ust.hk");
 
-                            mail.From = new MailAddress("comp3111_team106@cse.ust.hk", "HKeInvest Alerts");
+                            mail.From = new MailAddress("comp3111_team106@cse.ust.hk", "HKeInvest");
                             mail.To.Add(email);
                             mail.Subject = "An Alert You've Set Has Been Triggered";
                             mail.Body = "Hello, an alert you've set on a security has been triggered.\n\n" +
                                 "The Security in question is:\n" +
-                                "Type - " + securityType + "; Code - " + securityCode + "\n" +
-                                "The price of the security has reached or go\ne below the specified value of: " + alertValue;
+                                "Type: " + securityType + "; Code: " + securityCode + "\n" +
+                                "The price of the security has reached or gone below the specified value of: " + alertValue;
 
                             emailServer.Send(mail);
 

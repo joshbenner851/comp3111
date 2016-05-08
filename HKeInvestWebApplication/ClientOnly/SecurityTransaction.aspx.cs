@@ -18,6 +18,7 @@ namespace HKeInvestWebApplication.EmployeeOnly
         {
 
         }
+
         protected void SecurityType_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (SecurityType.SelectedValue == "Bond" || SecurityType.SelectedValue == "Unit Trust")
@@ -31,6 +32,7 @@ namespace HKeInvestWebApplication.EmployeeOnly
                 stock.Style.Add("display", "");
             }
         }
+
         protected void TransactionType_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (TransactionType.SelectedValue == "Buy")

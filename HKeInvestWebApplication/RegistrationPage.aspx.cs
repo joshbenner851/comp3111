@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mail;
+using System.Net;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+
 
 namespace HKeInvestWebApplication
 {
@@ -43,6 +46,25 @@ namespace HKeInvestWebApplication
                     args.IsValid = false;
                     AccountValidator.ErrorMessage = "Account number must match last name.";
                 }
+            }
+        }
+
+        protected void ClickRegister(object source, ServerValidateEventArgs args)
+        {
+            Page.Validate();
+            if (Page.IsValid)
+            {
+                MailMessage mail = new MailMessage();
+                SmtpClient emailServer = new SmtpClient("smtp.cse.ust.hk");
+
+                mail.From = new MailAddress("comp3111_team106@cse.ust.hk", "HKeInvest");
+                mail.To.Add(Email.Text);
+                mail.Subject = "Account Registration Confirmation";
+                mail.Body = "Hello, an account with HKeInvest has been created with this email.\n\n" +
+                    "The username of this account is: " + UserName.Text + "\n\n" +
+                    "If the creation of this account has not been by you, please reply to this email.";
+
+                emailServer.Send(mail);
             }
         }
     }
