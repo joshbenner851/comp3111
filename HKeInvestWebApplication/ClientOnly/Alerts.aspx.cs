@@ -29,59 +29,81 @@ namespace HKeInvestWebApplication
 
         protected void cuvSecurityCodeInput_ServerValidate(object source, ServerValidateEventArgs args)
         {
-            string clientUserName = Context.User.Identity.GetUserName();
-            string securityType = rblSecurityTypeInput.SelectedValue.ToString();
-            string securityCode = tbxSecurityCodeInput.Text.ToString();
-            float alertValue = float.Parse(tbxAlertValue.Text.ToString());
-            string sql = "";
+            rfvAlertType.Validate();
+            rfvSecurityTypeInput.Validate();
+            rfvSecurityCodeInput.Validate();
+            rfvAlertValue.Validate();
+            revSecurityCodeInput.Validate();
+            revAlertValue.Validate();
 
-            // Select "*" because we are just making sure the client has the security
-            sql = "SELECT * FROM Account, SecurityHolding WHERE userName='" + clientUserName + "' AND code='" + securityCode + "'";
-            // sql = "SELECT * FROM SecurityHolding WHERE acc AND code='22'";
-
-            // Create a DataTable to hold our query to the local database
-            DataTable clientSecurity = myHKeInvestData.getData(sql);
-
-            if (clientSecurity == null || clientSecurity.Rows.Count == 0)
-            { 
-                cuvSecurityCodeInput.ErrorMessage = "Client has no security of this type with this code.";
-                cuvSecurityCodeInput.IsValid = false;
-            }
-            else
+            if (rfvAlertType.IsValid && rfvSecurityTypeInput.IsValid && rfvSecurityCodeInput.IsValid && rfvAlertValue.IsValid 
+                && revSecurityCodeInput.IsValid && revAlertValue.IsValid)
             {
-                sql = "SELECT price FROM " + securityType + " WHERE code='" + securityCode + "'";
-                DataTable desiredSecurity = myExternalFunctions.getSecuritiesByCode(securityType, securityCode);
+                string clientUserName = Context.User.Identity.GetUserName();
+                string securityType = rblSecurityTypeInput.SelectedValue.ToString();
+                string securityCode = tbxSecurityCodeInput.Text.ToString();
+                float alertValue = float.Parse(tbxAlertValue.Text.ToString());
+                string sql = "";
 
-                if (desiredSecurity == null)
+                // Select "*" because we are just making sure the client has the security
+                sql = "SELECT * "
+                    + "FROM Account AS a FULL JOIN SecurityHolding AS sh ON a.accountNumber=sh.accountNumber "
+                    + "WHERE userName='" + clientUserName + "' AND code='" + securityCode + "'";
+                // Create a DataTable to hold our query to the local database
+                DataTable clientSecurity = myHKeInvestData.getData(sql);
+
+                if (clientSecurity == null || clientSecurity.Rows.Count == 0)
                 {
-                    cuvSecurityCodeInput.Text = "This security does not exist.";
-                    cuvSecurityCodeInput.IsValid = false;
+                    cuvSecurityCodeInput.ErrorMessage = "Client has no security of this type with this code.";
+                    args.IsValid = false;
                 }
-
-                float price = desiredSecurity.Rows[0].Field<float>("price");
-                if (rblAlertType.SelectedValue == "High")
+                else
                 {
-                    if (price > alertValue)
+                    DataTable desiredSecurity = myExternalFunctions.getSecuritiesByCode(securityType, securityCode);
+
+                    if (desiredSecurity == null)
                     {
-                        cuvSecurityCodeInput.Text = "The price is already higher than the high alert value.";
-                        cuvSecurityCodeInput.IsValid = false;
+                        cuvSecurityCodeInput.ErrorMessage = "This security does not exist.";
+                        args.IsValid = false;
+                    }
+                    else
+                    {
+                        float price;
+                        if (securityType == "stock")
+                        {
+                            price = float.Parse(desiredSecurity.Rows[0]["close"].ToString());
+                        }
+                        else
+                        {
+                            price = float.Parse(desiredSecurity.Rows[0]["price"].ToString());
+                        }
+
+                        if (rblAlertType.SelectedValue == "High")
+                        {
+                            if (price > alertValue)
+                            {
+                                cuvSecurityCodeInput.ErrorMessage = "The price is already higher than the alert value.";
+                                args.IsValid = false;
+                            }
+                        }
+                        else // Alert type should only either be "High" or "Low"
+                        {
+                            if (price < alertValue)
+                            {
+                                cuvSecurityCodeInput.ErrorMessage = "The price is already lower than the alert value.";
+                                args.IsValid = false;
+                            }
+                        }
                     }
                 }
-                else // Alert type should only either be "High" or "Low"
-                {
-                    if (price < alertValue)
-                    {
-                        cuvSecurityCodeInput.Text = "The price is already lower than the low alert value.";
-                        cuvSecurityCodeInput.IsValid = false;
-                    }
-                }
-            }
+            } 
         }
 
         protected void CreateAlertClick(object sender, EventArgs e)
         {
             Page.Validate("alertValidation");
-            if (Page.IsValid)
+            cuvSecurityCodeInput.Validate();
+            if (Page.IsValid & cuvSecurityCodeInput.IsValid)
             {
                 string securityType = rblSecurityTypeInput.SelectedValue.ToString();
                 string securityCode = tbxSecurityCodeInput.Text.ToString();
@@ -89,9 +111,16 @@ namespace HKeInvestWebApplication
                 string number = tbxAlertValue.Text.ToString();
                 float alertValue = float.Parse(tbxAlertValue.Text.ToString());
 
-                // TODO: make sure to get the primary account holder's email
-                DataTable getClientEmail = myHKeInvestData.getData("SELECT email FROM Client, Account WHERE userName='" + Context.User.Identity.GetUserName() + "'");
-                string clientEmail = getClientEmail.Rows[0].Field<string>("email");
+                string sql = "";
+                sql = "SELECT email "
+                    + "FROM Account AS a FULL JOIN Client as c ON a.accountNumber=c.accountNumber "
+                    + "WHERE userName='" + Context.User.Identity.GetUserName() + "' AND isPrimary='Y'";
+                DataTable getClientEmail = myHKeInvestData.getData(sql);
+                if (getClientEmail == null)
+                {
+                    throw new System.ArgumentNullException("Query for client email returned null.");
+                }
+                string clientEmail = getClientEmail.Rows[0]["email"].ToString();
 
                 myInternalFunctions.createAlert(securityType, securityCode, alertType, alertValue, clientEmail);
 
@@ -102,10 +131,6 @@ namespace HKeInvestWebApplication
                 tbxAlertValue.Text = "";
 
                 MessageBox.Show(new Form { TopMost = true }, "Alert successfully set.");
-            }
-            else
-            {
-                MessageBox.Show(new Form { TopMost = true }, "Failed to set alert.");
             }
         }
     }

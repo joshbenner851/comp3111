@@ -452,11 +452,15 @@ namespace HKeInvestWebApplication.Code_File
 			private string alertType;
 			private float alertValue;
 			private string email;
-			// Use Utc time to keep consistent across time zones and when crossing time zones
-			private DateTime lastTimeFired;
+			private DateTime lastTimeFired; // Uses UTC time for consistency across time zones
 
 			public SecurityAlert(string newSecurityType, string newSecurityCode, string newAlertType, float newAlertValue, string newEmail)
 			{
+                if (newSecurityType == null || newSecurityCode == null || newAlertType == null || newEmail == null)
+                {
+                    throw new System.ArgumentNullException("Cannot construct an alert with null arguments.");
+                }
+
 				this.securityType = newSecurityType;
 				this.securityCode = newSecurityCode;
 				this.alertType = newAlertType;
@@ -466,15 +470,29 @@ namespace HKeInvestWebApplication.Code_File
 
 			public void checkForTrigger()
 			{
-				// "If the trigger has never been fired or it has been greater than 24 hours since the last time it has fired"
-				// This might be able to be reduced to only the statement on the right side of the logical or
-				if (lastTimeFired == DateTime.MinValue || lastTimeFired.AddDays(1) < DateTime.UtcNow)
+                // The trigger only fires if it has been greater than 24 hours since the last time it fired
+				if (lastTimeFired.AddDays(1) < DateTime.UtcNow)
 				{
 					if (alertType == "High")
 					{
 						// Get the current price of the security
 						DataTable currentSecurity = myExternalFunctions.getSecuritiesByCode(securityType, securityCode);
-						float price = float.Parse(currentSecurity.Rows[0]["price"].ToString());
+                        float price;
+                        if (currentSecurity == null)
+                        {
+                            throw new System.ArgumentNullException("Alert has been created without a corresponding security.");
+                        }
+                        else
+                        {
+                            if (securityType == "stock")
+                            {
+                                price = float.Parse(currentSecurity.Rows[0]["close"].ToString());
+                            }
+                            else
+                            {
+                                price = float.Parse(currentSecurity.Rows[0]["price"].ToString());
+                            }
+                        }
 
 						if (alertValue <= price)
 						{
@@ -486,7 +504,7 @@ namespace HKeInvestWebApplication.Code_File
                             mail.Subject = "An Alert You've Set Has Been Triggered";
                             mail.Body = "Hello, an alert you've set on a security has been triggered.\n\n" +
                                 "The Security in question is:\n" +
-                                "Type - " + securityType + "; Code - " + securityCode + "\n" +
+                                "Type: " + securityType + "; Code: " + securityCode + "\n" +
                                 "The price of the security has reached or exceeded the specified value of: " + alertValue;
 
                             emailServer.Send(mail);
@@ -504,13 +522,13 @@ namespace HKeInvestWebApplication.Code_File
                             MailMessage mail = new MailMessage();
                             SmtpClient emailServer = new SmtpClient("smtp.cse.ust.hk");
 
-                            mail.From = new MailAddress("comp3111_team106@cse.ust.hk", "HKeInvest Alerts");
+                            mail.From = new MailAddress("comp3111_team106@cse.ust.hk", "HKeInvest");
                             mail.To.Add(email);
                             mail.Subject = "An Alert You've Set Has Been Triggered";
                             mail.Body = "Hello, an alert you've set on a security has been triggered.\n\n" +
                                 "The Security in question is:\n" +
-                                "Type - " + securityType + "; Code - " + securityCode + "\n" +
-                                "The price of the security has reached or go\ne below the specified value of: " + alertValue;
+                                "Type: " + securityType + "; Code: " + securityCode + "\n" +
+                                "The price of the security has reached or gone below the specified value of: " + alertValue;
 
                             emailServer.Send(mail);
 
