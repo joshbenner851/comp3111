@@ -249,70 +249,7 @@ namespace HKeInvestWebApplication.EmployeeOnly
                             extData.setData(sql, trans);
                             extData.commitTransaction(trans);
 
-                            // Get the client's email
-                            sql = "SELECT  "
-                                + "FROM Account AS a FULL JOIN Client as c ON a.accountNumber=c.accountNumber "
-                                + "WHERE userName='" + Context.User.Identity.GetUserName() + "' AND isPrimary='Y'";
-                            DataTable clientInfo = extData.getData(sql);
-                            if (clientInfo == null)
-                            {
-                                throw new System.ArgumentNullException("Query for client info returned null.");
-                            }
-                            string clientEmail = clientInfo.Rows[0]["email"].ToString();
-
-                            // Calculate invoice values
-                            DataTable stockInfo = extFunction.getSecuritiesByCode("stock", varStockCode);
-                            if (stockInfo == null)
-                            {
-                                throw new System.ArgumentNullException("Query for stock info returned null.");
-                            }
-
-                            float stockPrice = (float)stockInfo.Rows[0]["close"];
-                            float totalDollarAmount = stockPrice * float.Parse(varShares);
-                            float stockFee;
-                            float clientBalance = (float)clientInfo.Rows[0]["balance"];
-                            
-
-                            if (OrderType.SelectedValue.Equals("Market Order"))
-                            {
-                                stockFee = clientBalance < 1000000 ? 150 + (0.004f * totalDollarAmount): 100 + (0.002f * totalDollarAmount);
-                            }
-                            else if (OrderType.SelectedValue.Equals("Limit Order"))
-                            {
-                                stockFee = clientBalance < 1000000 ? 150 + (0.006f * totalDollarAmount) : 100 + (0.004f * totalDollarAmount);
-                            }
-                            else if (OrderType.SelectedValue.Equals("Stop Order"))
-                            {
-                                stockFee = clientBalance < 1000000 ? 150 + (0.006f * totalDollarAmount) : 100 + (0.004f * totalDollarAmount);
-                            }
-                            else // Stop Limit Order
-                            {
-                                stockFee = clientBalance < 1000000 ? 150 + (0.008f * totalDollarAmount) : 100 + (0.006f * totalDollarAmount);
-                            }
-
-                            // Calculate transaction invoice values
-                            string body = "Hello, you have recently placed an order through the HKeInvest System.\n\n" +
-                                "Reference Number: " + result + "\n" +
-                                "Account Number: " + accountNumber + "\n" +
-                                "Order Type: Stock " + OrderType.SelectedValue + "\n" +
-                                "Date Submitted: " + timeNow + "\n" +
-                                "Shares Bought: " + varShares + "\n" +
-                                "Total Executed Dollar Amount: " + totalDollarAmount.ToString() + "\n" +
-                                "Fee Charged: " + stockFee.ToString() + "\n\n" +
-                                "Transactions: \n";
-
-                            DataTable transactions = extFunction.getOrderTransaction(result);
-                            for (int i = 0; i < transactions.Rows.Count; i++)
-                            {
-                                body += "Transaction: " + (i + 1).ToString() + "/" + transactions.Rows.Count.ToString() + "\n" +
-                                    "\tTransaction Number: " + transactions.Rows[i]["transactionNumber"].ToString() + "\n" +
-                                    "\tDate Executed: " + transactions.Rows[i]["executeDate"].ToString() + "\n" +
-                                    "\tQuantity of Shares Executed: " + transactions.Rows[i]["executeShares"].ToString() + "\n" +
-                                    "\tPrice per Share: " + transactions.Rows[i]["executePrice"].ToString() + "\n";
-                            }
-
-                            // Email invoice
-                            intFunction.sendInvoiceEmail(clientEmail, "Stock Buy Order Invoice", body);
+                            sendInvoice(result, varStockCode, varShares);
                         }
                     }
                     else if (TransactionType.SelectedValue.Equals("Sell"))
@@ -373,69 +310,7 @@ namespace HKeInvestWebApplication.EmployeeOnly
                             extData.commitTransaction(trans);                            //Return URL
                         }
 
-                        // Get the client's email
-                        string sellSql = "SELECT  "
-                            + "FROM Account AS a FULL JOIN Client as c ON a.accountNumber=c.accountNumber "
-                            + "WHERE userName='" + Context.User.Identity.GetUserName() + "' AND isPrimary='Y'";
-                        DataTable clientInfo = extData.getData(sellSql);
-                        if (clientInfo == null)
-                        {
-                            throw new System.ArgumentNullException("Query for client info returned null.");
-                        }
-                        string clientEmail = clientInfo.Rows[0]["email"].ToString();
-
-                        // Calculate invoice values
-                        DataTable stockInfo = extFunction.getSecuritiesByCode("stock", varStockCode);
-                        if (stockInfo == null)
-                        {
-                            throw new System.ArgumentNullException("Query for stock info returned null.");
-                        }
-
-                        float stockPrice = (float)stockInfo.Rows[0]["close"];
-                        float totalDollarAmount = stockPrice * float.Parse(varShares);
-                        float stockFee;
-                        float clientBalance = (float)clientInfo.Rows[0]["balance"];
-
-                        if (OrderType.SelectedValue.Equals("Market Order"))
-                        {
-                            stockFee = clientBalance < 1000000 ? 150 + (0.004f * totalDollarAmount) : 100 + (0.002f * totalDollarAmount);
-                        }
-                        else if (OrderType.SelectedValue.Equals("Limit Order"))
-                        {
-                            stockFee = clientBalance < 1000000 ? 150 + (0.006f * totalDollarAmount) : 100 + (0.004f * totalDollarAmount);
-                        }
-                        else if (OrderType.SelectedValue.Equals("Stop Order"))
-                        {
-                            stockFee = clientBalance < 1000000 ? 150 + (0.006f * totalDollarAmount) : 100 + (0.004f * totalDollarAmount);
-                        }
-                        else // Stop Limit Order
-                        {
-                            stockFee = clientBalance < 1000000 ? 150 + (0.008f * totalDollarAmount) : 100 + (0.006f * totalDollarAmount);
-                        }
-
-                        // Calculate transaction invoice values
-                        string body = "Hello, you have recently placed an order through the HKeInvest System.\n\n" +
-                            "Reference Number: " + result + "\n" +
-                            "Account Number: " + accountNumber + "\n" +
-                            "Order Type: Sell Stock " + OrderType.SelectedValue + "\n" +
-                            "Date Submitted: " + DateTime.Now.ToString() + "\n" +
-                            "Shares Bought: " + varShares + "\n" +
-                            "Total Executed Dollar Amount: " + totalDollarAmount.ToString() + "\n" +
-                            "Fee Charged: " + stockFee.ToString() + "\n\n" +
-                            "Transactions: \n";
-
-                        DataTable transactions = extFunction.getOrderTransaction(result);
-                        for (int i = 0; i < transactions.Rows.Count; i++)
-                        {
-                            body += "Transaction: " + (i + 1).ToString() + "/" + transactions.Rows.Count.ToString() + "\n" +
-                                "\tTransaction Number: " + transactions.Rows[i]["transactionNumber"].ToString() + "\n" +
-                                "\tDate Executed: " + transactions.Rows[i]["executeDate"].ToString() + "\n" +
-                                "\tQuantity of Shares Executed: " + transactions.Rows[i]["executeShares"].ToString() + "\n" +
-                                "\tPrice per Share: " + transactions.Rows[i]["executePrice"].ToString() + "\n";
-                        }
-
-                        // Email invoice
-                        intFunction.sendInvoiceEmail(clientEmail, "Stock Sell Order Invoice", body);
+                        sendInvoice(result, varStockCode, varShares);
                     }
                 }
                 else
@@ -480,52 +355,7 @@ namespace HKeInvestWebApplication.EmployeeOnly
                                     extData.setData(sql, trans);
                                     extData.commitTransaction(trans);
 
-                                    // Get the client's email
-                                    string sellSql = "SELECT  "
-                                        + "FROM Account AS a FULL JOIN Client as c ON a.accountNumber=c.accountNumber "
-                                        + "WHERE userName='" + Context.User.Identity.GetUserName() + "' AND isPrimary='Y'";
-                                    DataTable clientInfo = extData.getData(sellSql);
-                                    if (clientInfo == null)
-                                    {
-                                        throw new System.ArgumentNullException("Query for client info returned null.");
-                                    }
-                                    string clientEmail = clientInfo.Rows[0]["email"].ToString();
-
-                                    // Calculate invoice values
-                                    DataTable stockInfo = extFunction.getSecuritiesByCode("bond", varBondTrustCode);
-                                    if (stockInfo == null)
-                                    {
-                                        throw new System.ArgumentNullException("Query for stock info returned null.");
-                                    }
-
-                                    float stockPrice = (float)stockInfo.Rows[0]["close"];
-                                    float totalDollarAmount = stockPrice * float.Parse(varBondTrustSharesAmount);
-                                    float clientBalance = (float)clientInfo.Rows[0]["balance"];
-                                    float stockFee = clientBalance < 500000 ? (0.05f * totalDollarAmount) : (0.03f * totalDollarAmount);
-
-                                    // Calculate transaction invoice values
-                                    string body = "Hello, you have recently placed an order through the HKeInvest System.\n\n" +
-                                        "Reference Number: " + result + "\n" +
-                                        "Account Number: " + accountNumber + "\n" +
-                                        "Order Type: Buy Bond " + OrderType.SelectedValue + "\n" +
-                                        "Date Submitted: " + DateTime.Now.ToString() + "\n" +
-                                        "Shares Bought: " + varBondTrustSharesAmount + "\n" +
-                                        "Total Executed Dollar Amount: " + totalDollarAmount.ToString() + "\n" +
-                                        "Fee Charged: " + stockFee.ToString() + "\n\n" +
-                                        "Transactions: \n";
-
-                                    DataTable transactions = extFunction.getOrderTransaction(result);
-                                    for (int i = 0; i < transactions.Rows.Count; i++)
-                                    {
-                                        body += "Transaction: " + (i + 1).ToString() + "/" + transactions.Rows.Count.ToString() + "\n" +
-                                            "\tTransaction Number: " + transactions.Rows[i]["transactionNumber"].ToString() + "\n" +
-                                            "\tDate Executed: " + transactions.Rows[i]["executeDate"].ToString() + "\n" +
-                                            "\tQuantity of Shares Executed: " + transactions.Rows[i]["executeShares"].ToString() + "\n" +
-                                            "\tPrice per Share: " + transactions.Rows[i]["executePrice"].ToString() + "\n";
-                                    }
-
-                                    // Email invoice
-                                    intFunction.sendInvoiceEmail(clientEmail, "Stock Sell Order Invoice", body);
+                                    sendInvoice(result, varBondTrustCode, varBondTrustSharesAmount);
                                 }
 
                             }
@@ -563,52 +393,7 @@ namespace HKeInvestWebApplication.EmployeeOnly
                                     extData.setData(sql, trans);
                                     extData.commitTransaction(trans);
 
-                                    // Get the client's email
-                                    string sellSql = "SELECT  "
-                                        + "FROM Account AS a FULL JOIN Client as c ON a.accountNumber=c.accountNumber "
-                                        + "WHERE userName='" + Context.User.Identity.GetUserName() + "' AND isPrimary='Y'";
-                                    DataTable clientInfo = extData.getData(sellSql);
-                                    if (clientInfo == null)
-                                    {
-                                        throw new System.ArgumentNullException("Query for client info returned null.");
-                                    }
-                                    string clientEmail = clientInfo.Rows[0]["email"].ToString();
-
-                                    // Calculate invoice values
-                                    DataTable stockInfo = extFunction.getSecuritiesByCode("stock", varBondTrustCode);
-                                    if (stockInfo == null)
-                                    {
-                                        throw new System.ArgumentNullException("Query for stock info returned null.");
-                                    }
-
-                                    float stockPrice = (float)stockInfo.Rows[0]["close"];
-                                    float totalDollarAmount = stockPrice * float.Parse(varBondTrustSharesAmount);
-                                    float clientBalance = (float)clientInfo.Rows[0]["balance"];
-                                    float stockFee = clientBalance < 500000 ? (0.05f * totalDollarAmount) : (0.03f * totalDollarAmount);
-
-                                    // Calculate transaction invoice values
-                                    string body = "Hello, you have recently placed an order through the HKeInvest System.\n\n" +
-                                        "Reference Number: " + result + "\n" +
-                                        "Account Number: " + accountNumber + "\n" +
-                                        "Order Type: Buy Unit Trust " + OrderType.SelectedValue + "\n" +
-                                        "Date Submitted: " + DateTime.Now.ToString() + "\n" +
-                                        "Shares Bought: " + varBondTrustSharesAmount + "\n" +
-                                        "Total Executed Dollar Amount: " + totalDollarAmount.ToString() + "\n" +
-                                        "Fee Charged: " + stockFee.ToString() + "\n\n" +
-                                        "Transactions: \n";
-
-                                    DataTable transactions = extFunction.getOrderTransaction(result);
-                                    for (int i = 0; i < transactions.Rows.Count; i++)
-                                    {
-                                        body += "Transaction: " + (i + 1).ToString() + "/" + transactions.Rows.Count.ToString() + "\n" +
-                                            "\tTransaction Number: " + transactions.Rows[i]["transactionNumber"].ToString() + "\n" +
-                                            "\tDate Executed: " + transactions.Rows[i]["executeDate"].ToString() + "\n" +
-                                            "\tQuantity of Shares Executed: " + transactions.Rows[i]["executeShares"].ToString() + "\n" +
-                                            "\tPrice per Share: " + transactions.Rows[i]["executePrice"].ToString() + "\n";
-                                    }
-
-                                    // Email invoice
-                                    intFunction.sendInvoiceEmail(clientEmail, "Stock Sell Order Invoice", body);
+                                    sendInvoice(result, varBondTrustCode, varBondTrustSharesAmount);
                                 }
                             }
                         }
@@ -655,55 +440,9 @@ namespace HKeInvestWebApplication.EmployeeOnly
                                         extData.setData(sql, trans);
                                         extData.commitTransaction(trans);
 
-                                    // Get the client's email
-                                    string sellSql = "SELECT  "
-                                        + "FROM Account AS a FULL JOIN Client as c ON a.accountNumber=c.accountNumber "
-                                        + "WHERE userName='" + Context.User.Identity.GetUserName() + "' AND isPrimary='Y'";
-                                    DataTable clientInfo = extData.getData(sellSql);
-                                    if (clientInfo == null)
-                                    {
-                                        throw new System.ArgumentNullException("Query for client info returned null.");
-                                    }
-                                    string clientEmail = clientInfo.Rows[0]["email"].ToString();
-
-                                    // Calculate invoice values
-                                    DataTable stockInfo = extFunction.getSecuritiesByCode("stock", varBondTrustCode);
-                                    if (stockInfo == null)
-                                    {
-                                        throw new System.ArgumentNullException("Query for stock info returned null.");
-                                    }
-
-                                    float stockPrice = (float)stockInfo.Rows[0]["close"];
-                                    float totalDollarAmount = stockPrice * float.Parse(varBondTrustShares);
-                                    float clientBalance = (float)clientInfo.Rows[0]["balance"];
-                                    float stockFee = clientBalance < 500000 ? 100 : 50;
-
-                                    // Calculate transaction invoice values
-                                    string body = "Hello, you have recently placed an order through the HKeInvest System.\n\n" +
-                                        "Reference Number: " + result + "\n" +
-                                        "Account Number: " + accountNumber + "\n" +
-                                        "Order Type: Sell Bond " + OrderType.SelectedValue + "\n" +
-                                        "Date Submitted: " + DateTime.Now.ToString() + "\n" +
-                                        "Shares Bought: " + varBondTrustShares + "\n" +
-                                        "Total Executed Dollar Amount: " + totalDollarAmount.ToString() + "\n" +
-                                        "Fee Charged: " + stockFee.ToString() + "\n\n" +
-                                        "Transactions: \n";
-
-                                    DataTable transactions = extFunction.getOrderTransaction(result);
-                                    for (int i = 0; i < transactions.Rows.Count; i++)
-                                    {
-                                        body += "Transaction: " + (i + 1).ToString() + "/" + transactions.Rows.Count.ToString() + "\n" +
-                                            "\tTransaction Number: " + transactions.Rows[i]["transactionNumber"].ToString() + "\n" +
-                                            "\tDate Executed: " + transactions.Rows[i]["executeDate"].ToString() + "\n" +
-                                            "\tQuantity of Shares Executed: " + transactions.Rows[i]["executeShares"].ToString() + "\n" +
-                                            "\tPrice per Share: " + transactions.Rows[i]["executePrice"].ToString() + "\n";
-                                    }
-
-                                    // Email invoice
-                                    intFunction.sendInvoiceEmail(clientEmail, "Stock Sell Order Invoice", body);
+                                        sendInvoice(result, varBondTrustCode, varBondTrustShares);
                                 }
-                                }
-                            
+                            }
                         }
                         else if (SecurityType.SelectedValue.Equals("Unit Trust"))
                         {
@@ -740,52 +479,7 @@ namespace HKeInvestWebApplication.EmployeeOnly
                                     extData.setData(sql, trans);
                                     extData.commitTransaction(trans);
 
-                                    // Get the client's email
-                                    string sellSql = "SELECT  "
-                                        + "FROM Account AS a FULL JOIN Client as c ON a.accountNumber=c.accountNumber "
-                                        + "WHERE userName='" + Context.User.Identity.GetUserName() + "' AND isPrimary='Y'";
-                                    DataTable clientInfo = extData.getData(sellSql);
-                                    if (clientInfo == null)
-                                    {
-                                        throw new System.ArgumentNullException("Query for client info returned null.");
-                                    }
-                                    string clientEmail = clientInfo.Rows[0]["email"].ToString();
-
-                                    // Calculate invoice values
-                                    DataTable stockInfo = extFunction.getSecuritiesByCode("stock", varBondTrustCode);
-                                    if (stockInfo == null)
-                                    {
-                                        throw new System.ArgumentNullException("Query for stock info returned null.");
-                                    }
-
-                                    float stockPrice = (float)stockInfo.Rows[0]["close"];
-                                    float totalDollarAmount = stockPrice * float.Parse(varBondTrustShares);
-                                    float clientBalance = (float)clientInfo.Rows[0]["balance"];
-                                    float stockFee = clientBalance < 500000 ? 100 : 50;
-
-                                    // Calculate transaction invoice values
-                                    string body = "Hello, you have recently placed an order through the HKeInvest System.\n\n" +
-                                        "Reference Number: " + result + "\n" +
-                                        "Account Number: " + accountNumber + "\n" +
-                                        "Order Type: Sell Unit Trust " + OrderType.SelectedValue + "\n" +
-                                        "Date Submitted: " + DateTime.Now.ToString() + "\n" +
-                                        "Shares Bought: " + varBondTrustShares + "\n" +
-                                        "Total Executed Dollar Amount: " + totalDollarAmount.ToString() + "\n" +
-                                        "Fee Charged: " + stockFee.ToString() + "\n\n" +
-                                        "Transactions: \n";
-
-                                    DataTable transactions = extFunction.getOrderTransaction(result);
-                                    for (int i = 0; i < transactions.Rows.Count; i++)
-                                    {
-                                        body += "Transaction: " + (i + 1).ToString() + "/" + transactions.Rows.Count.ToString() + "\n" +
-                                            "\tTransaction Number: " + transactions.Rows[i]["transactionNumber"].ToString() + "\n" +
-                                            "\tDate Executed: " + transactions.Rows[i]["executeDate"].ToString() + "\n" +
-                                            "\tQuantity of Shares Executed: " + transactions.Rows[i]["executeShares"].ToString() + "\n" +
-                                            "\tPrice per Share: " + transactions.Rows[i]["executePrice"].ToString() + "\n";
-                                    }
-
-                                    // Email invoice
-                                    intFunction.sendInvoiceEmail(clientEmail, "Stock Sell Order Invoice", body);
+                                    sendInvoice(result, varBondTrustCode, varBondTrustShares);
                                 }
                             }
                         }
@@ -1041,6 +735,117 @@ namespace HKeInvestWebApplication.EmployeeOnly
                 }
             }
             return "";
+        }
+
+        private void sendInvoice(string referenceNumber, string shareCode, string numberOfShares)
+        {
+            string shareType = SecurityType.SelectedValue.ToString().ToLower();
+            string transactionType =TransactionType.SelectedValue.ToString().ToLower();
+
+            DataTable clientInfo;
+            DataTable shareInfo;
+            DataTable transactions;
+            string sql;
+            string body;
+
+            string clientEmail;
+
+            string orderType = OrderType.SelectedValue.ToString();
+            float sharePrice;
+            float totalDollarAmount;
+            float clientAssets;
+            float transactionFee;
+
+            string accountNumber;
+            // float numberOfShares;
+
+            // Get the client's info
+            sql = "SELECT * "
+                + "FROM Account AS a FULL JOIN Client as c ON a.accountNumber=c.accountNumber "
+                + "WHERE userName='" + Context.User.Identity.GetUserName() + "' AND isPrimary='Y'";
+            clientInfo = extData.getData(sql);
+            if (clientInfo == null)
+            {
+                throw new System.ArgumentNullException("Query for client info returned null.");
+            }
+
+            accountNumber = clientInfo.Rows[0]["accountNumber"].ToString();
+            clientEmail = clientInfo.Rows[0]["email"].ToString();
+
+            // Calculate invoice values
+            shareInfo = extFunction.getSecuritiesByCode(shareType, shareCode);
+            if (shareInfo == null)
+            {
+                throw new System.ArgumentNullException("Query for stock info returned null.");
+            }
+
+            sharePrice = float.Parse(shareInfo.Rows[0][shareType == "stock" ? "close" : "price"].ToString());
+            totalDollarAmount = sharePrice * float.Parse(numberOfShares);
+            clientAssets = float.Parse(clientInfo.Rows[0]["balance"].ToString());
+            if (shareType == "stock")
+            {
+                if (OrderType.SelectedValue.Equals("Market Order"))
+                {
+                    transactionFee = clientAssets < 1000000 ? 150 + (0.004f * totalDollarAmount) : 100 + (0.002f * totalDollarAmount);
+                }
+                else if (OrderType.SelectedValue.Equals("Limit Order"))
+                {
+                    transactionFee = clientAssets < 1000000 ? 150 + (0.006f * totalDollarAmount) : 100 + (0.004f * totalDollarAmount);
+                }
+                else if (OrderType.SelectedValue.Equals("Stop Order"))
+                {
+                    transactionFee = clientAssets < 1000000 ? 150 + (0.006f * totalDollarAmount) : 100 + (0.004f * totalDollarAmount);
+                }
+                else // Stop Limit Order
+                {
+                    transactionFee = clientAssets < 1000000 ? 150 + (0.008f * totalDollarAmount) : 100 + (0.006f * totalDollarAmount);
+                }
+            }
+            else
+            {
+                if (orderType == "buy")
+                {
+                    transactionFee = clientAssets < 500000 ? totalDollarAmount * 0.05f : totalDollarAmount * 0.03f;
+                }
+                else
+                {
+                    transactionFee = clientAssets < 500000 ? 100 : 50;
+                }
+            }
+
+            // Body of the message
+            body = "Hello, you have recently placed an order through the HKeInvest System.\n\n" +
+                "Reference Number: " + referenceNumber + "\n" +
+                "Account Number: " + accountNumber + "\n" +
+                "Transaction Type: " + transactionType + "\n" +
+                "Order Type: " + orderType + "\n" +
+                "Date Submitted: " + DateTime.Now.ToString() + "\n" +
+                "Shares Bought: " + numberOfShares + "\n" +
+                "Total Executed Dollar Amount: " + totalDollarAmount.ToString() + "\n" +
+                "Fee Charged: " + transactionFee.ToString() + "\n\n";
+
+
+            // Calculate transaction invoice values
+            transactions = extFunction.getOrderTransaction(referenceNumber);
+            if (transactions == null)
+            {
+                // throw new System.ArgumentNullException("Query for transactions returned null.");
+            }
+            else
+            {
+                body += "Transactions: \n";
+                for (int i = 0; i < transactions.Rows.Count; i++)
+                {
+                    body += "Transaction: " + (i + 1).ToString() + "/" + transactions.Rows.Count.ToString() + "\n" +
+                        "\tTransaction Number: " + transactions.Rows[i]["transactionNumber"].ToString() + "\n" +
+                        "\tDate Executed: " + transactions.Rows[i]["executeDate"].ToString() + "\n" +
+                        "\tQuantity of Shares Executed: " + transactions.Rows[i]["executeShares"].ToString() + "\n" +
+                        "\tPrice per Share: " + transactions.Rows[i]["executePrice"].ToString() + "\n";
+                }
+            }
+
+            // Email invoice
+            intFunction.sendInvoiceEmail(clientEmail, "Order " + referenceNumber + " Invoice", body);
         }
     }
 }
